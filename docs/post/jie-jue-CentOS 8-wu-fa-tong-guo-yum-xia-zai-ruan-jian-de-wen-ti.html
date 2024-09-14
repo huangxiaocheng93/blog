@@ -86,7 +86,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <div class="markdown-body" id="postBody"><p>原因是CentOS 8已于2021年12月31日停止维护，在2022年1月31日，CentOS团队终于从官方镜像中移除CentOS 8的所有包。</p>
 <p>可以把源替换为阿里云的源解决此问题：</p>
 <div class="highlight highlight-source-shell"><pre class="notranslate">sed -i -e <span class="pl-s"><span class="pl-pds">"</span>s|mirrorlist=|#mirrorlist=|g<span class="pl-pds">"</span></span> /etc/yum.repos.d/CentOS-<span class="pl-k">*</span>
-sed -i -e <span class="pl-s"><span class="pl-pds">"</span>s|#baseurl=http://mirror.centos.org|baseurl=http://mirrors.aliyun.com|g<span class="pl-pds">"</span></span> /etc/yum.repos.d/CentOS-<span class="pl-k">*</span></pre></div></div>
+sed -i -e <span class="pl-s"><span class="pl-pds">"</span>s|#baseurl=http://mirror.centos.org|baseurl=http://mirrors.aliyun.com|g<span class="pl-pds">"</span></span> /etc/yum.repos.d/CentOS-<span class="pl-k">*</span></pre></div>
+<p>如果yum update以后又报错，就需要再次执行上面的命令。</p></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>

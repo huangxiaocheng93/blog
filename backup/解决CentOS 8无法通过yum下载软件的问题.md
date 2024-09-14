@@ -6,3 +6,5 @@
 sed -i -e "s|mirrorlist=|#mirrorlist=|g" /etc/yum.repos.d/CentOS-*
 sed -i -e "s|#baseurl=http://mirror.centos.org|baseurl=http://mirrors.aliyun.com|g" /etc/yum.repos.d/CentOS-*
 ```
+
+如果yum update以后又报错，就需要再次执行上面的命令。
