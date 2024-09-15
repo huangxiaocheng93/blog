@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="当前主流的商用程序语言（Java、C#，上溯至前面提到的古老的Lisp）的内存管理子系统，都是通过可达性分析（Reachability Analysis）算法来判定对象是否存活的。">
+<meta property="og:title" content="Java GC中的可达性分析算法">
+<meta property="og:description" content="当前主流的商用程序语言（Java、C#，上溯至前面提到的古老的Lisp）的内存管理子系统，都是通过可达性分析（Reachability Analysis）算法来判定对象是否存活的。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://huangxiaocheng93.github.io/vincentsBlog/post/Java%20GC-zhong-de-ke-da-xing-fen-xi-suan-fa.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
+<title>Java GC中的可达性分析算法</title>
+
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">Java GC中的可达性分析算法</h1>
+<div class="title-right">
+    <a href="https://huangxiaocheng93.github.io/vincentsBlog" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/huangxiaocheng93/vincentsBlog/issues/4" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><p>当前主流的商用程序语言（Java、C#，上溯至前面提到的古老的Lisp）的内存管理子系统，都是通过可达性分析（Reachability Analysis）算法来判定对象是否存活的。这个算法的基本思路就是通过一系列称为“GC Roots”的根对象作为起始节点集，从这些节点开始，根据引用关系向下搜索，搜索过程所走过的路径称为“引用链”（Reference Chain），如果某个对象到GC Roots间没有任何引用链相连，或者用图论的话来说就是从GC Roots到这个对象不可达时，则证明此对象是不可能再被使用的。</p>
+<h1>枚举根节点</h1>
+<p>根节点也叫GC roots，枚举根节点是可达性分析的第一步，根节点一定是“可达”的，有了根节点，我们就可以顺着根节点往下分析对象是否可达。</p>
+<p><strong>枚举根节点的时候是需要暂停用户线程的。</strong></p>
+<h2>GC roots</h2>
+<h3>什么是GC roots</h3>
+<p>用大白话来讲，就是在这一次垃圾收集中一定不会被回收的对象的引用，</p>
+<p>为什么一定是对象的引用呢，首先我们要收集的是堆，栈不用回收，因为栈会随着进程退出自动回收。堆是存放对象的地方，所以我们要找到是一定会生存下来的对象的引用。</p>
+<h3>GC roots有哪些</h3>
+<ul>
+<li>在虚拟机栈（栈帧中的本地变量表）中引用的对象，譬如各个线程被调用的方法堆栈中使用到的参数、局部变量、临时变量等，栈还存在说明线程没有退出，那么栈内引用的对象肯定是存活的；</li>
+<li>在方法区中类静态属性引用的对象，譬如Java类的引用类型静态变量，静态变量和类的生命周期是一致的，所以方法去中的静态变量肯定是存活的；</li>
+<li>在方法区中常量引用的对象，譬如字符串常量池（String Table）里的引用；</li>
+<li>在本地方法栈中JNI（即通常所说的Native方法）引用的对象，本地方法栈和虚拟机栈的原理是一样的；</li>
+<li>Java虚拟机内部的引用，如基本数据类型对应的Class对象，一些常驻的异常对象（比如NullPointExcepiton、OutOfMemoryError）等，还有系统类加载器；</li>
+<li>所有被同步锁（synchronized关键字）持有的对象；</li>
+<li>反映Java虚拟机内部情况的JMXBean、JVMTI中注册的回调、本地代码缓存；</li>
+</ul>
+<p>注意：上述并不是所有GC roots，还有一些情况不一一列举，主要是理解什么对象会成为GC roots。</p>
+<h2>Stop The World</h2>
+<p>在枚举GC roots的时候必须要停顿所有的用户线程，也就是所谓的STW(Stop The World)这样做是为什么呢？因为我们必须要保证完整的枚举出所有的GC roots，如果不停顿用户线程，用户线程在我们枚举GC roots的时候又新增的新的GC roots，可能就会导致漏掉GC roots，造成回收错误的对象，这是很严重的。</p>
+<p>这里可能会有另外一个问题，就是即使这里完整的枚举出了GC roots，当用户线程恢复执行的时候仍然会有新的GC roots产生。这种情况确实有可能发生，针对这种情况会采用增量更新的方式来处理。</p>
+<p>当所有的用户线程都进入中断的时候，JVM就可以开始操作了。那我们要怎么让用户线程停下来呢？</p>
+<h3>中断策略</h3>
+<p>有两种思路让用户线程停下来。</p>
+<p><strong>抢占式中断</strong></p>
+<p>先让所有的用户线程都停下来，如果有线程不在安全点，就恢复线程，让他跑到安全点再停下来。</p>
+<p>当前已经没有虚拟机使用这种方式了，<strong>为什么呢？</strong></p>
+<p><strong>主动中断</strong></p>
+<p>虚拟机设置一个中断标识，当用户线程执行到安全点的时候主动检查这个标识，如果中断标识为真，则将自己挂起。</p>
+<p>这两种中断方式都需要使用到一个叫安全点的概念，安全点是什么？</p>
+<h3>安全点（Safe Point）和安全区域（Safe Region）</h3>
+<p><strong>安全点（Safe Point）</strong></p>
+<p>安全点实际上就是JVM选定的一些位置，用户线程执行到这些位置，就会检查JVM设置的中断标识，如果中断标识为空，线程就挂起自己。</p>
+<p>那安全点是怎么选定的呢？在《深入理解Java虚拟机》书中提到了安全点位置的选择标准是：是否能让程序长时间执行；所以会在方法调用、循环跳转、异常跳转等处才会产生安全点。</p>
+<p>为什么要选一些地方作为安全点呢？每条指令都检查不行吗？实际上也行，但是主要出于性能考虑，所以选定一些地方作为安全点。</p>
+<p>但实际上安全点并没有这么简单，可以参考：<a href="https://tech.dewu.com/article?id=47" rel="nofollow">https://tech.dewu.com/article?id=47</a></p>
+<p><strong>安全区域（Safe Region）</strong></p>
+<p>有了安全点，为啥还要搞个安全区域呢？</p>
+<p>想想这样一个场景，某一个线程处于blocked状态，blocked的时候因为JVM没有设置中断，所以他并没有进入安全点，也没有更新OopMap，此时JVM要进入中断，但是这个线程不知道要blocked到什么时候，也不能说随意唤醒他，这就麻烦了。</p>
+<p>所以增加了安全区域的概念，在这个区域内，线程执行不会导致OopMap变更。</p>
+<p>线程在进入安全区域的时候，主动上报自己已经进入安全区域，并且更新OopMap；在离开安全区域的时候要检查中断标识，同时再上报自己离开安全区域。</p>
+<p>所以JVM在设置中断的时候就可以忽略处在安全区域的用户线程，因为他们当下一定不会执行导致OopMap变更的操作。</p>
+<p>从上面的标识可以看出，线程阻塞的操作一定是安全区域，毕竟阻塞的线程无法执行任何操作。</p>
+<p>总结来说：<strong>安全点</strong>是用户线程被动的检查JVM设置的中断标识，然后决定自己该怎么做；<strong>安全区域</strong>是用户线程主动的上报自己的状态给JVM。</p>
+<h1>并发标记</h1>
+<p>并发标记是可达性分析的第二步，这一步是顺着上一步找到的根节点，一个一个的标记出所有应该存活的对象，没有被标记的对象，那自然就是应该是被回收的对象。</p>
+<p>先来看看是如何标记的</p>
+<h2>三色标记（Tri-color Marking）</h2>
+<p>使用三色标记法来解释对象是怎么遍历的，把遍历对象图过程中遇到的对象，按照“是否访问过”这个条件标记成以下三种颜色：</p>
+<ul>
+<li><strong>白色</strong>： 表示对象尚未被垃圾收集器访问过。显然在可达性分析刚刚开始的阶段，所有的对象都是白色的，若在分析结束的阶段，仍然是白色的对象，即代表不可达。</li>
+<li><strong>黑色</strong>： 表示对象已经被垃圾收集器访问过，且这个对象的所有引用都已经扫描过。黑色的对象代表已经扫描过，它是安全存活的，如果有其他对象引用指向了黑色对象，无须重新扫描一遍。黑色对象不可能直接（不经过灰色对象）指向某个白色对象。</li>
+<li><strong>灰色</strong>： 表示对象已经被垃圾收集器访问过，但这个对象上至少存在一个引用还没有被扫描过。</li>
+</ul>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/fd9f587963d7534bffb7bb62e1e0d68becebf7a1f85e1be41557ddaadf75a69c/68747470733a2f2f70726f642d66696c65732d7365637572652e73332e75732d776573742d322e616d617a6f6e6177732e636f6d2f33316532326462302d343837652d346631652d613231632d3863373262356339643432382f64636437616461382d653331332d343861312d613639652d3431353336336161656533632f696d6167652e706e67"><img src="https://camo.githubusercontent.com/fd9f587963d7534bffb7bb62e1e0d68becebf7a1f85e1be41557ddaadf75a69c/68747470733a2f2f70726f642d66696c65732d7365637572652e73332e75732d776573742d322e616d617a6f6e6177732e636f6d2f33316532326462302d343837652d346631652d613231632d3863373262356339643432382f64636437616461382d653331332d343861312d613639652d3431353336336161656533632f696d6167652e706e67" alt="image.png" data-canonical-src="https://prod-files-secure.s3.us-west-2.amazonaws.com/31e22db0-487e-4f1e-a21c-8c72b5c9d428/dcd7ada8-e313-48a1-a69e-415363aaee3c/image.png" style="max-width: 100%;"></a></p>
+<p>这样扫描下来，非常清晰的就发现了可回收的对象，可事实是并没有这么简单，上面说过标记过程和用户线程是并发执行的，所以在标记过程中，对象的引用关系并不是一成不变的。</p>
+<h2>并发标记的问题</h2>
+<p>收集器在对象图上标记颜色，同时用户线程在修改引用关系——即修改对象图的结构，这样可能出现两种后果。一种是把原本消亡的对象错误标记为存活，这不是好事，但其实是可以容忍的，只不过产生了一点逃过本次收集的浮动垃圾而已，下次收集清理掉就好。另一种是把原本存活的对象错误标记为已消亡，这就是非常致命的后果了，程序肯定会因此发生错误。</p>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/4af7fd1879fce91b9d03c316420e5f8bd6fb7d17f96b91077012b7c70354182e/68747470733a2f2f70726f642d66696c65732d7365637572652e73332e75732d776573742d322e616d617a6f6e6177732e636f6d2f33316532326462302d343837652d346631652d613231632d3863373262356339643432382f37376433636132642d313534372d346634372d613234652d6561303465333863313835302f696d6167652e706e67"><img src="https://camo.githubusercontent.com/4af7fd1879fce91b9d03c316420e5f8bd6fb7d17f96b91077012b7c70354182e/68747470733a2f2f70726f642d66696c65732d7365637572652e73332e75732d776573742d322e616d617a6f6e6177732e636f6d2f33316532326462302d343837652d346631652d613231632d3863373262356339643432382f37376433636132642d313534372d346634372d613234652d6561303465333863313835302f696d6167652e706e67" alt="image.png" data-canonical-src="https://prod-files-secure.s3.us-west-2.amazonaws.com/31e22db0-487e-4f1e-a21c-8c72b5c9d428/77d3ca2d-1547-4f47-a24e-ea04e38c1850/image.png" style="max-width: 100%;"></a></p>
+<p>Wilson于1994年在理论上证明了，当且仅当以下两个条件同时满足时，会产生“对象消失”的问题，即原本应该是黑色的对象被误标为白色：</p>
+<ul>
+<li>赋值器插入了一条或多条从黑色对象到白色对象的新引用；</li>
+<li>赋值器删除了全部从灰色对象到该白色对象的直接或间接引用。</li>
+</ul>
+<p>因此，我们要解决并发扫描时的对象消失问题，只需破坏这两个条件的任意一个即可。由此分别产生了两种解决方案：增量更新（Incremental Update）和原始快照（Snapshot At The Beginning，SATB）。</p>
+<p>增量更新要破坏的是第一个条件，当黑色对象插入新的指向白色对象的引用关系时，就将这个新插入的引用记录下来，等并发扫描结束之后，再将这些记录过的引用关系中的黑色对象为根，重新扫描一次。这可以简化理解为，黑色对象一旦新插入了指向白色对象的引用之后，它就变回灰色对象了。</p>
+<p>原始快照要破坏的是第二个条件，当灰色对象要删除指向白色对象的引用关系时，就将这个要删除的引用记录下来，在并发扫描结束之后，再将这些记录过的引用关系中的灰色对象为根，重新扫描一次。这也可以简化理解为，无论引用关系删除与否，都会按照刚刚开始扫描那一刻的对象图快照来进行搜索。</p>
+<p>以上无论是对引用关系记录的插入还是删除，虚拟机的记录操作都是通过写屏障实现的。在HotSpot虚拟机中，增量更新和原始快照这两种解决方案都有实际应用，譬如，CMS是基于增量更新来做并发标记的，G1、Shenandoah则是用原始快照来实现。</p>
+<p><strong>无论是采用哪种方案，在并发标记阶段都无法完全完成对象标记。</strong></p>
+<h1>重新标记（最终标记）</h1>
+<p>所以我们需要对并发标记阶段出现的变化再做一次确认。</p>
+<p>并发标记无法完全完成标记的原因是和用户线程并发，用户线程在持续不断的修改对象的引用关系导致的。</p>
+<p>但是也不要紧，并发标记的目的已经达成了，并发标记阶段已经完成了绝大部分的对象标记。所以我们在重新标记的阶段只需要标记少部分在并发标记是发生了变更的对象。</p>
+<p>这时候为了完全标记完对象，必须再次Stop The World，确保对象的引用关系不发生变化。</p>
+<h1>并发清理</h1>
+<p>当标记完成以后，被识别为已经死亡的对象是无法再次建立连接的（不是绝对，对象在被回收之前，还有拯救自己的机会，不过不建议使用这种方式），所以我们在清理对象的时候不需要再次停止用户线程了，可以直接清理。</p>
+<h1>参考资料</h1>
+<p>《深入理解Java虚拟机：JVM的高级特性和最佳实践》</p></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://huangxiaocheng93.github.io/vincentsBlog">Vincent的博客</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行"+diffDay+"天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","huangxiaocheng93/vincentsBlog");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+
+
+</script>
+
+
+</html>
