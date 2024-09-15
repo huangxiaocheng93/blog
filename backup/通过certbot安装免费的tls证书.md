@@ -1,6 +1,5 @@
 # certbot官网地址
-
-[[Certbot](https://certbot.eff.org/)](https://certbot.eff.org/)
+[Certbot](https://certbot.eff.org)
 
 # 安装snapd
 
