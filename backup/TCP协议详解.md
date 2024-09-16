@@ -31,9 +31,9 @@ A：可以听到你的声音（现在B可以确定A能听到他的声音）；
 
  ![image](https://github.com/user-attachments/assets/cf3d54fc-c461-4348-8ffe-f467ed7168f8)
 </td></tr></table></html>
-<html><table frame=void style="margin-left: 50; margin-right: 50;"><tr><td>
-<!--左侧内容-->
 ### 一
+<html><table frame=void style="margin-left: auto; margin-right: auto;"><tr><td>
+<!--左侧内容-->
 
 client → server发送SYN包：
 
@@ -46,9 +46,9 @@ client → server发送SYN包：
 
 ![1423484-20230919222751995-69249474](https://github.com/user-attachments/assets/ab899b76-6d21-4e49-877b-4fd450544b90)
 </td></tr></table></html>
-<html><table frame=void style="margin-left: 50; margin-right: 50;"><tr><td>
-<!--左侧内容-->
 ### 二
+<html><table frame=void style="margin-left: auto; margin-right: auto;"><tr><td>
+<!--左侧内容-->
 
 server → client发送ACK + SYN包：
 
@@ -61,10 +61,9 @@ server → client发送ACK + SYN包：
 
 ![1423484-20230919222756526-1163296370](https://github.com/user-attachments/assets/b3925253-1dc4-41d2-9e5b-2f35a683e7cb)
 </td></tr></table></html>
-<html><table frame=void style="margin-left: 50; margin-right: 50;"><tr><td>
-<!--左侧内容-->
 ### 三
-
+<html><table frame=void style="margin-left: auto; margin-right: auto;"><tr><td>
+<!--左侧内容-->
 client → server发送ACK包，作为服务端SYN包的响应：
 
 - ACK标志位置为1；
@@ -74,5 +73,36 @@ client → server发送ACK包，作为服务端SYN包的响应：
 </td><td>
 
 ![1423484-20230919222802441-1256757742](https://github.com/user-attachments/assets/ec100aa1-9799-4493-9bd4-5f92ee2d2951)
+
+</td></tr></table></html>
+
+## 断开
+
+MSL是Maximum Segment Lifetime，即报文的最大生存时间，它表示报文在网络中存在的最长时间。超过此时间，报文将被丢弃。因为TCP协议是基于IP协议的，IP头部有一个TTL字段，它表示数据报可以经过的最大路由数。每经过一个路由器，TTL值就减1。当TTL值为0时，数据报将被丢弃，并且发送ICMP报文通知源主机。
+
+<html><table frame=void style="margin-left: auto; margin-right: auto;"><tr><td>
+断开为什么要发4个包？
+
+四次挥手实际上就是把三次握手中的第二次握手的ack+syn拆开了。
+
+当客户端发送fin包时，服务端会回ack表示接收到了这个包，此时客户端就不会在发送数据了，但是不代表服务端没有数据需要发送，所以服务端不会立即送出fin包，而是等自己的包发完了才送出fin包。
+
+还是用视频通话举例：
+
+A：我没什么要说的了？（标识A的话已经说完了，后面没话要说了，但是这时候还不能挂电话，因为B可能还有话说）；
+
+B：好的（此时A确定B听到他说的了）
+
+B：（继续说话）
+
+B：我话说完了
+
+A：好的（此时B确定A听到他说的了）
+
+A&B：挂电话
+</td><td>
+![1423484-20230920232500420-2126674419](https://github.com/user-attachments/assets/fc05ff01-6a97-41bd-9985-02296dee7ba6)
+
+可以看到客户端在发出ACK以后还等了一个2MSL的时间才最终close，原因是害怕服务端发出的包还在传输中没有到，所以会等一个时间，这个时间是包能在网络上生存的最大时间。为什么是2MSL，是因为还要等ack包也到达。
 
 </td></tr></table></html>
