@@ -107,3 +107,111 @@ A&B：挂电话
 ![1423484-20230920232500420-2126674419](https://github.com/user-attachments/assets/8b142c7a-36de-431c-92ac-757e59bf5391)
 
 </td></tr></table></html>
+
+# 数据发送
+## MSS和段
+
+在建立完连接后就可以开始发送数据了，那么一个数据包能发送多少数据呢？
+
+我们把最大能发送的数据大小叫做：**最大消息长度**或者**最大段长度**（MSS：Maximum Segment Size），注意这里的长度指的是有效荷载，去掉所有标头的纯数据长度。
+
+最大段长度的取值和MTU有关系，MTU是网络层的指标在IP协议中详细讲解，当IP数据报的长度超过MTU就会被分片，所以最理想的情况是，最大消息长度正好是IP中不会被分片处理的最大数据长度。
+
+例如：
+
+MTU = 1500字节
+
+IP标头 = 20字节
+
+TCP表头 = 20字节
+
+那么MSS = 1500 - 20 - 20 = 1460字节
+
+段长度的确定是在连接建立的三次挥手中协商产生的，以两边更小的值为准。
+
+**总结来说：TCP以段为单位发送数据，段的长度就是MSS，MSS由通信双方协商产生，以其中较小的值为准，MSS的确定和MTU有关，正好是IP数据报不需要拆分的长度。**
+
+## 窗口控制和重发控制
+### 数据发送
+<html><table frame=void style="margin-left: auto; margin-right: auto;"><tr><td>
+TCP以1个段为单位，每发一个段进行一次确认应答的处理。这样的传输方式有一个缺点。那就是，包的往返时间越长通信性能就越低。
+
+为了解决这个问题，TCP引入了窗口的概率，实际上就是并发的发包，窗口控制逻辑就是用来控制并发的逻辑。
+</td><td>
+
+![Image00234](https://github.com/user-attachments/assets/02247b32-cbfb-4150-99d5-01e086719403)
+
+
+</td></tr></table></html>
+
+### 重发超时
+
+重发超时是指在重发数据之前，等待确认应答到来的那个特定时间间隔。如果超过了这个时间仍未收到确认应答，发送端将进行数据重发。
+
+TCP要求不论处在何种网络环境下都要提供高性能通信，并且无论网络拥堵情况发生何种变化，都必须保持这一特性。为此，它在每次发包时都会计算往返时间（Round Trip Time也叫RTT。是指报文段的往返时间。） 及其偏差（RTT时间波动的值、方差。有时也叫抖动。） 。将这个往返时间和偏差相加重发超时的时间，就是比这个总和要稍大一点的值。
+
+### 窗口
+
+<html><table frame=void style="margin-left: auto; margin-right: auto;"><tr><td>
+假如窗口大小是4000，那么客户端就会一次性发送4个段给服务端，这就相当于是单个段发送的4倍速了。
+
+但是实际操作中也不需要等待4个段的确认应答都收到了才能发送下一个段。TCP采用了**滑动窗口**的方式来处理这段逻辑。
+</td><td>
+
+![Image00235](https://github.com/user-attachments/assets/32d93c2e-1c98-4ec5-8e9d-d6cc40935faa)
+
+</td></tr></table></html>
+
+### 窗口控制
+
+<html><table frame=void style="margin-left: auto; margin-right: auto;"><tr><td>
+TCP采用了滑动窗口做窗口控制，
+
+收到确认应答的情况下，将窗口滑动到确认应答中的序列号的位置。这样可以顺序地将多个段同时发送提高通信性能。
+</td><td>
+
+![Image00236](https://github.com/user-attachments/assets/ddcd02af-a69b-4d46-bf9b-a26707ad376c)
+
+</td></tr></table></html>
+
+### 重发控制
+
+<html><table frame=void style="margin-left: auto; margin-right: auto;"><tr><td>
+正常来说，没有收到确认应答的包都应该重发，但是按照TCP顺序接收的特性，如右图的场景，序列号为1001的确认应答丢失了，但是2001的确认应答收到了，实际上间接的说明了第一个包是收到了的。
+
+所以这里实际上并不需要每一个确认应答都收到。
+</td><td>
+
+![Image00237](https://github.com/user-attachments/assets/67ab2e28-36e2-4434-9543-d229039e8e45)
+
+</td></tr></table></html>
+
+### 高速重发机制
+
+<html><table frame=void style="margin-left: auto; margin-right: auto;"><tr><td>
+一个反面的例子，如果1000~2001包未能成功发送，那么服务端就会一直响应1001确认应答，客户端就会知道
+
+1000~2001这个包丢了，需要重发。
+
+这个机制也叫做高速重发机制。
+</td><td>
+
+![Image00238](https://github.com/user-attachments/assets/68be6fae-8402-441d-8842-558e9ce4e697)
+
+</td></tr></table></html>
+
+## 流量控制
+
+<html><table frame=void style="margin-left: auto; margin-right: auto;"><tr><td>
+前面有说到窗口，那么窗口的大小是怎么来的呢？
+
+答案是服务端决定的，TCP表头有一个字段用于传递窗口大小，客户端要根据服务端返回的窗口大小来调整发送数据的评率；
+
+服务端的窗口最大主要和缓存的大小有关系，另外处理效率也会影响到窗口的恢复速度。
+
+通过这种机制，服务端就可以保证自己的缓存不会被打爆；
+</td><td>
+
+![Image00239](https://github.com/user-attachments/assets/5101e39f-1dc0-407b-b5a8-e3966caae626)
+
+</td></tr></table></html>
