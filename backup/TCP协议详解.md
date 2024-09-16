@@ -103,5 +103,7 @@ A&B：挂电话
 
 可以看到客户端在发出ACK以后还等了一个2MSL的时间才最终close，原因是害怕服务端发出的包还在传输中没有到，所以会等一个时间，这个时间是包能在网络上生存的最大时间。为什么是2MSL，是因为还要等ack包也到达。
 </td><td>
-![1423484-20230920232500420-2126674419](https://github.com/user-attachments/assets/fc05ff01-6a97-41bd-9985-02296dee7ba6)
+
+![1423484-20230920232500420-2126674419](https://github.com/user-attachments/assets/8b142c7a-36de-431c-92ac-757e59bf5391)
+
 </td></tr></table></html>
