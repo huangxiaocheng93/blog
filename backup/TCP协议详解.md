@@ -14,7 +14,11 @@ TCP通过检验和、序列号、确认应答、重发控制、连接管理以�
 
 ## 连接
 
-TCP建立连接需要三次握手，也就是发3个包才能建立连接。
+<html>
+    <table style="margin-left: auto; margin-right: auto;">
+        <tr>
+            <td>
+                TCP建立连接需要三次握手，也就是发3个包才能建立连接。
 
 为什么一定要三次握手，举个例子：
 开始一个视频通话：
@@ -26,6 +30,12 @@ B：可以听到，你能听到我的声音吗？（第二次握手，此时A确
 A：可以听到你的声音（现在B可以确定A能听到他的声音）；
 
 其他原因：避免历史重复连接；避免重复创建连接；同步双方的序列号；
-
-![image](https://github.com/user-attachments/assets/cf3d54fc-c461-4348-8ffe-f467ed7168f8)
+            </td>
+            <td>
+                <!--右侧内容-->
+               ![image](https://github.com/user-attachments/assets/cf3d54fc-c461-4348-8ffe-f467ed7168f8)
+            </td>
+        </tr>
+    </table>
+</html>
 

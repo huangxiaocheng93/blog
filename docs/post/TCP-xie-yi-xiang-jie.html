@@ -85,14 +85,25 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <h1>连接管理</h1>
 <p>要做到可靠的发送数据，第一步就是建立连接，在建立连接的过程中，通信两端就会做好发送和接收数据的准备。</p>
 <h2>连接</h2>
-<p>TCP建立连接需要三次握手，也就是发3个包才能建立连接。</p>
+
+    <br><br><br><markdown-accessiblity-table><table role="table">
+        <tbody><tr>
+            <td>
+                TCP建立连接需要三次握手，也就是发3个包才能建立连接。
 <p>为什么一定要三次握手，举个例子：<br>
 开始一个视频通话：</p>
 <p>A：你好，请问你能听到我的声音吗？（第一次握手）；</p>
 <p>B：可以听到，你能听到我的声音吗？（第二次握手，此时A确定B能听到他的声音，但是B不能确定A能听到他的声音）；</p>
 <p>A：可以听到你的声音（现在B可以确定A能听到他的声音）；</p>
-<p>其他原因：避免历史重复连接；避免重复创建连接；同步双方的序列号；</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/cf3d54fc-c461-4348-8ffe-f467ed7168f8"><img src="https://github.com/user-attachments/assets/cf3d54fc-c461-4348-8ffe-f467ed7168f8" alt="image" style="max-width: 100%;"></a></p></div>
+<p>其他原因：避免历史重复连接；避免重复创建连接；同步双方的序列号；<br>
+</p></td>
+<td><br>
+<br>
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/cf3d54fc-c461-4348-8ffe-f467ed7168f8"><img src="https://github.com/user-attachments/assets/cf3d54fc-c461-4348-8ffe-f467ed7168f8" alt="image" style="max-width: 100%;"></a><br>
+</td>
+</tr>
+</tbody></table></markdown-accessiblity-table><p></p>
+</div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
