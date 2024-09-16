@@ -100,9 +100,8 @@ B：我话说完了
 A：好的（此时B确定A听到他说的了）
 
 A&B：挂电话
-</td><td>
-![1423484-20230920232500420-2126674419](https://github.com/user-attachments/assets/fc05ff01-6a97-41bd-9985-02296dee7ba6)
 
 可以看到客户端在发出ACK以后还等了一个2MSL的时间才最终close，原因是害怕服务端发出的包还在传输中没有到，所以会等一个时间，这个时间是包能在网络上生存的最大时间。为什么是2MSL，是因为还要等ack包也到达。
-
+</td><td>
+![1423484-20230920232500420-2126674419](https://github.com/user-attachments/assets/fc05ff01-6a97-41bd-9985-02296dee7ba6)
 </td></tr></table></html>
