@@ -85,25 +85,63 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <h1>连接管理</h1>
 <p>要做到可靠的发送数据，第一步就是建立连接，在建立连接的过程中，通信两端就会做好发送和接收数据的准备。</p>
 <h2>连接</h2>
+<markdown-accessiblity-table><table frame="void" role="table"><tbody><tr><td>
 
-    <br><br><br><markdown-accessiblity-table><table role="table">
-        <tbody><tr>
-            <td>
-                TCP建立连接需要三次握手，也就是发3个包才能建立连接。
+ TCP建立连接需要三次握手，也就是发3个包才能建立连接。
 <p>为什么一定要三次握手，举个例子：<br>
 开始一个视频通话：</p>
 <p>A：你好，请问你能听到我的声音吗？（第一次握手）；</p>
 <p>B：可以听到，你能听到我的声音吗？（第二次握手，此时A确定B能听到他的声音，但是B不能确定A能听到他的声音）；</p>
 <p>A：可以听到你的声音（现在B可以确定A能听到他的声音）；</p>
-<p>其他原因：避免历史重复连接；避免重复创建连接；同步双方的序列号；<br>
-</p></td>
-<td><br>
-<br>
-<a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/cf3d54fc-c461-4348-8ffe-f467ed7168f8"><img src="https://github.com/user-attachments/assets/cf3d54fc-c461-4348-8ffe-f467ed7168f8" alt="image" style="max-width: 100%;"></a><br>
-</td>
-</tr>
-</tbody></table></markdown-accessiblity-table><p></p>
-</div>
+<p>其他原因：避免历史重复连接；避免重复创建连接；同步双方的序列号；</p>
+</td><td>
+
+ ![image](https://github.com/user-attachments/assets/cf3d54fc-c461-4348-8ffe-f467ed7168f8)
+</td></tr></tbody></table></markdown-accessiblity-table>
+<markdown-accessiblity-table><table frame="void" role="table"><tbody><tr><td>
+
+### 一
+<p>client → server发送SYN包：</p>
+<ul>
+<li>
+<p>SYN标志位置为1；</p>
+</li>
+<li>
+<p>生成序列号（Sequence Number）：序列号不会从0或1开始，而是在建立连接时由计算机生成的随机数作为其初始值，序列号是指发送数据的位置，每发送一次数据，就累加一次该数据字节数的大小。</p>
+</li>
+</ul>
+<p>这个包不携带待发送的业务层数据。</p>
+</td><td>
+
+![1423484-20230919222751995-69249474](https://github.com/user-attachments/assets/ab899b76-6d21-4e49-877b-4fd450544b90)
+</td></tr></tbody></table></markdown-accessiblity-table>
+<markdown-accessiblity-table><table frame="void" role="table"><tbody><tr><td>
+
+### 二
+<p>server → client发送ACK + SYN包：</p>
+<ul>
+<li>ACK和SYN标志都置为1；</li>
+<li>server生成自己的序列号；</li>
+<li>把client生成的序列号+1作为确认应答号，意思是把SYN包当作一个字节接收了；</li>
+</ul>
+<p>这个包不携带待发送的业务层数据。</p>
+</td><td>
+
+![1423484-20230919222756526-1163296370](https://github.com/user-attachments/assets/b3925253-1dc4-41d2-9e5b-2f35a683e7cb)
+</td></tr></tbody></table></markdown-accessiblity-table>
+<markdown-accessiblity-table><table frame="void" role="table"><tbody><tr><td>
+
+### 三
+<p>client → server发送ACK包，作为服务端SYN包的响应：</p>
+<ul>
+<li>ACK标志位置为1；</li>
+<li>把收到的服务端序列号+1作为确认应答号；</li>
+</ul>
+<p><strong>这个包可以携带业务数据。</strong></p>
+</td><td>
+
+![1423484-20230919222802441-1256757742](https://github.com/user-attachments/assets/37540054-97e4-409b-9229-aaf296edd26e)
+</td></tr></tbody></table></markdown-accessiblity-table></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
