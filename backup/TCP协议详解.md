@@ -28,7 +28,7 @@ A：可以听到你的声音（现在B可以确定A能听到他的声音）；
 
 其他原因：避免历史重复连接；避免重复创建连接；同步双方的序列号；
 </td><td>
-<!--右侧内容-->
+
  ![image](https://github.com/user-attachments/assets/cf3d54fc-c461-4348-8ffe-f467ed7168f8)
 </td></tr></table></html>
 <html><table frame=void style="margin-left: 50; margin-right: 50;"><tr><td>
@@ -43,7 +43,7 @@ client → server发送SYN包：
 
 这个包不携带待发送的业务层数据。
 </td><td>
-<!--右侧内容-->
+
 ![1423484-20230919222751995-69249474](https://github.com/user-attachments/assets/ab899b76-6d21-4e49-877b-4fd450544b90)
 </td></tr></table></html>
 <html><table frame=void style="margin-left: 50; margin-right: 50;"><tr><td>
@@ -58,7 +58,7 @@ server → client发送ACK + SYN包：
 
 这个包不携带待发送的业务层数据。
 </td><td>
-<!--右侧内容-->
+
 ![1423484-20230919222756526-1163296370](https://github.com/user-attachments/assets/b3925253-1dc4-41d2-9e5b-2f35a683e7cb)
 </td></tr></table></html>
 <html><table frame=void style="margin-left: 50; margin-right: 50;"><tr><td>
@@ -72,7 +72,7 @@ client → server发送ACK包，作为服务端SYN包的响应：
 
 **这个包可以携带业务数据。**
 </td><td>
-<!--右侧内容-->
+
 ![1423484-20230919222802441-1256757742](https://github.com/user-attachments/assets/ec100aa1-9799-4493-9bd4-5f92ee2d2951)
 
 </td></tr></table></html>
