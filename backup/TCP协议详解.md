@@ -31,7 +31,7 @@ A：可以听到你的声音（现在B可以确定A能听到他的声音）；
 <!--右侧内容-->
  ![image](https://github.com/user-attachments/assets/cf3d54fc-c461-4348-8ffe-f467ed7168f8)
 </td></tr></table></html>
-<html><table frame=void style="margin-left: auto; margin-right: auto;"><tr><td>
+<html><table frame=void style="margin-left: 50; margin-right: 50;"><tr><td>
 <!--左侧内容-->
 ### 一
 
@@ -46,7 +46,7 @@ client → server发送SYN包：
 <!--右侧内容-->
 ![1423484-20230919222751995-69249474](https://github.com/user-attachments/assets/ab899b76-6d21-4e49-877b-4fd450544b90)
 </td></tr></table></html>
-<html><table frame=void style="margin-left: auto; margin-right: auto;"><tr><td>
+<html><table frame=void style="margin-left: 50; margin-right: 50;"><tr><td>
 <!--左侧内容-->
 ### 二
 
@@ -61,7 +61,7 @@ server → client发送ACK + SYN包：
 <!--右侧内容-->
 ![1423484-20230919222756526-1163296370](https://github.com/user-attachments/assets/b3925253-1dc4-41d2-9e5b-2f35a683e7cb)
 </td></tr></table></html>
-<html><table frame=void style="margin-left: auto; margin-right: auto;"><tr><td>
+<html><table frame=void style="margin-left: 50; margin-right: 50;"><tr><td>
 <!--左侧内容-->
 ### 三
 
