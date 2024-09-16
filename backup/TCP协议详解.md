@@ -73,5 +73,6 @@ client → server发送ACK包，作为服务端SYN包的响应：
 **这个包可以携带业务数据。**
 </td><td>
 <!--右侧内容-->
-![1423484-20230919222802441-1256757742](https://github.com/user-attachments/assets/37540054-97e4-409b-9229-aaf296edd26e)
+![1423484-20230919222802441-1256757742](https://github.com/user-attachments/assets/ec100aa1-9799-4493-9bd4-5f92ee2d2951)
+
 </td></tr></table></html>
