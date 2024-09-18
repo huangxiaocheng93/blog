@@ -1,6 +1,6 @@
 # 准备
 
-在了解volatile关键字之前，必须先了解 #9 有关的知识，所以后续会默认在Java内存模型的基础上说明。
+在了解volatile关键字之前，必须先了解 [Java内存模型](https://huangxiaocheng93.github.io/blog/post/Java-nei-cun-mo-xing.html) 有关的知识，所以后续会默认在Java内存模型的基础上说明。
 
 当一个变量被volatile关键字修饰时，它将具备两项特性：
 
