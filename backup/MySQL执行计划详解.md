@@ -1,24 +1,18 @@
-<html>
-<body>
-<!--StartFragment-->
-Column | Meaning
--- | --
-id | The SELECT identifier
-select_type | The SELECT type
-table | The table foe the output row
-partitions | The matching partitions
-type | The join type
-possible_keys | The possible indexs to choose
-key | The index actually chosen
-key_len | The length of the chosen key
-ref | The columns compared to the index
-rows | Estimate of rows to be examined
-filtered | Percentage of rows filtered by table condition
-extra | Additional information
+| Column | Meaning |
+|--------|---------|
+| id | The SELECT identifier |
+| select_type | The SELECT type |
+| table | The table for the output row |
+| partitions | The matching partitions |
+| type | The join type |
+| possible_keys | The possible indexes to choose |
+| key | The index actually chosen |
+| key_len | The length of the chosen key |
+| ref | The columns compared to the index |
+| rows | Estimate of rows to be examined |
+| filtered | Percentage of rows filtered by table condition |
+| extra | Additional information |
 
-<!--EndFragment-->
-</body>
-</html>
 
 ## id
 

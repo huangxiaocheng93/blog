@@ -10,27 +10,21 @@
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
-<meta name="description" content="<html>
-<body>
-<!--StartFragment-->
-Column | Meaning
--- | --
-id | The SELECT identifier
-select_type | The SELECT type
-table | The table foe the output row
-partitions | The matching partitions
-type | The join type
-possible_keys | The possible indexs to choose
-key | The index actually chosen
-key_len | The length of the chosen key
-ref | The columns compared to the index
-rows | Estimate of rows to be examined
-filtered | Percentage of rows filtered by table condition
-extra | Additional information
+<meta name="description" content="| Column | Meaning |
+|--------|---------|
+| id | The SELECT identifier |
+| select_type | The SELECT type |
+| table | The table for the output row |
+| partitions | The matching partitions |
+| type | The join type |
+| possible_keys | The possible indexes to choose |
+| key | The index actually chosen |
+| key_len | The length of the chosen key |
+| ref | The columns compared to the index |
+| rows | Estimate of rows to be examined |
+| filtered | Percentage of rows filtered by table condition |
+| extra | Additional information |
 
-<!--EndFragment-->
-</body>
-</html>
 
 ## id
 
@@ -134,27 +128,21 @@ where语句结果是false
 - **distinct** 
 优化distinct操作，在找到第一匹配的元祖后即停止找同样值的动作。">
 <meta property="og:title" content="MySQL执行计划详解">
-<meta property="og:description" content="<html>
-<body>
-<!--StartFragment-->
-Column | Meaning
--- | --
-id | The SELECT identifier
-select_type | The SELECT type
-table | The table foe the output row
-partitions | The matching partitions
-type | The join type
-possible_keys | The possible indexs to choose
-key | The index actually chosen
-key_len | The length of the chosen key
-ref | The columns compared to the index
-rows | Estimate of rows to be examined
-filtered | Percentage of rows filtered by table condition
-extra | Additional information
+<meta property="og:description" content="| Column | Meaning |
+|--------|---------|
+| id | The SELECT identifier |
+| select_type | The SELECT type |
+| table | The table for the output row |
+| partitions | The matching partitions |
+| type | The join type |
+| possible_keys | The possible indexes to choose |
+| key | The index actually chosen |
+| key_len | The length of the chosen key |
+| ref | The columns compared to the index |
+| rows | Estimate of rows to be examined |
+| filtered | Percentage of rows filtered by table condition |
+| extra | Additional information |
 
-<!--EndFragment-->
-</body>
-</html>
 
 ## id
 
@@ -317,26 +305,64 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody">
-
-
-Column | Meaning
--- | --
-id | The SELECT identifier
-select_type | The SELECT type
-table | The table foe the output row
-partitions | The matching partitions
-type | The join type
-possible_keys | The possible indexs to choose
-key | The index actually chosen
-key_len | The length of the chosen key
-ref | The columns compared to the index
-rows | Estimate of rows to be examined
-filtered | Percentage of rows filtered by table condition
-extra | Additional information
-
-
-
+<div class="markdown-body" id="postBody"><markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>The SELECT identifier</td>
+</tr>
+<tr>
+<td>select_type</td>
+<td>The SELECT type</td>
+</tr>
+<tr>
+<td>table</td>
+<td>The table for the output row</td>
+</tr>
+<tr>
+<td>partitions</td>
+<td>The matching partitions</td>
+</tr>
+<tr>
+<td>type</td>
+<td>The join type</td>
+</tr>
+<tr>
+<td>possible_keys</td>
+<td>The possible indexes to choose</td>
+</tr>
+<tr>
+<td>key</td>
+<td>The index actually chosen</td>
+</tr>
+<tr>
+<td>key_len</td>
+<td>The length of the chosen key</td>
+</tr>
+<tr>
+<td>ref</td>
+<td>The columns compared to the index</td>
+</tr>
+<tr>
+<td>rows</td>
+<td>Estimate of rows to be examined</td>
+</tr>
+<tr>
+<td>filtered</td>
+<td>Percentage of rows filtered by table condition</td>
+</tr>
+<tr>
+<td>extra</td>
+<td>Additional information</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
 <h2>id</h2>
 <p>意为select查询的序列号，包含一组数字，表示查询中执行select字句或操作表的顺序</p>
 <ul>
