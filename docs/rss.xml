@@ -1,5 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Vincent的博客</title><link>https://huangxiaocheng93.github.io/blog</link><description>记录知识碎片</description><copyright>Vincent的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/33109308?s=400&amp;u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&amp;v=4</url><title>avatar</title><link>https://huangxiaocheng93.github.io/blog</link></image><lastBuildDate>Thu, 19 Sep 2024 03:40:08 +0000</lastBuildDate><managingEditor>Vincent的博客</managingEditor><ttl>60</ttl><webMaster>Vincent的博客</webMaster><item><title>CentOS 8无法安装snapd问题</title><link>https://huangxiaocheng93.github.io/blog/post/CentOS%208-wu-fa-an-zhuang-snapd-wen-ti.html</link><description>使用certbot安装证书时需要通过snapd来安装，centos8下安装snapd报错：&#13;
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Vincent的博客</title><link>https://huangxiaocheng93.github.io/blog</link><description>记录知识碎片</description><copyright>Vincent的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/33109308?s=400&amp;u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&amp;v=4</url><title>avatar</title><link>https://huangxiaocheng93.github.io/blog</link></image><lastBuildDate>Thu, 19 Sep 2024 03:48:44 +0000</lastBuildDate><managingEditor>Vincent的博客</managingEditor><ttl>60</ttl><webMaster>Vincent的博客</webMaster><item><title>Java HttpMediaTypeNotAcceptableException异常排查</title><link>https://huangxiaocheng93.github.io/blog/post/Java%20HttpMediaTypeNotAcceptableException-yi-chang-pai-cha.html</link><description># 背景&#13;
+&#13;
+今天收到一个线上告警，是一个没见过的报错：&#13;
+&#13;
+`org.springframework.web.HttpMediaTypeNotAcceptableException: Could not find acceptable representation`&#13;
+&#13;
+这个错误翻译过来叫：`无法找到可接受的代理`&#13;
+&#13;
+请求返回码是：`406`&#13;
+&#13;
+# 分析&#13;
+&#13;
+我们代码里面没有定义`406`这个返回码，所以可以推测这个错误码是spring或其他自检返回的。</description><guid isPermaLink="true">https://huangxiaocheng93.github.io/blog/post/Java%20HttpMediaTypeNotAcceptableException-yi-chang-pai-cha.html</guid><pubDate>Thu, 19 Sep 2024 03:48:14 +0000</pubDate></item><item><title>CentOS 8无法安装snapd问题</title><link>https://huangxiaocheng93.github.io/blog/post/CentOS%208-wu-fa-an-zhuang-snapd-wen-ti.html</link><description>使用certbot安装证书时需要通过snapd来安装，centos8下安装snapd报错：&#13;
 &#13;
 ```bash&#13;
 上次元数据过期检查：0:07:16 前，执行于 2023年07月03日 星期一 03时03分49秒。</description><guid isPermaLink="true">https://huangxiaocheng93.github.io/blog/post/CentOS%208-wu-fa-an-zhuang-snapd-wen-ti.html</guid><pubDate>Thu, 19 Sep 2024 03:39:48 +0000</pubDate></item><item><title>Werner Vogels：俭约架构师的七大黄金法则！</title><link>https://huangxiaocheng93.github.io/blog/post/Werner%20Vogels%EF%BC%9A-jian-yue-jia-gou-shi-de-qi-da-huang-jin-fa-ze-%EF%BC%81.html</link><description># **法则一**&#13;
