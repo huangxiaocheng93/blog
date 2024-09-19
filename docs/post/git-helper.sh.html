@@ -10,47 +10,9 @@
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
-<meta name="description" content="实现了分支的合并
-
-```bash
-#!/bin/bash
-operation=$1
-if [ $operation == 'push-to' ]; then
-	target_branch=$2
-	branch_name=`git symbolic-ref --short -q HEAD`
-	echo 'curr branch name is '$branch_name
-	git pull
-	git push
-	git checkout $target_branch
-	git pull
-	echo -e '\nmerge '$branch_name' to '$target_branch
-	log=`git merge $branch_name`
-	echo $log
-	git push
-	git checkout $branch_name
-fi
-```。">
+<meta name="description" content="日常工作中经常要合并分支，例如推送变更到开发或者测试分支。">
 <meta property="og:title" content="git-helper.sh">
-<meta property="og:description" content="实现了分支的合并
-
-```bash
-#!/bin/bash
-operation=$1
-if [ $operation == 'push-to' ]; then
-	target_branch=$2
-	branch_name=`git symbolic-ref --short -q HEAD`
-	echo 'curr branch name is '$branch_name
-	git pull
-	git push
-	git checkout $target_branch
-	git pull
-	echo -e '\nmerge '$branch_name' to '$target_branch
-	log=`git merge $branch_name`
-	echo $log
-	git push
-	git checkout $branch_name
-fi
-```。">
+<meta property="og:description" content="日常工作中经常要合并分支，例如推送变更到开发或者测试分支。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://huangxiaocheng93.github.io/blog/post/git-helper.sh.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
@@ -121,7 +83,18 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"><p>实现了分支的合并</p>
+<div class="markdown-body" id="postBody"><p>日常工作中经常要合并分支，例如推送变更到开发或者测试分支。以推送feature分支到test分支为例：</p>
+<ul>
+<li>推送feature分支到远程；</li>
+<li>切换到test分支，更新test分支；</li>
+<li>合并feature分支到当前（test）分支；</li>
+<li>推送test分支；</li>
+<li>切换回feature分支；<br>
+为了简化这个部分，所以弄了隔脚本，亲测macos下可用，其他平台未测试；<br>
+使用方法：<br>
+当前在feature分支：<br>
+git-help.sh push-to test</li>
+</ul>
 <div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#!</span>/bin/bash</span>
 operation=<span class="pl-smi">$1</span>
 <span class="pl-k">if</span> [ <span class="pl-smi">$operation</span> <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">"</span>push-to<span class="pl-pds">"</span></span> ]<span class="pl-k">;</span> <span class="pl-k">then</span>
