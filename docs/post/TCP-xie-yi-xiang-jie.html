@@ -140,8 +140,8 @@ client → server发送ACK包，作为服务端SYN包的响应：
 </td></tr></tbody></table></markdown-accessiblity-table>
 <h2>断开</h2>
 <p>MSL是Maximum Segment Lifetime，即报文的最大生存时间，它表示报文在网络中存在的最长时间。超过此时间，报文将被丢弃。因为TCP协议是基于IP协议的，IP头部有一个TTL字段，它表示数据报可以经过的最大路由数。每经过一个路由器，TTL值就减1。当TTL值为0时，数据报将被丢弃，并且发送ICMP报文通知源主机。</p>
-<p>`Gmeek-html</p><markdown-accessiblity-table><table frame="void" role="table"><tbody><tr><td><br>
-断开为什么要发4个包？<p></p>
+<markdown-accessiblity-table><table frame="void" role="table"><tbody><tr><td>
+断开为什么要发4个包？
 <p>四次挥手实际上就是把三次握手中的第二次握手的ack+syn拆开了。</p>
 <p>当客户端发送fin包时，服务端会回ack表示接收到了这个包，此时客户端就不会在发送数据了，但是不代表服务端没有数据需要发送，所以服务端不会立即送出fin包，而是等自己的包发完了才送出fin包。</p>
 <p>还是用视频通话举例：</p>
@@ -154,7 +154,7 @@ client → server发送ACK包，作为服务端SYN包的响应：
 </td><td>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/8b142c7a-36de-431c-92ac-757e59bf5391"><img src="https://github.com/user-attachments/assets/8b142c7a-36de-431c-92ac-757e59bf5391" alt="1423484-20230920232500420-2126674419" style="max-width: 100%;"></a></p>
 <p>可以看到客户端在发出ACK以后还等了一个2MSL的时间才最终close，原因是害怕服务端发出的包还在传输中没有到，所以会等一个时间，这个时间是包能在网络上生存的最大时间。为什么是2MSL，是因为还要等ack包也到达。</p>
-</td></tr></tbody></table></markdown-accessiblity-table>`
+</td></tr></tbody></table></markdown-accessiblity-table>
 <h1>数据发送</h1>
 <h2>MSS和段</h2>
 <p>在建立完连接后就可以开始发送数据了，那么一个数据包能发送多少数据呢？</p>
