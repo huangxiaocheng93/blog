@@ -80,7 +80,7 @@ client → server发送ACK包，作为服务端SYN包的响应：
 
 MSL是Maximum Segment Lifetime，即报文的最大生存时间，它表示报文在网络中存在的最长时间。超过此时间，报文将被丢弃。因为TCP协议是基于IP协议的，IP头部有一个TTL字段，它表示数据报可以经过的最大路由数。每经过一个路由器，TTL值就减1。当TTL值为0时，数据报将被丢弃，并且发送ICMP报文通知源主机。
 
-`Gmeek-html<html><table frame=void style="margin-left: 50; margin-right: 50;"><tr><td>
+`Gmeek-html<table frame=void style="margin-left: 50; margin-right: 50;"><tr><td>
 断开为什么要发4个包？
 
 四次挥手实际上就是把三次握手中的第二次握手的ack+syn拆开了。
@@ -107,7 +107,7 @@ A&B：挂电话
 
 可以看到客户端在发出ACK以后还等了一个2MSL的时间才最终close，原因是害怕服务端发出的包还在传输中没有到，所以会等一个时间，这个时间是包能在网络上生存的最大时间。为什么是2MSL，是因为还要等ack包也到达。
 
-</td></tr></table></html>`
+</td></tr></table>`
 
 # 数据发送
 ## MSS和段
