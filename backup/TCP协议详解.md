@@ -80,7 +80,7 @@ client → server发送ACK包，作为服务端SYN包的响应：
 
 MSL是Maximum Segment Lifetime，即报文的最大生存时间，它表示报文在网络中存在的最长时间。超过此时间，报文将被丢弃。因为TCP协议是基于IP协议的，IP头部有一个TTL字段，它表示数据报可以经过的最大路由数。每经过一个路由器，TTL值就减1。当TTL值为0时，数据报将被丢弃，并且发送ICMP报文通知源主机。
 
-<html><table frame=void style="margin-left: auto; margin-right: auto;"><tr><td>
+`Gmeek-html<html><table frame=void style="margin-left: 50; margin-right: 50;"><tr><td>
 断开为什么要发4个包？
 
 四次挥手实际上就是把三次握手中的第二次握手的ack+syn拆开了。
@@ -106,7 +106,7 @@ A&B：挂电话
 
 ![1423484-20230920232500420-2126674419](https://github.com/user-attachments/assets/8b142c7a-36de-431c-92ac-757e59bf5391)
 
-</td></tr></table></html>
+</td></tr></table></html>`
 
 # 数据发送
 ## MSS和段
@@ -129,7 +129,8 @@ TCP表头 = 20字节
 
 段长度的确定是在连接建立的三次挥手中协商产生的，以两边更小的值为准。
 
-**总结来说：TCP以段为单位发送数据，段的长度就是MSS，MSS由通信双方协商产生，以其中较小的值为准，MSS的确定和MTU有关，正好是IP数据报不需要拆分的长度。**
+> [!NOTE]
+> 总结来说：TCP以段为单位发送数据，段的长度就是MSS，MSS由通信双方协商产生，以其中较小的值为准，MSS的确定和MTU有关，正好是IP数据报不需要拆分的长度。
 
 ## 窗口控制和重发控制
 ### 数据发送
