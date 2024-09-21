@@ -1,13 +1,60 @@
-# 为什么会关注这个问题
+# 从一个线上问题说起
 
-## 背景
+某天收到一个日志告警，告警的大意是获取到的缓存不符合预期，缓存数据是放在Redis集群中的，看下读缓存的代码：
 
-线上有个场景使用了redis缓存，在使用这个缓存之前会首先判断这个缓存是否存在。但是线上的错误日志提示获取这个缓存时不存在，为什么已经提前判断了key是否存在还会出现取值的时候拿不到呢？
+```java
+public List query() {
 
-判断是否存在使用的是`stringRedisTemplate.hasKey`方法，后续通过补充日志确定了这个方法返回了true，但是get拿到的值是空的。
+        ......
+        
+        // 缓存key
+        String cacheKey = "test";
+        
+        // 判断缓存是否存在，如果不存在就重新加载缓存
+        if (!Boolean.TRUE.equals(stringRedisTemplate.hasKey(cacheKey))) {
+            return reload(businessId, pageIndex, defaultPageSize);
+        }
 
-## 问题的答案
+        // 获取缓存数据，缓存是hash结构
+        BoundHashOperations<String, String, Object> operations = stringRedisTemplate.boundHashOps(cacheKey);
+        log.info("查询列表, 缓存详情, values:{}", JsonUtil.toJson(operations.entries()));
+        
+        
+        ListCache listCache = JsonUtil.fromStr(
+                Optional.ofNullable(operations.get(pageIndex.toString())).map(Object::toString).orElse(null),
+                ListCache.class);
 
+        // 获取total和ttl，total和ttl是hash的两个key
+        Integer total = Optional.ofNullable(operations.get(CacheConstants.KEY_HASH_TOTAL))
+                .map(obj -> Integer.valueOf(obj.toString())).orElse(null);
+        Long ttl = Optional.ofNullable(operations.get(CacheConstants.LIST_KEY_HASH_TTL))
+                .map(obj -> Long.valueOf(obj.toString())).orElse(null);
+        log.info("查询列表, total:{}, ttl:{}, listCache:{}", total, ttl, JsonUtil.toJson(listCache));
+
+        // 非预期情况，走重新加载缓存的逻辑
+        if (total == null || ttl == null) {
+            // 就是这条日志导致的告警
+            log.error("查询列表, 从缓存获取到的total或ttl值为空, cacheKey:{}, total:{}, ttl:{}", cacheKey, total, ttl);
+            return reload(businessId, pageIndex, defaultPageSize);
+        }
+        ......
+    }
+```
+
+缓存是hash结构，所有的hash key都是同时加载进去的。获取缓存之前使用`stringRedisTemplate.hasKey`方法判断了缓存key是否存在，不存在会直接走缓存reload的方法，存在的话才会走读取缓存的方法。那为什么这行日志还会被打印呢？
+
+> [!NOTE]
+> 这里做的比较好的一点是：再次判断了total和ttl是否为空，为空的情况走了reload方法，所以虽然程序发生了非预期情况，但是返回结果仍然是对的。
+
+## 获取的一瞬间key过期了？
+告警的第一反应就是觉得是这个原因，但是查询日志以后立即就否定了，因为这行日志并不止出现了一次，天下哪有这么巧的事？
+
+## 分析一下
+
+所以这个问题就有两个可能性：
+1、缓存建立的逻辑有问题，可能存在一个空的key，导致读取到的hash key都是空的；
+2、`stringRedisTemplate.hasKey`判断key是否存在有问题；
+分析起来非常简单，加日志就可以，打印整个Redis key，排查问题1；输出`stringRedisTemplate.hasKey`的结果，同时获取key的ttl输出，排查问题2；结果是`stringRedisTemplate.hasKey`有问题。
 `stringRedisTemplate.hasKey` 底层使用的是Redis的`EXISTS` 命令，问题就出在这个命令上，问题的原因跟Redis的key过期策略和`EXISTS` 命令的实现有关系。
 
 # Redis的key过期策略
