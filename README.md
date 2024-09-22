@@ -1,4 +1,4 @@
-# Vincent的博客 :link: https://huangxiaocheng93.github.io/blog 
+# Vincent的技术博客 :link: https://huangxiaocheng93.github.io/blog 
 ### :page_facing_up: [17](https://huangxiaocheng93.github.io/blog/tag.html) 
 ### :speech_balloon: 0 
 ### :hibiscus: 52729 
