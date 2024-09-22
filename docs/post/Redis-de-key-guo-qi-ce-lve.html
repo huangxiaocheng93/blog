@@ -12,7 +12,7 @@
     </script>
 <meta name="description" content="# 从一个线上问题说起
 
-某天收到一个日志告警，告警的大意是获取到的缓存不符合预期，缓存数据是放在Redis集群中的，看下读缓存的代码：
+某天收到一个error日志告警，告警的代码如下（隐去了一些信息和无关的代码）：
 
 ```java
 public List query() {
@@ -53,11 +53,11 @@ public List query() {
     }
 ```
 
-缓存是hash结构，所有的hash key都是同时加载进去的。">
+代码的大致意思是在读取一个缓存，缓存是hash结构，所有的hash key都是同时加载进去的，如果缓存不存在，那么走reload方法重新加载缓存并返回，如果缓存存在会直接返回。">
 <meta property="og:title" content="Redis的key过期策略">
 <meta property="og:description" content="# 从一个线上问题说起
 
-某天收到一个日志告警，告警的大意是获取到的缓存不符合预期，缓存数据是放在Redis集群中的，看下读缓存的代码：
+某天收到一个error日志告警，告警的代码如下（隐去了一些信息和无关的代码）：
 
 ```java
 public List query() {
@@ -98,7 +98,7 @@ public List query() {
     }
 ```
 
-缓存是hash结构，所有的hash key都是同时加载进去的。">
+代码的大致意思是在读取一个缓存，缓存是hash结构，所有的hash key都是同时加载进去的，如果缓存不存在，那么走reload方法重新加载缓存并返回，如果缓存存在会直接返回。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://huangxiaocheng93.github.io/blog/post/Redis-de-key-guo-qi-ce-lve.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
@@ -139,7 +139,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     font-size: 12px;
 }
 </style>
-<style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-note {border-left-color:var(--borderColor-accent-emphasis, var(--color-accent-emphasis));background-color:var(--color-accent-subtle);}.markdown-alert.markdown-alert-note .markdown-alert-title {color: var(--fgColor-accent,var(--color-accent-fg));}</style>
+<style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-note {border-left-color:var(--borderColor-accent-emphasis, var(--color-accent-emphasis));background-color:var(--color-accent-subtle);}.markdown-alert.markdown-alert-note .markdown-alert-title {color: var(--fgColor-accent,var(--color-accent-fg));}</style><style>.markdown-alert.markdown-alert-important {border-left-color:var(--borderColor-done-emphasis, var(--color-done-emphasis));background-color:var(--color-done-subtle);}.markdown-alert.markdown-alert-important .markdown-alert-title {color: var(--fgColor-done,var(--color-done-fg));}</style>
 
 
 
@@ -170,7 +170,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
     <div id="content">
 <div class="markdown-body" id="postBody"><h1>从一个线上问题说起</h1>
-<p>某天收到一个日志告警，告警的大意是获取到的缓存不符合预期，缓存数据是放在Redis集群中的，看下读缓存的代码：</p>
+<p>某天收到一个error日志告警，告警的代码如下（隐去了一些信息和无关的代码）：</p>
 <div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">public</span> <span class="pl-smi">List</span> <span class="pl-s1">query</span>() {
 
         ......
@@ -207,7 +207,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
         }
         ......
     }</pre></div>
-<p>缓存是hash结构，所有的hash key都是同时加载进去的。获取缓存之前使用<code class="notranslate">stringRedisTemplate.hasKey</code>方法判断了缓存key是否存在，不存在会直接走缓存reload的方法，存在的话才会走读取缓存的方法。那为什么这行日志还会被打印呢？</p>
+<p>代码的大致意思是在读取一个缓存，缓存是hash结构，所有的hash key都是同时加载进去的，如果缓存不存在，那么走reload方法重新加载缓存并返回，如果缓存存在会直接返回。<br>
+那么问题来了，获取缓存已经判断了缓存key是否存在，不存在会直接走缓存reload的方法，存在的话才会走读取缓存的方法。那这行error日志为什么还会被打印呢？</p>
 <div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>这里做的比较好的一点是：再次判断了total和ttl是否为空，为空的情况走了reload方法，所以虽然程序发生了非预期情况，但是返回结果仍然是对的。</p>
 </div>
 <h2>获取的一瞬间key过期了？</h2>
@@ -217,9 +218,17 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 1、缓存建立的逻辑有问题，可能存在一个空的key，导致读取到的hash key都是空的；<br>
 2、<code class="notranslate">stringRedisTemplate.hasKey</code>判断key是否存在有问题；<br>
 分析起来非常简单，加日志就可以，打印整个Redis key，排查问题1；输出<code class="notranslate">stringRedisTemplate.hasKey</code>的结果，同时获取key的ttl输出，排查问题2；结果是<code class="notranslate">stringRedisTemplate.hasKey</code>有问题。<br>
-<code class="notranslate">stringRedisTemplate.hasKey</code> 底层使用的是Redis的<code class="notranslate">EXISTS</code> 命令，问题就出在这个命令上，问题的原因跟Redis的key过期策略和<code class="notranslate">EXISTS</code> 命令的实现有关系。</p>
-<h1>Redis的key过期策略</h1>
-<p>Redis的key过期策略主要时为了平衡key过期的效率和系统资源的占用（例如CPU资源和内存资源），如果不考虑资源占用的问题，肯定就是用个定时任务实时扫描来的更及时。</p>
+<strong><code class="notranslate">stringRedisTemplate.hasKey</code> 底层使用的是Redis的<code class="notranslate">EXISTS</code> 命令，问题就出在这个命令上，问题的原因跟Redis的key过期策略和<code class="notranslate">EXISTS</code> 命令的实现有关系。</strong></p>
+<h1>了解一下Redis的过期key清理策略</h1>
+<p>通常我们在把缓存数据写入Redis时都会设置一个过期时间，到时间后我们默认这个数据会被Redis清掉，那Redis是怎么清掉这个过期的key的呢？</p>
+<div class="markdown-alert markdown-alert-important"><p class="markdown-alert-title"><svg class="octicon octicon-report mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>Important</p><p>Redis里面不建议使用永不过期的key，因为后期想要处理这些key会变得非常麻烦，里面一些命令会导致key的过期时间丢失，变成永不过期的key，这一点也要非常注意。</p>
+</div>
+<p>思考一下，如果要我们来实现，无非就是两种方案：</p>
+<ol>
+<li>定时任务扫描，找到过期的key，然后删除，缺点是如果key的数量非常大，任务执行耗时就会非常长，长时间占用CPU资源；</li>
+<li>被动删除，也就是key被访问的时候发现过期了就删除，缺点假如key不再被访问，就删不掉了；</li>
+</ol>
+<p>所以综合考虑下来，Redis采用了结合两个方案的方式，主要是为了平衡删key的效率和系统资源的占用（例如CPU资源和内存资源），如果不考虑资源占用的问题，肯定就是用个定时任务实时扫描来的更及时。</p>
 <h2>惰性删除/被动删除</h2>
 <p>所谓惰性删除就是当一条Redis命令访问到某一个key时，会首先判断key是否已经过期，如果已经过期，那么就先删除，然后再执行命令的具体内容。</p>
 <p>过期键的惰性删除策略由<code class="notranslate">db.c/expireIfNeeded</code>函数实现，所有读写数据库的Redis命令在执行之前都会调用<code class="notranslate">expireIfNeeded</code>函数对输入键进行检查。</p>
@@ -227,18 +236,13 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>单纯依靠惰性删除显然无法满足需求，如果一个过期的key永远都不会再被访问，依靠惰性删除就无法完成这个key的清理，所以Redis还有一个定期清理的策略。</p>
 <p>过期键的定期删除策略由<code class="notranslate">redis.c/activeExpireCycle</code>函数实现，每当Redis的服务器周期性操作<code class="notranslate">redis.c/serverCron</code>函数执行时，<code class="notranslate">activeExpireCycle</code>函数就会被调用，它在规定的时间内，分多次遍历服务器中的各个数据库，从数据库的expires字典中随机检查一部分键的过期时间，并删除其中的过期键。</p>
 <h1>EXISTS命令的问题</h1>
-<p><code class="notranslate">EXISTS</code>命令的问题是他不会触发Redis的惰性删除，所以当一个key过期以后的较短的一个时间内，用<code class="notranslate">EXISTS</code> 命令来判断key是否存在就很有可能拿到key还存在的结果。</p>
+<p>通过上面的说明可以看出来，过期key的清理很大程度上依赖命令执行的时候检查一次，也就是<strong>惰性删除</strong>策略，好巧不巧<code class="notranslate">EXISTS</code>命令没有触发Redis的惰性删除，所以当一个key过期以后如果没有被其他命令访问过，用<code class="notranslate">EXISTS</code> 命令来判断key是否存在就很有可能拿到key还存在的结果。</p>
 <h1>问题的解决</h1>
-<p>这个Redis的一个bug，或者说一系列的bug，关于master-slave查询的问题：</p>
+<p>很明显这个Redis的一个bug，或者说一系列的bug，关于master-slave查询的问题：</p>
 <p>slave 查询过期 key，经历了 3 个阶段：</p>
-<ol>
-<li>3.2 以下版本，key 过期未被清理，无论哪个命令，查询 slave，均正常返回 value</li>
-<li>3.2 - 4.0.11 版本，查询数据返回 NULL，但 EXISTS 依旧返回 true</li>
-<li>4.0.11 以上版本，所有命令均已修复，过期 key 在 slave 上查询，均返回「不存在」</li>
-</ol>
-<p>但是问题并没有完全解决，主从key不一致的清空仍然有可能发生：<br>
-参考资料：<br>
-<a href="http://kaito-kidd.com/2021/03/14/redis-trap/" rel="nofollow">http://kaito-kidd.com/2021/03/14/redis-trap/</a></p></div>
+<p>3.2 以下版本 -&gt; key 过期未被清理，无论哪个命令，查询 slave，均正常返回 value<br>
+3.2 - 4.0.11 版本 -&gt; 查询数据返回 NULL，但 EXISTS 依旧返回 true<br>
+4.0.11 以上版本 -&gt; 所有命令均已修复，过期 key 在 slave 上查询，均返回「不存在」</p></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
