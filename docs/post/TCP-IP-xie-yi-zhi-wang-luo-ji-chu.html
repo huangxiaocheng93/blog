@@ -43,7 +43,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 }
 
 </style>
-
+<style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-tip {border-left-color:var(--borderColor-success-emphasis, var(--color-success-emphasis));background-color:var(--color-success-subtle);}.markdown-alert.markdown-alert-tip .markdown-alert-title {color: var(--fgColor-success,var(--color-success-fg));}</style>
 
 
 
@@ -81,12 +81,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/ab26e392-698c-4e6d-8abf-38d3c13b0dee"><img src="https://github.com/user-attachments/assets/ab26e392-698c-4e6d-8abf-38d3c13b0dee" alt="image" style="max-width: 100%;"></a></p>
 <p>这中间，数据转换所遵循的规则就是<strong>协议</strong>。所以发送端和接收端必须使用同一套转换规则才有可能正常的通信。</p>
 <p>举个比较通俗的例子来理解协议，人类所使用的语言就是一种协议，交流的双方（两端主机）如果都会说中文（中文协议）或者英文（英文协议），那么就可以沟通。如果说双方会的语言不一样，一方说英语，一方说中文（协议不通），那么显然是无法沟通的。</p>
-<blockquote>
-<p>[!TIP]</p>
-</blockquote>
-<blockquote>
-<p>所以这里就能看出协议标准化的重要性了。</p>
-</blockquote>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>所以这里就能看出协议标准化的重要性了。</p>
+</div>
 <h1>OSI七层网络模型</h1>
 <p>随着网络的发展，网络中的设备也是越来越多，也越来越复杂，协议也越来越多，所以ISO组织为网络做了分层，也就是<strong>OSI七层网络模型</strong>。分层的目的是为了解耦和职责分离，这和代码编码种的分层道理是一样的。</p>
 <p>上下层之间交互使用<strong>接口</strong>，这样就可以使得各层直接职责分离，不需要关注其他层的具体实现；同一层之间的交互使用的就是<strong>协议</strong>，OSI七层网络模型：</p>
@@ -102,13 +98,9 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li>OSI模型基于理论，分层多，会更复杂和繁琐，TCP/IP基于实践，分层更少，会更加简单和实用；</li>
 <li>OSI参考模型制定出来的时候TCP/IP已经事实占领了市场，所以TCP/IP说了算。</li>
 </ol>
-<blockquote>
-<p>[!TIP]</p>
-</blockquote>
-<blockquote>
-<p>但是话说回来，TCP/IP模型仍然是参考了OSI参考模型，在此基础上做了一些简化。<br>
-下面是TCP/IP模型和OSI模型的对比：</p>
-</blockquote>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>但是话说回来，TCP/IP模型仍然是参考了OSI参考模型，在此基础上做了一些简化。</p>
+</div>
+<p>下面是TCP/IP模型和OSI模型的对比：</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/aaa91c4d-68f7-40b6-8778-1be5eb49ae02"><img src="https://github.com/user-attachments/assets/aaa91c4d-68f7-40b6-8778-1be5eb49ae02" alt="Image00072" style="max-width: 100%;"></a></p>
 <p>可以看出来传输层及以下，OSI模型和TCP/IP模型是对其的，实际功能也基本是对其的，TCP/IP模型合并了OSI模型的应用层、表示层和会话层，统一成了应用层。</p>
 <p>在我个人看来，TCP/IP模型会更加合理，OSI模型中的这三层也是我个人认为最难理解，边界最模糊的部分。</p></div>
