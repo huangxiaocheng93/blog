@@ -135,6 +135,14 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 <h2>数据封装</h2>
 <p>在数据链路层，会把待发送的数据再包装一次，添加帧头和帧尾，变成一个<strong>数据帧</strong>，数据帧就是数据链路层最小的传输单位。以以太网为例，看看数据链路层的帧结构：</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/c919d88a-ef59-4d4b-b0ec-6a71908498da"><img src="https://github.com/user-attachments/assets/c919d88a-ef59-4d4b-b0ec-6a71908498da" alt="image" style="max-width: 100%;"></a></p>
+<p>绿色部分是待发送的数据，橙色部分是数据链路层附加的数据，一起组成数据帧。数据链路层添加的数据主要是如下几个部分：</p>
+<ul>
+<li>目标MAC地址和源MAC地址，用来识别数据帧的归属；</li>
+<li>Type记录上层协议的类型；</li>
+<li>Data是上层传递过来的待发送数据；</li>
+<li>FCS是校验和，用来校验Data有没有在传输中损坏；</li>
+</ul>
 <h3>MTU</h3>
 <p>在当前的以太网中，接入的设备种类非常非常多，例如：个人电脑、大型服务器、路由器、交换机、手机等等，传输介质也多种多样，例如：网线、光纤、电磁波等等。各种设备对数据的处理能力不一样，各种介质传输的速度也千差万别，而且以太网上参与者众多，大家都在发送和接收数据。</p>
 <p>// todo</p>
