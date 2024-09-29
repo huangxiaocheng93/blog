@@ -1,5 +1,3 @@
-[TCP/IP协议之网络基础](https://huangxiaocheng93.github.io/blog/post/TCP-IP-xie-yi-zhi-wang-luo-ji-chu.html)
-
 我们已经知道了TCP/IP协议簇把网络划分成了五层，但是TCP/IP并没有直接定义物理层和数据链路层，这两层对TCP/IP来说是透明的，接下来我们就来看看这两层分别在做什么。
 
 # 物理层
@@ -115,3 +113,6 @@ MAC地址的前半部分是厂商识别码，这个识别码由IEEE颁发，保�
 > 那么问题来了：通过交换机连接起来的主机，还在同一个数据链路中吗？
 
 只要还在数据链路的广播域内，就可以认为是同一个数据链路。如果我们不考虑网络层的影响，我们可以认为交换机连接的主机还是在同一个数据链路内的。
+
+关联：
+[TCP/IP协议系列之网络基础](https://huangxiaocheng93.github.io/blog/post/TCP-IP-xie-yi-zhi-wang-luo-ji-chu.html)
