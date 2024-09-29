@@ -10,13 +10,17 @@
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
-<meta name="description" content="Redis的持久化为什么要放在和主从同步一起写呢？因为这两者就是一件事。">
-<meta property="og:title" content="Redis持久化和主从同步">
-<meta property="og:description" content="Redis的持久化为什么要放在和主从同步一起写呢？因为这两者就是一件事。">
+<meta name="description" content="# **法则一**
+
+**将成本视为一种非功能性需求。">
+<meta property="og:title" content="Werner Vogels：俭约架构师的七大黄金法则！">
+<meta property="og:description" content="# **法则一**
+
+**将成本视为一种非功能性需求。">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://huangxiaocheng93.github.io/blog/post/Redis-chi-jiu-hua-he-zhu-cong-tong-bu.html">
+<meta property="og:url" content="https://huangxiaocheng93.github.io/blog/post/12.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
-<title>Redis持久化和主从同步</title>
+<title>Werner Vogels：俭约架构师的七大黄金法则！</title>
 
 
 
@@ -49,7 +53,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 
 <body>
     <div id="header">
-<h1 class="postTitle">Redis持久化和主从同步</h1>
+<h1 class="postTitle">Werner Vogels：俭约架构师的七大黄金法则！</h1>
 <div class="title-right">
     <a href="https://huangxiaocheng93.github.io/blog" id="buttonHome" class="btn btn-invisible circle" title="首页">
         <svg class="octicon" width="16" height="16">
@@ -57,7 +61,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
         </svg>
     </a>
     
-    <a href="https://github.com/huangxiaocheng93/blog/issues/7" target="_blank" class="btn btn-invisible circle" title="Issue">
+    <a href="https://github.com/huangxiaocheng93/blog/issues/12" target="_blank" class="btn btn-invisible circle" title="Issue">
         <svg class="octicon" width="16" height="16">
             <path id="pathIssue" fill-rule="evenodd"></path>
         </svg>
@@ -73,42 +77,43 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"><p>Redis的持久化为什么要放在和主从同步一起写呢？因为这两者就是一件事。</p>
-<h1>持久化</h1>
-<p>Redis的持久化有两种方式，一种是快照，也就是<strong>RDB</strong>（Redis DataBase），一种是<strong>AOF</strong>（Append Only File）日志。</p>
-<h2><strong>快照（RDB）</strong></h2>
-<p>快照是一次性的全量备份，将某一时刻的全量数据以二进制序列化的形式存储，在空间上非常紧凑，能大大缩小存储所用的空间。</p>
-<p>Redis通过fork操作产生一个子线程来完成快照持久化的操作（所以Redis的单线程只是网络请求是单线程处理）。这里利用了linux的COW（copy on write）机制，子进程和父进程共享内存数据，父进程如果修改数据会把对应的页copy出去。子进程并不会修改数据，所以保存的时候相当于保存了进程fork出来一瞬间的数据，所以这也是这种模式叫快照的原因。</p>
-<p>快照的优势是备份出来的文件比较小，和内存中的数据一样大；</p>
-<p>快照的劣势是需要额外的线程处理，并且耗时较长；</p>
-<h2>AOF日志</h2>
-<p>AOF日志是连续性的增量备份，记录的是修改内存数据的指令记录文本。这样就可以通过对一个空的Redis实例顺序执行记录的命令，也就是重放，来复原实例。Redis在收到修改指令后，会先进行校验，如果没问题，会首先把指令追加记录磁盘上的AOF日志中，然后再执行指令，这样即使突发宕机，重放时也能重放到这个指令。</p>
-<p>AOF的优势是不需要额外的操作，主线程执行的过程中就完成了；</p>
-<p>AOF的劣势是AOF文件会随时间膨胀，后续想要用这个AOF文件重放也越来越难；</p>
-<h3>AOF重写</h3>
-<p>上面说到AOF文件会随时间膨胀越来越大，所以需要瘦身，所以每隔一段时间就需要重写一次AOF文件。重写的原理是fork一个子进程，将当前内存的数据转换为指令写入新的AOF文件（是不是很像RDB），然后追加这段时间产生的新的AOF指令，最后替换旧的AOF文件。</p>
-<h3>fsync</h3>
-<p>上面讲到AOF文件是通过主进程追加的，如果每次都要把文件写到磁盘那么Redis的速度优势就不复存在了。但是如果是写道缓存，就没有办法保证AOF的安全性。</p>
-<p>Redis4.0的做法是通过专门的异步线程去出去fsync的事项。</p>
-<h2>Redis4.0的混合持久化</h2>
-<p>Redis重启时，很少使用RDB来恢复数据，因为会丢失最后一次快照之后的数据。但是使用AOF日志重放，效率上又会慢很多。因此Redis4.0提供了混合持久化的策略，就是RDB和AOF同时使用。RDB正常持久化，而AOF不在记录全量指令，而是记录每次RDB快照之后的增量AOF，这样Redis重启时就可以先加载RDB的内容，然后再重放AOF日志，效率大大提升。</p>
-<h1>主从同步</h1>
-<p>主从同步能够在master挂掉之后，让从节点接管，从而快速恢复。避免因重启所需要的时间较长而影响业务。</p>
-<h2><strong>最终一致</strong></h2>
-<p>Redis是AP系统，会保证最终一致性，不保证强一致性。</p>
-<h2><strong>快照同步</strong></h2>
-<p>主节点进行一次bgsave（就是做一次RDB）,然后将RDB文件传输给从节点，从节点清空内存，按照主节点传过来的RDB文件完成一次全量加载。此过程中，增量同步继续进行，从节点按照RDB重加载之后，就走增量同步路子进行追赶。但是如果快照同步时间过长或者buffer过小，就会导致从节点加载完RDB后发现又有覆盖情况了，继续执行快照同步，成了死循环。  因此需要合理设置buffer的大小避免这种情况发生。</p>
-<p>当一个新节点加入集群之后，必须先完成一次快照同步，完成之后才能继续走增量同步。</p>
-<h2><strong>增量同步</strong></h2>
-<p>主节点将修改性指令记录在本地的buffer中，然后异步同步给从节点，从节点读取buffer中的指令进行同步，并向主节点反馈同步到的位置（偏移量）。</p>
-<p>Redis的同步buffer是一个定长的环形数组，大小是有限的，如果数组满了就会覆盖前面的内容从头开始。如果出现网络分区，那么恢复后的buffer可能已经有指令被覆盖掉了，丛节点无法获得这些指令就会出现数据差异，此时就需要再次使用<strong>快照同步</strong>。</p>
-<h2>无盘复制</h2>
-<p>无盘复制是Redis 2.8.18开始支持的。主要原因是快照同步需要将RDB文件写入磁盘，这是一个很重的IO操作，对系统负载的影响比较大，对主节点的服务效率产生影响。无盘复制就是不再生成RDB文件，而是直接将快照内容发送给从节点，也就是主节点一边遍历内容，一边将序列化的内容发送给从节点，从节点将接收到的内容写到磁盘上，接收完毕后再一次性加载。 总的来说就是将磁盘写入的压力由主节点转移到了从节点上面。</p>
-<h2>wait指令</h2>
-<p>Redis是异步同步的，一致性也是保持的最终一致性。wait指令则是尝试完成一次强一致同步。有两个参数，第一个参数是从节点数量，第二个几点是最大等待时间，单位是ms：</p>
-<p><code class="notranslate">wait nodeNum waitTime</code>: 就是完成nodeNum个从节点的强一致同步，完成同步则结束阻塞，否则阻塞到最大等待时间waitTime，如果超过waitTime还没完成就不管了。如果waitTime设置为0，则表示无限等待，此时如果出现网络分区导致无法同步，主节点的就会一直阻塞，失去可用性。</p>
-<h2>CP还是AP？</h2>
-<p>Redis是典型的AP系统，主从不同步的情况下仍然可以正常提供服务。</p></div>
+<div class="markdown-body" id="postBody"><h1><strong>法则一</strong></h1>
+<p><strong>将成本视为一种非功能性需求。</strong></p>
+<p>所谓非功能性需求，就是用于判断系统操作的标准，与具体特性或功能无关。可访问性、可用性、可扩展性、安全性、可移植性、可维护性和合规性等都在此列。而成本往往是其中受到忽略的一条。</p>
+<p>业务之所以身陷困境，往往是因为他们没有考虑到各个阶段中的相应成本——从设计到开发、再到运营——也可能是未能正确量化成本。这背后的原理非常简单：如果成本比收入还高，那还做业务干嘛呢。</p>
+<p>更早、以更加可持续的方式考虑成本影响，架构师才能在系统设计过程中在功能、上市时间和效率之间寻求平衡。这样开发团队可以专注于维护更加精简高效的代码，运营部门可以优化资源用量和支出，从而最大限度提高盈利能力。</p>
+<h1><strong>法则二</strong></h1>
+<p><strong>确保系统的最终成本与业务保持一致。</strong></p>
+<p>系统能否长治久安，取决于其成本是否与业务模式高度匹配。在设计和构建系统时，架构师必须考虑收入来源和利润杠杆。更重要的是，必须找到能够产生利润的维度，确保架构规划始终围绕收益展开。</p>
+<p>例如，在电子商务领域，这个核心维度可能是订单数量。当订单增加时，基础设施和运营成本也会随之上升。但没关系，只要系统架构设计良好，我们就能享受规模经济带来的红利。最重要的是基础设施成本对业务的影响始终精确、可以量化。</p>
+<p>作为架构师，大家需要关注收入，并据此指导技术选型。任何不计代价的增长只会招致毁灭。</p>
+<h1><strong>法则三</strong></h1>
+<p><strong>架构设计是一系列权衡的集合。</strong></p>
+<p>在架构当中，每项决定都涉及相应的权衡。成本、弹性和性能这些非功能性需求之间，往往相互冲突、难以调和。</p>
+<p>常言道“万事万物终将陨落。”要想抵御这种失败的风险，就必须关注弹性，同时牺牲掉一部分性能。</p>
+<p>在技术与业务需求间找到适当的平衡将至关重要，也就是把握住风险承受能力与预算额度间的最佳比例。请记住，节俭是为了最大限度提升价值，而不只是尽可能控制支出。因此，在必须得花的钱上别吝啬。</p>
+<h1><strong>法则四</strong></h1>
+<p><strong>无法观察的系统将带来无法估量的成本。</strong></p>
+<p>如果不认真观察和测量，系统运营的真实成本将难以把控。就如同隐藏在地下室中的电表一样，这种直观性的缺失必然导致浪费。所以一定要把指标摆在明面上，这将深刻改变运营行为。</p>
+<p>尽管实现可观察性需要投入，但这笔钱绝对会物有所值。有句格言说“如果无法量化，也就无法管理。”请始终坚持对利用率、支出、错误等至关重要的成本管理指标保持关注。</p>
+<p>当工程师和业务合作伙伴能够随时查看关键成本指标时，自然就会催生出更具可持续性的实践策略。持续检查能帮我们发现非必要支出，并调整运营以减少浪费。总之，可观察性带来的回报往往远超过前期投入。</p>
+<p>最重要的是，这本身也是对成本的强调，能在企业中塑造出鼓励可持续性实践的文化。</p>
+<h1><strong>法则五</strong></h1>
+<p><strong>依托成本感知架构实现成本控制。</strong></p>
+<p>节俭架构的本质，在于强大监控与成本优化能力的结合。精心设计的系统能帮助大家抓住改进的机会。为此，请将应用程序拆分成一系列可以调节的构建块。</p>
+<p>一种常见的方法就是按重要性对组件进行分层。T1 层组件必不可少，应当不计成本进行优化；T2 层组件非常重要，但暂时缩小规模也不会产生重大影响；T3 层组件则属于“锦上添花”，要保证其成本低廉且易于控制。</p>
+<p>明确定义各层，即可在成本及其他要求之间求得平衡。对组件的精细控制则能优化成本和体验。基础设施、语言、数据库都应具备可调节性，并在系统的设计和构建阶段考虑收入和利润。总之，成本优化必须可量化，且与业务影响直接挂钩。</p>
+<h1><strong>法则六</strong></h1>
+<p><strong>成本优化是个渐进的过程。</strong></p>
+<p>追求成本效率是个持续的过程。即使在部署之后，我们也必须随时审视系统以逐步寻求优化。其中的关键在于不断提问、深入研究。编程语言往往提供分析工具以追踪代码性能，虽然这需要额外的精力和专业知识，但精细的调优足以带来几毫秒的差异。而这种看似微小的优化，累积起来足以产生超出想象的成本优势。</p>
+<p>在运营中，大部分时间都被用于运行现有系统。所以请把握一切机会，分析资源使用情况并减少浪费。在亚马逊，我们持续监控生产中的服务，发现运营模式并消除低效因素。节俭是坚持的结果——通过逐步降低延迟和基础设施成本，服务成本才能最终得到优化。</p>
+<p>只要不懈努力，我们总能找到改进空间。而今天省下的资源，就是明天创新的燃料。</p>
+<h1><strong>法则七</strong></h1>
+<p><strong>顺风局打多了会让人盲目自信。</strong></p>
+<p>如果软件团队在取得重大成功的过程中，从未经历过任何严重失败或者阻碍，则往往会出现自满情绪。这是一种危险的倾向，会导致团队成员对原本的方法、工具和实践变得盲目信息。</p>
+<p>软件团队经常陷入这样的陷阱：仅凭以往的工作经验，他们就认为当前的技术、架构或语言永远是最佳选择。这可能会产生一种错误的安全感，阻碍对现状的质疑，更会打击对可能更加高效、更具成本效益或可扩展性更强的新选项的探索。</p>
+<p>说到编程语言，人们往往会说“我们是一家 Java 公司”。这话大有问题，其底层逻辑无疑是在扼杀创新。唾手可得的成功会滋生自满情绪，而只有质疑才能不断激发新的优化与改进思路。</p>
+<p>Grace Hopper 的名言，准确反映了这一值得高度警惕的陷阱：“我们一直都是这样做的。”</p></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>

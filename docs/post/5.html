@@ -10,13 +10,343 @@
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
-<meta name="description" content="日常工作中经常要合并分支，例如推送变更到开发或者测试分支。">
-<meta property="og:title" content="git-helper.sh">
-<meta property="og:description" content="日常工作中经常要合并分支，例如推送变更到开发或者测试分支。">
+<meta name="description" content="# 命令整合
+
+## 安装
+
+```bash
+yum -y install firewalld
+systemctl start firewalld
+systemctl enable firewalld
+
+```
+
+## 开放80和443端口
+
+```bash
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+firewall-cmd --zone=public --add-port=80/udp --permanent
+firewall-cmd --zone=public --add-port=443/tcp --permanent
+firewall-cmd --zone=public --add-port=443/udp --permanent
+firewall-cmd --reload
+
+```
+
+# 安装firewalld
+
+```bash
+yum -y install firewalld
+```
+
+# 常用命令
+
+## 启动
+
+```bash
+systemctl start firewalld
+```
+
+## 关闭
+
+```bash
+systemctl stop firewalld
+```
+
+## 查看状态
+
+```bash
+systemctl status firewalld
+```
+
+## 开机启动
+
+```
+systemctl enable firewalld
+```
+
+## 开机禁用
+
+```
+systemctl disable firewalld
+```
+
+## 安装并配置开启启动
+
+```bash
+yum -y install firewalld
+systemctl start firewalld
+systemctl enable firewalld
+
+```
+
+# 配置firewalld-cmd
+
+查看版本
+
+```bash
+firewall-cmd --version
+```
+
+查看帮助
+
+```bash
+firewall-cmd --help
+```
+
+显示状态
+
+```bash
+firewall-cmd --state
+```
+
+查看所有打开的端口
+
+```bash
+firewall-cmd --zone=public --list-ports
+```
+
+更新防火墙规则
+
+```bash
+firewall-cmd --reload
+```
+
+查看区域信息
+
+```bash
+firewall-cmd --get-active-zones
+```
+
+查看指定接口所属区域
+
+```bash
+firewall-cmd --get-zone-of-interface=eth0
+```
+
+拒绝所有包
+
+```bash
+firewall-cmd --panic-on
+```
+
+取消拒绝状态
+
+```bash
+firewall-cmd --panic-off
+```
+
+查看是否拒绝
+
+```bash
+firewall-cmd --query-panic
+```
+
+## 开启一个端口
+
+### 添加
+
+```bash
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+```
+
+（--permanent永久生效，没有此参数重启后失效）
+
+### 重新载入
+
+开启或者关闭了端口后需要reload才能生效
+
+```bash
+firewall-cmd --reload
+```
+
+### 查看
+
+yes即为开启
+
+```bash
+firewall-cmd --zone=public --query-port=80/tcp
+```
+
+### 删除
+
+```bash
+firewall-cmd --zone=public --remove-port=80/tcp --permanent
+```
+
+### 备注
+
+systemctl是CentOS7的服务管理工具中主要的工具，它融合之前service和chkconfig的功能于一体。">
+<meta property="og:title" content="CentOS防火墙管理">
+<meta property="og:description" content="# 命令整合
+
+## 安装
+
+```bash
+yum -y install firewalld
+systemctl start firewalld
+systemctl enable firewalld
+
+```
+
+## 开放80和443端口
+
+```bash
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+firewall-cmd --zone=public --add-port=80/udp --permanent
+firewall-cmd --zone=public --add-port=443/tcp --permanent
+firewall-cmd --zone=public --add-port=443/udp --permanent
+firewall-cmd --reload
+
+```
+
+# 安装firewalld
+
+```bash
+yum -y install firewalld
+```
+
+# 常用命令
+
+## 启动
+
+```bash
+systemctl start firewalld
+```
+
+## 关闭
+
+```bash
+systemctl stop firewalld
+```
+
+## 查看状态
+
+```bash
+systemctl status firewalld
+```
+
+## 开机启动
+
+```
+systemctl enable firewalld
+```
+
+## 开机禁用
+
+```
+systemctl disable firewalld
+```
+
+## 安装并配置开启启动
+
+```bash
+yum -y install firewalld
+systemctl start firewalld
+systemctl enable firewalld
+
+```
+
+# 配置firewalld-cmd
+
+查看版本
+
+```bash
+firewall-cmd --version
+```
+
+查看帮助
+
+```bash
+firewall-cmd --help
+```
+
+显示状态
+
+```bash
+firewall-cmd --state
+```
+
+查看所有打开的端口
+
+```bash
+firewall-cmd --zone=public --list-ports
+```
+
+更新防火墙规则
+
+```bash
+firewall-cmd --reload
+```
+
+查看区域信息
+
+```bash
+firewall-cmd --get-active-zones
+```
+
+查看指定接口所属区域
+
+```bash
+firewall-cmd --get-zone-of-interface=eth0
+```
+
+拒绝所有包
+
+```bash
+firewall-cmd --panic-on
+```
+
+取消拒绝状态
+
+```bash
+firewall-cmd --panic-off
+```
+
+查看是否拒绝
+
+```bash
+firewall-cmd --query-panic
+```
+
+## 开启一个端口
+
+### 添加
+
+```bash
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+```
+
+（--permanent永久生效，没有此参数重启后失效）
+
+### 重新载入
+
+开启或者关闭了端口后需要reload才能生效
+
+```bash
+firewall-cmd --reload
+```
+
+### 查看
+
+yes即为开启
+
+```bash
+firewall-cmd --zone=public --query-port=80/tcp
+```
+
+### 删除
+
+```bash
+firewall-cmd --zone=public --remove-port=80/tcp --permanent
+```
+
+### 备注
+
+systemctl是CentOS7的服务管理工具中主要的工具，它融合之前service和chkconfig的功能于一体。">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://huangxiaocheng93.github.io/blog/post/git-helper.sh.html">
+<meta property="og:url" content="https://huangxiaocheng93.github.io/blog/post/5.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
-<title>git-helper.sh</title>
+<title>CentOS防火墙管理</title>
 <link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
 
 
@@ -59,7 +389,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 
 <body>
     <div id="header">
-<h1 class="postTitle">git-helper.sh</h1>
+<h1 class="postTitle">CentOS防火墙管理</h1>
 <div class="title-right">
     <a href="https://huangxiaocheng93.github.io/blog" id="buttonHome" class="btn btn-invisible circle" title="首页">
         <svg class="octicon" width="16" height="16">
@@ -67,7 +397,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
         </svg>
     </a>
     
-    <a href="https://github.com/huangxiaocheng93/blog/issues/15" target="_blank" class="btn btn-invisible circle" title="Issue">
+    <a href="https://github.com/huangxiaocheng93/blog/issues/5" target="_blank" class="btn btn-invisible circle" title="Issue">
         <svg class="octicon" width="16" height="16">
             <path id="pathIssue" fill-rule="evenodd"></path>
         </svg>
@@ -83,34 +413,92 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"><p>日常工作中经常要合并分支，例如推送变更到开发或者测试分支。以推送feature分支到test分支为例：</p>
-<ul>
-<li>推送feature分支到远程；</li>
-<li>切换到test分支，更新test分支；</li>
-<li>合并feature分支到当前（test）分支；</li>
-<li>推送test分支；</li>
-<li>切换回feature分支；<br>
-为了简化这个部分，所以弄了隔脚本，亲测macos下可用，其他平台未测试；<br>
-使用方法：<br>
-当前在feature分支：<br>
-git-help.sh push-to test</li>
-</ul>
-<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#!</span>/bin/bash</span>
-operation=<span class="pl-smi">$1</span>
-<span class="pl-k">if</span> [ <span class="pl-smi">$operation</span> <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">"</span>push-to<span class="pl-pds">"</span></span> ]<span class="pl-k">;</span> <span class="pl-k">then</span>
-	target_branch=<span class="pl-smi">$2</span>
-	branch_name=<span class="pl-s"><span class="pl-pds">`</span>git symbolic-ref --short -q HEAD<span class="pl-pds">`</span></span>
-	<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>curr branch name is <span class="pl-pds">"</span></span><span class="pl-smi">$branch_name</span>
-	git pull
-	git push
-	git checkout <span class="pl-smi">$target_branch</span>
-	git pull
-	<span class="pl-c1">echo</span> -e <span class="pl-s"><span class="pl-pds">"</span>\nmerge <span class="pl-pds">"</span></span><span class="pl-smi">$branch_name</span><span class="pl-s"><span class="pl-pds">"</span> to <span class="pl-pds">"</span></span><span class="pl-smi">$target_branch</span>
-	log=<span class="pl-s"><span class="pl-pds">`</span>git merge <span class="pl-smi">$branch_name</span><span class="pl-pds">`</span></span>
-	<span class="pl-c1">echo</span> <span class="pl-smi">$log</span>
-	git push
-	git checkout <span class="pl-smi">$branch_name</span>
-<span class="pl-k">fi</span></pre></div></div>
+<div class="markdown-body" id="postBody"><h1>命令整合</h1>
+<h2>安装</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">yum -y install firewalld
+systemctl start firewalld
+systemctl <span class="pl-c1">enable</span> firewalld
+</pre></div>
+<h2>开放80和443端口</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">firewall-cmd --zone=public --add-port=80/tcp --permanent
+firewall-cmd --zone=public --add-port=80/udp --permanent
+firewall-cmd --zone=public --add-port=443/tcp --permanent
+firewall-cmd --zone=public --add-port=443/udp --permanent
+firewall-cmd --reload
+</pre></div>
+<h1>安装firewalld</h1>
+<div class="highlight highlight-source-shell"><pre class="notranslate">yum -y install firewalld</pre></div>
+<h1>常用命令</h1>
+<h2>启动</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">systemctl start firewalld</pre></div>
+<h2>关闭</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">systemctl stop firewalld</pre></div>
+<h2>查看状态</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">systemctl status firewalld</pre></div>
+<h2>开机启动</h2>
+<pre class="notranslate"><code class="notranslate">systemctl enable firewalld
+</code></pre>
+<h2>开机禁用</h2>
+<pre class="notranslate"><code class="notranslate">systemctl disable firewalld
+</code></pre>
+<h2>安装并配置开启启动</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">yum -y install firewalld
+systemctl start firewalld
+systemctl <span class="pl-c1">enable</span> firewalld
+</pre></div>
+<h1>配置firewalld-cmd</h1>
+<p>查看版本</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">firewall-cmd --version</pre></div>
+<p>查看帮助</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">firewall-cmd --help</pre></div>
+<p>显示状态</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">firewall-cmd --state</pre></div>
+<p>查看所有打开的端口</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">firewall-cmd --zone=public --list-ports</pre></div>
+<p>更新防火墙规则</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">firewall-cmd --reload</pre></div>
+<p>查看区域信息</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">firewall-cmd --get-active-zones</pre></div>
+<p>查看指定接口所属区域</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">firewall-cmd --get-zone-of-interface=eth0</pre></div>
+<p>拒绝所有包</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">firewall-cmd --panic-on</pre></div>
+<p>取消拒绝状态</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">firewall-cmd --panic-off</pre></div>
+<p>查看是否拒绝</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">firewall-cmd --query-panic</pre></div>
+<h2>开启一个端口</h2>
+<h3>添加</h3>
+<div class="highlight highlight-source-shell"><pre class="notranslate">firewall-cmd --zone=public --add-port=80/tcp --permanent</pre></div>
+<p>（--permanent永久生效，没有此参数重启后失效）</p>
+<h3>重新载入</h3>
+<p>开启或者关闭了端口后需要reload才能生效</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">firewall-cmd --reload</pre></div>
+<h3>查看</h3>
+<p>yes即为开启</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">firewall-cmd --zone=public --query-port=80/tcp</pre></div>
+<h3>删除</h3>
+<div class="highlight highlight-source-shell"><pre class="notranslate">firewall-cmd --zone=public --remove-port=80/tcp --permanent</pre></div>
+<h3>备注</h3>
+<p>systemctl是CentOS7的服务管理工具中主要的工具，它融合之前service和chkconfig的功能于一体。<br>
+启动服务</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">systemctl start firewalld.service</pre></div>
+<p>关闭服务</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">systemctl stop firewalld.service</pre></div>
+<p>重启服务</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">systemctl restart firewalld.service</pre></div>
+<p>显示服务的状态</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">systemctl status firewalld.service</pre></div>
+<p>在开机时启用服务</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">systemctl <span class="pl-c1">enable</span> firewalld.service</pre></div>
+<p>在开机时禁用服务</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">systemctl disable firewalld.service</pre></div>
+<p>查看服务是否开机启动</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">systemctl is-enabled firewalld.service</pre></div>
+<p>查看已启动的服务列表</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">systemctl list-unit-files<span class="pl-k">|</span>grep enabled</pre></div>
+<p>查看启动失败的服务列表</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">systemctl --failed</pre></div></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>

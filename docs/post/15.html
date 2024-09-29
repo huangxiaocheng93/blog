@@ -10,14 +10,14 @@
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
-<meta name="description" content="Redis的内存淘汰策略分为两个方向，**不进行数据淘汰**和**进行数据淘汰**。">
-<meta property="og:title" content="Redis的内存淘汰策略">
-<meta property="og:description" content="Redis的内存淘汰策略分为两个方向，**不进行数据淘汰**和**进行数据淘汰**。">
+<meta name="description" content="日常工作中经常要合并分支，例如推送变更到开发或者测试分支。">
+<meta property="og:title" content="git-helper.sh">
+<meta property="og:description" content="日常工作中经常要合并分支，例如推送变更到开发或者测试分支。">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://huangxiaocheng93.github.io/blog/post/Redis-de-nei-cun-tao-tai-ce-lve.html">
+<meta property="og:url" content="https://huangxiaocheng93.github.io/blog/post/15.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
-<title>Redis的内存淘汰策略</title>
-
+<title>git-helper.sh</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
 
 
 </head>
@@ -59,7 +59,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 
 <body>
     <div id="header">
-<h1 class="postTitle">Redis的内存淘汰策略</h1>
+<h1 class="postTitle">git-helper.sh</h1>
 <div class="title-right">
     <a href="https://huangxiaocheng93.github.io/blog" id="buttonHome" class="btn btn-invisible circle" title="首页">
         <svg class="octicon" width="16" height="16">
@@ -67,7 +67,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
         </svg>
     </a>
     
-    <a href="https://github.com/huangxiaocheng93/blog/issues/16" target="_blank" class="btn btn-invisible circle" title="Issue">
+    <a href="https://github.com/huangxiaocheng93/blog/issues/15" target="_blank" class="btn btn-invisible circle" title="Issue">
         <svg class="octicon" width="16" height="16">
             <path id="pathIssue" fill-rule="evenodd"></path>
         </svg>
@@ -83,83 +83,34 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"><p>Redis的内存淘汰策略分为两个方向，<strong>不进行数据淘汰</strong>和<strong>进行数据淘汰</strong>。</p>
-<h2>不进行数据淘汰</h2>
-<p><strong>noeviction</strong>（Redis3.0之后，默认的内存淘汰策略）</p>
-<p>很好理解，无论如何都不做数据淘汰，如果运行内存达到设置的最大内存时，写入操作直接报错，查询和删除等操作不受影响。</p>
-<h2>进行数据淘汰</h2>
-<p>进行数据讨论的策略又分为两大类：在<strong>所有数据范围内进行淘汰</strong>和<strong>在设置了过期时间的数据中进行淘汰</strong>。</p>
-<h3>所有数据范围内进行淘汰</h3>
+<div class="markdown-body" id="postBody"><p>日常工作中经常要合并分支，例如推送变更到开发或者测试分支。以推送feature分支到test分支为例：</p>
 <ul>
-<li><strong>allkeys-random</strong>：随机淘汰任意键值;</li>
-<li><strong>allkeys-lru</strong>：淘汰整个键值中最久未使用的键值；</li>
-<li><strong>allkeys-lfu</strong>（Redis 4.0 后新增的内存淘汰策略）：淘汰整个键值中最少使用的键值。</li>
+<li>推送feature分支到远程；</li>
+<li>切换到test分支，更新test分支；</li>
+<li>合并feature分支到当前（test）分支；</li>
+<li>推送test分支；</li>
+<li>切换回feature分支；<br>
+为了简化这个部分，所以弄了隔脚本，亲测macos下可用，其他平台未测试；<br>
+使用方法：<br>
+当前在feature分支：<br>
+git-help.sh push-to test</li>
 </ul>
-<h3>在设置了过期时间的数据中进行淘汰</h3>
-<ul>
-<li><strong>volatile-random</strong>：随机淘汰设置了过期时间的任意键值；</li>
-<li><strong>volatile-ttl</strong>：优先淘汰更早过期的键值。</li>
-<li><strong>volatile-lru</strong>：（Redis3.0 之前，默认的内存淘汰策略）：淘汰所有设置了过期时间的键值中，最久未使用的键值；</li>
-<li><strong>volatile-lfu</strong>：（Redis 4.0 后新增的内存淘汰策略）：淘汰所有设置了过期时间的键值中，最少使用的键值；</li>
-</ul>
-<h2>内存淘汰算法</h2>
-<h3>LRU</h3>
-<p><strong>LRU</strong> 全称是 Least Recently Used 翻译为<strong>最近最少使用</strong>，会选择淘汰最近最少使用的数据。</p>
-<p>传统 LRU 算法的实现是基于「链表」结构，链表中的元素按照操作顺序从前往后排列，最新操作的键会被移动到表头，当需要内存淘汰时，只需要删除链表尾部的元素即可，因为链表尾部的元素就代表最久未被使用的元素。</p>
-<p>Redis 并没有使用这样的方式实现 LRU 算法，因为传统的 LRU 算法存在两个问题：</p>
-<ul>
-<li>需要用链表管理所有的缓存数据，这会带来额外的空间开销；</li>
-<li>当有数据被访问时，需要在链表上把该数据移动到头端，如果有大量数据被访问，就会带来很多链表移动操作，会很耗时，进而会降低 Redis 缓存性能。</li>
-</ul>
-<blockquote>
-<p>Redis 是如何实现 LRU 算法的？</p>
-</blockquote>
-<p>Redis 实现的是一种<strong>近似 LRU 算法</strong>，目的是为了更好的节约内存，它的<strong>实现方式是在 Redis 的对象结构体中添加一个额外的字段，用于记录此数据的最后一次访问时间</strong>。</p>
-<p>当 Redis 进行内存淘汰时，会使用<strong>随机采样的方式来淘汰数据</strong>，它是随机取 5 个值（此值可配置），然后<strong>淘汰最久没有使用的那个</strong>。</p>
-<p>Redis 实现的 LRU 算法的优点：</p>
-<ul>
-<li>不用为所有的数据维护一个大链表，节省了空间占用；</li>
-<li>不用在每次数据访问时都移动链表项，提升了缓存的性能；</li>
-</ul>
-<p>但是 LRU 算法有一个问题，<strong>无法解决缓存污染问题</strong>，比如应用一次读取了大量的数据，而这些数据只会被读取这一次，那么这些数据会留存在 Redis 缓存中很长一段时间，造成缓存污染。</p>
-<p>因此，在 Redis 4.0 之后引入了 LFU 算法来解决这个问题。</p>
-<h3>LFU</h3>
-<p>LFU 全称是 Least Frequently Used 翻译为<strong>最近最不常用</strong>，LFU 算法是根据数据访问次数来淘汰数据的，它的核心思想是“如果数据过去被访问多次，那么将来被访问的频率也更高”。</p>
-<p>所以， LFU 算法会记录每个数据的访问次数。当一个数据被再次访问时，就会增加该数据的访问次数。这样就解决了偶尔被访问一次之后，数据留存在缓存中很长一段时间的问题，相比于 LRU 算法也更合理一些。</p>
-<blockquote>
-<p>Redis 是如何实现 LFU 算法的？</p>
-</blockquote>
-<p>LFU 算法相比于 LRU 算法的实现，多记录了「数据的访问频次」的信息。Redis 对象的结构如下：</p>
-<pre class="notranslate"><code class="notranslate">typedef struct redisObject {
-    ...
-
-    // 24 bits，用于记录对象的访问信息
-    unsigned lru:24;
-    ...
-} robj;
-
-</code></pre>
-<p>Redis 对象头中的 lru 字段，在 LRU 算法下和 LFU 算法下使用方式并不相同。</p>
-<p><strong>在 LRU 算法中</strong>，Redis 对象头的 24 bits 的 lru 字段是用来记录 key 的访问时间戳，因此在 LRU 模式下，Redis可以根据对象头中的 lru 字段记录的值，来比较最后一次 key 的访问时间长，从而淘汰最久未被使用的 key。</p>
-<p><strong>在 LFU 算法中</strong>，Redis对象头的 24 bits 的 lru 字段被分成两段来存储，高 16bit 存储 ldt(Last Decrement Time)，低 8bit 存储 logc(Logistic Counter)。</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/69bab1ca-e86e-40f7-ab21-e8c1e8ef91cd"><img src="https://github.com/user-attachments/assets/69bab1ca-e86e-40f7-ab21-e8c1e8ef91cd" alt="Untitled" style="max-width: 100%;"></a></p>
-<ul>
-<li>ldt 是用来记录 key 的访问时间戳；</li>
-<li>logc 是用来记录 key 的访问频次，它的值越小表示使用频率越低，越容易淘汰，每个新加入的 key 的logc 初始值为 5。</li>
-</ul>
-<p>注意，logc 并不是单纯的访问次数，而是访问频次（访问频率），因为 <strong>logc 会随时间推移而衰减的</strong>。</p>
-<p>在每次 key 被访问时，会先对 logc 做一个衰减操作，衰减的值跟前后访问时间的差距有关系，如果上一次访问的时间与这一次访问的时间差距很大，那么衰减的值就越大，这样实现的 LFU 算法是根据<strong>访问频率</strong>来淘汰数据的，而不只是访问次数。访问频率需要考虑 key 的访问是多长时间段内发生的。key 的先前访问距离当前时间越长，那么这个 key 的访问频率相应地也就会降低，这样被淘汰的概率也会更大。</p>
-<p>对 logc 做完衰减操作后，就开始对 logc 进行增加操作，增加操作并不是单纯的 + 1，而是根据概率增加，如果 logc 越大的 key，它的 logc 就越难再增加。</p>
-<p>所以，Redis 在访问 key 时，对于 logc 是这样变化的：</p>
-<ol>
-<li>先按照上次访问距离当前的时长，来对 logc 进行衰减；</li>
-<li>然后，再按照一定概率增加 logc 的值</li>
-</ol>
-<p>redis.conf 提供了两个配置项，用于调整 LFU 算法从而控制 logc 的增长和衰减：</p>
-<ul>
-<li><code class="notranslate">lfu-decay-time</code> 用于调整 logc 的衰减速度，它是一个以分钟为单位的数值，默认值为1，lfu-decay-time 值越大，衰减越慢；</li>
-<li><code class="notranslate">lfu-log-factor</code> 用于调整 logc 的增长速度，lfu-log-factor 值越大，logc 增长越慢。</li>
-</ul></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#!</span>/bin/bash</span>
+operation=<span class="pl-smi">$1</span>
+<span class="pl-k">if</span> [ <span class="pl-smi">$operation</span> <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">"</span>push-to<span class="pl-pds">"</span></span> ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+	target_branch=<span class="pl-smi">$2</span>
+	branch_name=<span class="pl-s"><span class="pl-pds">`</span>git symbolic-ref --short -q HEAD<span class="pl-pds">`</span></span>
+	<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>curr branch name is <span class="pl-pds">"</span></span><span class="pl-smi">$branch_name</span>
+	git pull
+	git push
+	git checkout <span class="pl-smi">$target_branch</span>
+	git pull
+	<span class="pl-c1">echo</span> -e <span class="pl-s"><span class="pl-pds">"</span>\nmerge <span class="pl-pds">"</span></span><span class="pl-smi">$branch_name</span><span class="pl-s"><span class="pl-pds">"</span> to <span class="pl-pds">"</span></span><span class="pl-smi">$target_branch</span>
+	log=<span class="pl-s"><span class="pl-pds">`</span>git merge <span class="pl-smi">$branch_name</span><span class="pl-pds">`</span></span>
+	<span class="pl-c1">echo</span> <span class="pl-smi">$log</span>
+	git push
+	git checkout <span class="pl-smi">$branch_name</span>
+<span class="pl-k">fi</span></pre></div></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>

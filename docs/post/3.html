@@ -10,19 +10,23 @@
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
-<meta name="description" content="使用certbot安装证书时需要通过snapd来安装，centos8下安装snapd报错：
+<meta name="description" content="# certbot官网地址
+[Certbot](https://certbot.eff.org)
 
-```bash
-上次元数据过期检查：0:07:16 前，执行于 2023年07月03日 星期一 03时03分49秒。">
-<meta property="og:title" content="CentOS 8无法安装snapd问题">
-<meta property="og:description" content="使用certbot安装证书时需要通过snapd来安装，centos8下安装snapd报错：
+# 安装snapd
 
-```bash
-上次元数据过期检查：0:07:16 前，执行于 2023年07月03日 星期一 03时03分49秒。">
+snapd是一个包管理工具（类似应用商店），certbot的工具是发布在这里。">
+<meta property="og:title" content="通过certbot安装免费的tls证书">
+<meta property="og:description" content="# certbot官网地址
+[Certbot](https://certbot.eff.org)
+
+# 安装snapd
+
+snapd是一个包管理工具（类似应用商店），certbot的工具是发布在这里。">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://huangxiaocheng93.github.io/blog/post/CentOS%208-wu-fa-an-zhuang-snapd-wen-ti.html">
+<meta property="og:url" content="https://huangxiaocheng93.github.io/blog/post/3.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
-<title>CentOS 8无法安装snapd问题</title>
+<title>通过certbot安装免费的tls证书</title>
 <link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
 
 
@@ -65,7 +69,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 
 <body>
     <div id="header">
-<h1 class="postTitle">CentOS 8无法安装snapd问题</h1>
+<h1 class="postTitle">通过certbot安装免费的tls证书</h1>
 <div class="title-right">
     <a href="https://huangxiaocheng93.github.io/blog" id="buttonHome" class="btn btn-invisible circle" title="首页">
         <svg class="octicon" width="16" height="16">
@@ -73,7 +77,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
         </svg>
     </a>
     
-    <a href="https://github.com/huangxiaocheng93/blog/issues/13" target="_blank" class="btn btn-invisible circle" title="Issue">
+    <a href="https://github.com/huangxiaocheng93/blog/issues/3" target="_blank" class="btn btn-invisible circle" title="Issue">
         <svg class="octicon" width="16" height="16">
             <path id="pathIssue" fill-rule="evenodd"></path>
         </svg>
@@ -89,21 +93,32 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"><p>使用certbot安装证书时需要通过snapd来安装，centos8下安装snapd报错：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">上次元数据过期检查：0:07:16 前，执行于 2023年07月03日 星期一 03时03分49秒。
-错误：
- 问题: 软件包 snapd-2.58.3-1.el8.x86_64 需要 snapd-selinux = 2.58.3-1.el8，但没有提供者可以被安装
-  - 冲突的请求
-  - 没有东西可提供 selinux-policy <span class="pl-k">&gt;</span>= 3.14.3-108.el8_7.1（snapd-selinux-2.58.3-1.el8.noarch 需要）
-  - 没有东西可提供 selinux-policy-base <span class="pl-k">&gt;</span>= 3.14.3-108.el8_7.1（snapd-selinux-2.58.3-1.el8.noarch 需要）
-(尝试添加 <span class="pl-s"><span class="pl-pds">'</span>--skip-broken<span class="pl-pds">'</span></span> 来跳过无法安装的软件包 或 <span class="pl-s"><span class="pl-pds">'</span>--nobest<span class="pl-pds">'</span></span> 来不只使用软件包的最佳候选)</pre></div>
-<p>原因是因为snapd-selinux-2.58.3-1.el8.noarch这个包下载不到，可以手动下载更新进去</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">yum -y install yum-utils
-yumdownloader snapd-selinux-2.58.3-1.el8.noarch
-rpm --force --nodeps -ivh snapd-selinux-2.58.3-1.el8.noarch.rpm
+<div class="markdown-body" id="postBody"><h1>certbot官网地址</h1>
+<p><a href="https://certbot.eff.org" rel="nofollow">Certbot</a></p>
+<h1>安装snapd</h1>
+<p>snapd是一个包管理工具（类似应用商店），certbot的工具是发布在这里。</p>
+<h2>安装epel源</h2>
+<p>如果已经安装过就不需要了</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">yum install epel-release</pre></div>
+<h2>安装snapd</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">yum -y install snapd</pre></div>
+<h2>snapd启用通信socket</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">systemctl <span class="pl-c1">enable</span> --now snapd.socket</pre></div>
+<h2>创建符号链接</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">ln -s /var/lib/snapd/snap /snap</pre></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate">snap install core
+snap refresh core
 </pre></div>
-<p>然后重新安装snapd</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">yum -y install snapd</pre></div></div>
+<h2>安装certbot</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">snap install --classic certbot</pre></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate">ln -s /snap/bin/certbot /usr/bin/certbot</pre></div>
+<h2>安装证书</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">certbot --nginx</pre></div>
+<p>or</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">certbot certonly --nginx</pre></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate">certbot install --cert-name ttk.npex.top</pre></div>
+<h2>证书续期</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">certbot renew</pre></div></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>

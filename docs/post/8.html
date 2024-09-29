@@ -10,23 +10,43 @@
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
-<meta name="description" content="# certbot官网地址
-[Certbot](https://certbot.eff.org)
+<meta name="description" content="# 命令整合
 
-# 安装snapd
+## 安装
 
-snapd是一个包管理工具（类似应用商店），certbot的工具是发布在这里。">
-<meta property="og:title" content="通过certbot安装免费的tls证书">
-<meta property="og:description" content="# certbot官网地址
-[Certbot](https://certbot.eff.org)
+```bash
+yum -y install epel-release
+yum -y update
+yum -y install nginx
+systemctl enable nginx
+systemctl start nginx
 
-# 安装snapd
+```
 
-snapd是一个包管理工具（类似应用商店），certbot的工具是发布在这里。">
+# yum命令
+
+yum相当于是centos版的软件管家，里面已经收录了很多软件，方便对软件进行管理。">
+<meta property="og:title" content="CentOS安装Nginx">
+<meta property="og:description" content="# 命令整合
+
+## 安装
+
+```bash
+yum -y install epel-release
+yum -y update
+yum -y install nginx
+systemctl enable nginx
+systemctl start nginx
+
+```
+
+# yum命令
+
+yum相当于是centos版的软件管家，里面已经收录了很多软件，方便对软件进行管理。">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://huangxiaocheng93.github.io/blog/post/tong-guo-certbot-an-zhuang-mian-fei-de-tls-zheng-shu.html">
+<meta property="og:url" content="https://huangxiaocheng93.github.io/blog/post/8.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
-<title>通过certbot安装免费的tls证书</title>
+<title>CentOS安装Nginx</title>
 <link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
 
 
@@ -69,7 +89,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 
 <body>
     <div id="header">
-<h1 class="postTitle">通过certbot安装免费的tls证书</h1>
+<h1 class="postTitle">CentOS安装Nginx</h1>
 <div class="title-right">
     <a href="https://huangxiaocheng93.github.io/blog" id="buttonHome" class="btn btn-invisible circle" title="首页">
         <svg class="octicon" width="16" height="16">
@@ -77,7 +97,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
         </svg>
     </a>
     
-    <a href="https://github.com/huangxiaocheng93/blog/issues/3" target="_blank" class="btn btn-invisible circle" title="Issue">
+    <a href="https://github.com/huangxiaocheng93/blog/issues/8" target="_blank" class="btn btn-invisible circle" title="Issue">
         <svg class="octicon" width="16" height="16">
             <path id="pathIssue" fill-rule="evenodd"></path>
         </svg>
@@ -93,32 +113,30 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"><h1>certbot官网地址</h1>
-<p><a href="https://certbot.eff.org" rel="nofollow">Certbot</a></p>
-<h1>安装snapd</h1>
-<p>snapd是一个包管理工具（类似应用商店），certbot的工具是发布在这里。</p>
-<h2>安装epel源</h2>
-<p>如果已经安装过就不需要了</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">yum install epel-release</pre></div>
-<h2>安装snapd</h2>
-<div class="highlight highlight-source-shell"><pre class="notranslate">yum -y install snapd</pre></div>
-<h2>snapd启用通信socket</h2>
-<div class="highlight highlight-source-shell"><pre class="notranslate">systemctl <span class="pl-c1">enable</span> --now snapd.socket</pre></div>
-<h2>创建符号链接</h2>
-<div class="highlight highlight-source-shell"><pre class="notranslate">ln -s /var/lib/snapd/snap /snap</pre></div>
-<div class="highlight highlight-source-shell"><pre class="notranslate">snap install core
-snap refresh core
+<div class="markdown-body" id="postBody"><h1>命令整合</h1>
+<h2>安装</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">yum -y install epel-release
+yum -y update
+yum -y install nginx
+systemctl <span class="pl-c1">enable</span> nginx
+systemctl start nginx
 </pre></div>
-<h2>安装certbot</h2>
-<div class="highlight highlight-source-shell"><pre class="notranslate">snap install --classic certbot</pre></div>
-<div class="highlight highlight-source-shell"><pre class="notranslate">ln -s /snap/bin/certbot /usr/bin/certbot</pre></div>
-<h2>安装证书</h2>
-<div class="highlight highlight-source-shell"><pre class="notranslate">certbot --nginx</pre></div>
-<p>or</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">certbot certonly --nginx</pre></div>
-<div class="highlight highlight-source-shell"><pre class="notranslate">certbot install --cert-name ttk.npex.top</pre></div>
-<h2>证书续期</h2>
-<div class="highlight highlight-source-shell"><pre class="notranslate">certbot renew</pre></div></div>
+<h1>yum命令</h1>
+<p>yum相当于是centos版的软件管家，里面已经收录了很多软件，方便对软件进行管理。因为yum官方源里面没有nginx，直接安装会提示找不到软件，所以我们要先安装epel的源（以下操作均默认使用root权限）。</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">yum -y install epel-release</pre></div>
+<p>然后更新</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">yum -y update</pre></div>
+<h1>nginx安装</h1>
+<div class="highlight highlight-source-shell"><pre class="notranslate">yum -y install nginx</pre></div>
+<h1>设置</h1>
+<h2>开机自启动</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">systemctl <span class="pl-c1">enable</span> nginx</pre></div>
+<h2>启动</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">systemctl start nginx</pre></div>
+<h2>测试配置文件正确性</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">nginx -t</pre></div>
+<h2>重新加载配置文件</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">nginx -s reload</pre></div></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
