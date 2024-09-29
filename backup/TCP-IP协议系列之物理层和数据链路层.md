@@ -115,4 +115,4 @@ MAC地址的前半部分是厂商识别码，这个识别码由IEEE颁发，保�
 只要还在数据链路的广播域内，就可以认为是同一个数据链路。如果我们不考虑网络层的影响，我们可以认为交换机连接的主机还是在同一个数据链路内的。
 
 关联：
-[TCP/IP协议系列之网络基础](https://huangxiaocheng93.github.io/blog/post/TCP-IP-xie-yi-zhi-wang-luo-ji-chu.html)
+[TCP/IP协议系列之网络基础](https://huangxiaocheng93.github.io/blog/post/TCP-IP-xie-yi-xi-lie-zhi-wang-luo-ji-chu.html)
