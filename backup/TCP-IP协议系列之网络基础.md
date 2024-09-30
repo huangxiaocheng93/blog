@@ -54,6 +54,16 @@
 在我个人看来，TCP/IP模型会更加合理，OSI模型中的这三层也是我个人认为最难理解，边界最模糊的部分。
 
 # 网络分类
-## 从网络的范围来看
+## 从网络连接的范围
+
+![image](https://github.com/user-attachments/assets/f0db2e94-0798-426f-b731-7cef3cf69947)
+
+### 局域网和广域网
+
+局域网（Local Area Network，LAN）是范围最小的网络，例如家庭网络，公司内网络或者学校内网络。特点是局域网内的主机可以通过内网地址互相通信，但是无法与局域网外的主机互相通信。
+
+![image](https://github.com/user-attachments/assets/708bf1fc-9f1c-4532-9f49-f913d8170916)
+
+广域网（Wide Area Network，WAN）是把多个局域网或者广域网连起来的网络，广域网实现了更大范围内的主机之间的通信。
 
 
