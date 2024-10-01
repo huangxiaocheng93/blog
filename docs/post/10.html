@@ -141,13 +141,13 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <span class="pl-c">// 使用线程A中初始化好的配置信息</span>
 <span class="pl-en">doSomethingWithConfig</span>();</pre></div>
 <p>假如线程A执行的代码被重排序，<code class="notranslate">initialized = true</code> 被放到了proess方法前面，可能就会导致配置没有初始化完成B线程就在读取配置了。这就是为什么volatile关键字会限制指令重排。</p></div>
-<div style="font-size:small;margin-top:8px;float:right;"></div>
+<div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
 <div class="comments" id="comments"></div>
 
 </div>
-    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://huangxiaocheng93.github.io/blog">Vincent的技术博客</a></div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://huangxiaocheng93.github.io/blog">Vincent的博客</a></div>
 <div id="footer2">
     <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
 </div>
