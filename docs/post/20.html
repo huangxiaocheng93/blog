@@ -10,9 +10,9 @@
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
-<meta name="description" content="我们已经知道了TCP/IP协议簇把网络划分成了五层，但是TCP/IP并没有直接定义物理层和数据链路层，这两层对TCP/IP来说是透明的，接下来我们就来看看这两层分别在做什么。">
+<meta name="description" content="我们已经知道了TCP/IP协议簇把网络划分成了五层，但是实际上TCP/IP协议并没有定义物理层和数据链路层，TCP/IP把这两层的实现当作透明的。">
 <meta property="og:title" content="TCP/IP协议系列之物理层和数据链路层">
-<meta property="og:description" content="我们已经知道了TCP/IP协议簇把网络划分成了五层，但是TCP/IP并没有直接定义物理层和数据链路层，这两层对TCP/IP来说是透明的，接下来我们就来看看这两层分别在做什么。">
+<meta property="og:description" content="我们已经知道了TCP/IP协议簇把网络划分成了五层，但是实际上TCP/IP协议并没有定义物理层和数据链路层，TCP/IP把这两层的实现当作透明的。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://huangxiaocheng93.github.io/blog/post/20.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
@@ -73,7 +73,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"><p>我们已经知道了TCP/IP协议簇把网络划分成了五层，但是TCP/IP并没有直接定义物理层和数据链路层，这两层对TCP/IP来说是透明的，接下来我们就来看看这两层分别在做什么。</p>
+<div class="markdown-body" id="postBody"><p>我们已经知道了TCP/IP协议簇把网络划分成了五层，但是实际上TCP/IP协议并没有定义物理层和数据链路层，TCP/IP把这两层的实现当作透明的。也就是说TCP/IP并不在意数据链路层和物理层是如何实现的，只要能按照预期传送数据即可（这就是编程中的解耦和内聚的思路啊）。<br>
+如果是这样的话，学习TCP/IP好像没必要了解数据链路层和物理层了，实际上并不是，学习这两层对我们了解计算机网络还是很有用的，可以了解到在底层数据到底是怎样被传输的，也能了解到上层的一些设计到底是什么原因，例如IP层的数据包大小限制等等。</p>
 <h1>物理层</h1>
 <p>在计算机网络中，物理层是最具象化的一层了，很多东西都是我们能看得见摸得着的东西，例如我们的网线等等。</p>
 <h2>物理层的职责</h2>
@@ -221,9 +222,28 @@ MTU(Maximum Transmission Unit) : 是指网络能够传输的最大数据包大�
 <div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>有些数据链路层协议会定义物理层的规范，而有一些不会，例如以太网就定义了一些物理层规范，但是PPP就没有。</p>
 </div>
 <p>这样看下来，以太网和互联网是完全属于不同的层次对网络的分类。互联网描述的是网络连接的范围。以太网描述的是局域网内，数据链路层使用的是什么协议。</p>
-<h2>PPP</h2>
+<h2>PPP和PPPoE</h2>
 <p>数据链路层协议很多，这里无法一个个讲清楚（关键是不懂），再说一个经常会遇到的。<br>
-PPP（Point-to-Point Protocol）是指点对点协议，即1对1连接计算机的协议。PPP可能很多人不清楚，但是如果说PPPoE的话，多多少少会有些人有点印象。PPPoE经常会用在家用宽带中，</p>
+PPP（Point-to-Point Protocol）是指点对点协议，即1对1连接计算机的协议，PPP协议经常会用在身份验证中。这个协议日常生活中可能见的少，但是PPPoE可能很多人或多或少听说过一些，经常用在家用宽带拨号上网中。</p>
+<p>PPPoE全称是<strong>PPP over Ethernet</strong>，家用网络通常都是以太网（毕竟设备线路都便宜），但是以太网没有鉴权，也没有连接和断开，如果直接使用以太网连接，那我们只需要把自己的网线插到服务商的路由器上就可以上网了。但是宽带服务商也是要吃饭的，必须交了钱才给服务，所以要想办法区分出那些交了钱和没交钱的。<br>
+怎么区分呢？解决的方法就是鉴权，相当于给每个数据帧一个身份，识别到是从哪里来的，是否有“通行证”，使用的就是PPPoE协议。我们来看看PPPoE在家用宽带场景是怎么解决这个问题的：<br>
+<strong>拨号</strong></p>
+<ul>
+<li>我们在路由器上填好用户名密码，发起拨号，路由器发送一个PPPoE的拨号请求；</li>
+<li>在拨号阶段，PPPoE服务端会通过PPP协议完成身份验证，确保用户的合法性；</li>
+<li>拨号成功后，即建立连接，这个连接的状态维护在PPP协议中处理；</li>
+</ul>
+<p><strong>数据发送</strong></p>
+<ul>
+<li>上层数据来到数据链路层，首先使用PPP协议封装，这样数据就有了鉴权状态；</li>
+<li>然后PPP数据帧在使用PPPoE封装进自己的帧头；</li>
+<li>最后PPPoE数据帧再使用以太网协议封装成以太网帧，最后发送出去；</li>
+</ul>
+<p>最终发送出去的数据帧就变成这样了：</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/7c6c559e-0a34-4aec-a9ce-35c20f6b6da0"><img src="https://github.com/user-attachments/assets/7c6c559e-0a34-4aec-a9ce-35c20f6b6da0" alt="image" style="max-width: 100%;"></a></p>
+<p>上面已经讨论过了，以太网帧要保持Data最大为1500byte，现在又多包装了两层协议进去，多占用了10byte，所以携带的有效数据就变成了1490byte，上层协议如果不希望出现拆帧，那么如果数据链路层是PPPoE，就要控制字节的数据大小不超过1490byte.</p>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>这里写的不太详细，先这样吧，下次有机会再来补充细节。</p>
+</div>
 <h1>总结</h1>
 <p>物理层和数据链路层肯定远不止上述这些内容，主要还是在围绕以太网相关的实现在描述，为的是后面很好的了解后面的TCP/IP协议。</p>
 <p>关联：<br>
