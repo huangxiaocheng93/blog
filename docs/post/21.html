@@ -55,7 +55,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 }
 
 </style>
-<style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-tip {border-left-color:var(--borderColor-success-emphasis, var(--color-success-emphasis));background-color:var(--color-success-subtle);}.markdown-alert.markdown-alert-tip .markdown-alert-title {color: var(--fgColor-success,var(--color-success-fg));}</style>
+<style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-note {border-left-color:var(--borderColor-accent-emphasis, var(--color-accent-emphasis));background-color:var(--color-accent-subtle);}.markdown-alert.markdown-alert-note .markdown-alert-title {color: var(--fgColor-accent,var(--color-accent-fg));}</style><style>.markdown-alert.markdown-alert-tip {border-left-color:var(--borderColor-success-emphasis, var(--color-success-emphasis));background-color:var(--color-success-subtle);}.markdown-alert.markdown-alert-tip .markdown-alert-title {color: var(--fgColor-success,var(--color-success-fg));}</style>
 
 
 
@@ -150,6 +150,19 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 在分级法中，不同的IP地址天然的就携带了网络位的信息，但是使用CIDR方法就发生了变化，网络位的长度不再是固定的了，所以引入了新的网络位表示方法。<br>
 例如地址：<code class="notranslate">192.168.10.12</code>，如果是分级法，这个地址默认就是C类地址，网络位占24位。但是在CIDR中需要这样表示：<code class="notranslate">192.168.10.12/24</code>，<code class="notranslate">24</code>表示网络位占24位。</p>
 <p><strong>CIDR</strong>进一步提升了IP地址的利用率，浪费的就更少了；同时可以根据网络规模任意的指定网络位长度，也相当于增加了网段的个数。</p>
+<h3>私有地址</h3>
+<p>一般情况下，一台主机要接入互联网，我们需要分配一个IP地址给它，这个IP地址要保证在全世界的任何一个地方都能寻址到这台主机，这个IP地址我们叫做<strong>公网地址</strong>。<br>
+还有一种情况，有些组织或者公司的内部网络，并不需要联网，但是如果要使用TCP/IP协议，网络中的主机也必须有IP地址，这种情况下的话就没必要分配公网地址给这些主机了，所以在IP地址划分的时候，划分了一部分地址作为<strong>内网地址</strong>，也就是<strong>私有地址</strong>。<br>
+在分级法中，ABC类地址都保留了一段作为私有地址，分别如下：</p>
+<ul>
+<li>A类地址中，私有地址的范围为：10.0.0.0到10.255.255.255；</li>
+<li>B类地址中，私有地址的范围为：172.16.0.0到172.31.255.255；</li>
+<li>C类地址中，私有地址的范围为：192.168.0.0到192.168.255.255；</li>
+</ul>
+<p>那么分配私有地址有什么好处呢？<br>
+分配给广域网的IP地址必须是唯一的，就像身份证一样。但是局域网就不一样了，两个局域网之间本身是不互通的，所以他们是可以复用同一套IP地址的，这样也是非常大程度上节约了IP地址。</p>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>私有地址的网段范围并没有什么必要记忆，知道ABC都有私有地址即可，问题来了，私有地址使用哪个网段应该如何选择呢？</p>
+</div>
 <h3>子网掩码</h3>
 <p>IP地址的网络位还有一种表示方法，就是<strong>子网掩码</strong>，如下图：</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/6b9e0eab-ae5f-4105-ac42-2c3506dc91b3"><img src="https://github.com/user-attachments/assets/6b9e0eab-ae5f-4105-ac42-2c3506dc91b3" alt="image" style="max-width: 100%;"></a></p>
@@ -157,9 +170,9 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>所以CIDR表示法和子网掩码就是IP地址网络位的两种表示方法，仅此而已。相比较CIDR而言，子网掩码更容易参与计算，例如子网掩码和IP地址做与运算就可以得到IP地址的网段。</p>
 <h3>IPv4和IPv6</h3>
 <h4>IPv4</h4>
-<p>使用32位表示的这种IP地址叫做<strong>IPv4</strong>，IPv4理论上最大能有2的32次方个IP地址可用，大概是43亿个左右。排除掉特殊作用的地址、分配给内网地址、未定义的地址的等等，剩下可用的总共大约40亿个左右。<br>
-实际上，IPv4地址基本已经全部分配完了，而且绝大部分的设备都没有自己的IPv4地址，都是采用NAT等方法多台主机共用同一个IPv4地址。<br>
-所以网络的发展速度是远超当初协议的设计者的想象。</p>
+<p>使用32位表示的这种IP地址叫做<strong>IPv4</strong>，IPv4理论上最大能有2的32次方个IP地址可用，大概是43亿个左右。排除掉特殊作用的地址、分配给内网地址、未定义的地址的等等，剩下可用的总共大约40亿个左右。</p>
+<p>现实的情况是，局域网内的设备基本全部使用私有地址分配，然后通过NAT等方式来访问公网，如果是商业宽带，可以从ISP处得到一个公网IP地址；如果是家庭宽带，很有可能得到的是一个NAT的私有地址。</p>
+<p>即使是这样，IPv4地址也基本上已经全部分配完了，所以能看出来网络的发展速度是远超当初协议的设计者的想象的。</p>
 <h4>IPv6</h4>
 <p>当IPv4已经无法顺应时代需求的时候，IPv6就应运而生了，IPv6采用128位来表示，所以理论上IPv6能容纳的主机数为2的128次方。但是IPv6替换IPv4仍然任重道远。</p>
 <h2>路由</h2>
@@ -173,13 +186,32 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </ol>
 <p>再讨论这两个问题之前，我们先了解一个工作在网络层的设备：路由器。</p>
 <h3>路由器</h3>
-<p>路由器这个设备相信家家户户都有了，有些大户人家甚至有好多个。由于它工作在第三层，所以也叫他三层交换机。但是也别觉得它只工作在第三层，实际上不是，它同时也工作在第一层和第二层，但是我们现在主要讨论它在网络层的功能。<br>
-从名字就可以看出，路由器工作的重中之重就是<strong>路由</strong>。路由器是连接局域网和广域网的设备，它通常有两种端口：WAN口和LAN口，如图：</p>
+<p>路由器这个设备相信家家户户都有了，有些大户人家甚至有好多个。由于它工作在第三层，所以也叫他三层交换机。前面聊到的物理层和数据链路层都是针对局域网，路由器作为网络层的设备，就是连接局域网和广域网的桥梁。<br>
+路由器通常由两种类型的接口：WAN口和LAN口，如下图：</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/aa146073-fe0d-4df4-8b79-b8a93c0e0695"><img src="https://github.com/user-attachments/assets/aa146073-fe0d-4df4-8b79-b8a93c0e0695" alt="image" style="max-width: 100%;"></a></p>
-<p>我们先看看第二个问题</p>
+<p>WAN和LAN前台由提到过，WAN就是广域网，LAN就是局域网，所以路由器一个端口接在广域网，一个端口接在局域网，所以说他是连接局域网和广域网的桥梁再形象不过了。因为路由器既在局域网，又在广域网，所以路由器自己就有会两个IP地址：局域网地址，用来和局域网设备通信；广域网地址，用来和广域网通信。</p>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>如今的路由器，不一定只有一个WAN口，如果有多个WAN口，并且同时连接到了不同的广域网，那么也就会有多个广域网IP。</p>
+</div>
+<p>路由器主要承担如下的几种职责：</p>
+<ol>
+<li><strong>路由</strong>：路由写在了路由器的名字里，这个职责的重要性就不言而喻了，路由器会维护一个路由表，发送到它这里的包都会根据路由表的规则进行转发；<br>
+2.<strong>DHCP</strong>：如果局域网内设备众多，如果每一个都要手动指定IP，那就太辛苦了，所以自动管理IP的任务也落到了路由器头上，也就是DHCP服务；</li>
+</ol>
 <h3>路由表怎么用</h3>
-<p>借用一张《图解TCP/IP》书中的一张图：</p>
+<p>所有支持IP协议的网络节点都会维护自己的路由表，先看一下路由表怎么使用，借用一张《图解TCP/IP》书中的一张图：</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/aee8ae80-7117-4e4e-b22b-6dd1ec649f6c"><img src="https://github.com/user-attachments/assets/aee8ae80-7117-4e4e-b22b-6dd1ec649f6c" alt="Image00159" style="max-width: 100%;"></a></p>
+<p>这张图展示了路由的过程，现在了解一下路由过程中的一些概念：</p>
+<ul>
+<li>路由表：路由表的形式就是类似图上的表格，要注意的是，第一列准确的说是网段地址，使用的是CIDR表示法，第二列是网段对应的目标IP地址；</li>
+<li>源地址和目标地址：源地址是发送端的IP地址，目标接收端的IP地址；</li>
+<li>默认路由：也可以叫默认网关，英文叫做Default Gateway，如果我们在自己的路由表里面找不到匹配的条目，就把数据包送到默认网关；</li>
+</ul>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>上图中没有展示路由器的默认网关地址，实际上路由器也有默认网关，路由器的默认网关是从WAN口获取的，试想一下，如果一个IP地址不在自己管理的LAN内，那么唯一的选项就是把数据包从WAN口送出去，很合理吧？</p>
+</div>
+<h3>路由表是怎么来的</h3>
+<p>生成和维护路由表使用到一种协议叫做<strong>路由协议</strong>，路由协议也工作在第三层，依赖IP协议，它们的目标是生成高效的路由表来帮助节点选择最高效的转发路径。</p>
+<p>路由协议涉及的内容很多，但是并不影响理解网络层（关键是我不懂），所以先跳过，后面另外整理。</p>
+<h2>数据转发</h2>
 <p>// todo</p></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
 
