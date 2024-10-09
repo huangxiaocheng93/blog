@@ -238,6 +238,10 @@ IP协议的数据发送逻辑是基于“尽力而为”的思路设计的，也
 
 那当IP数据报被丢弃的时候怎么告知给上层协议的，答案是通过ICMP，丢弃IP数据报的节点会通过ICMP协议向发送端回送一个ICMP消息，通知发送端IP数据报被丢弃的具体原因。
 
+但是要注意的是，IP协议不会直接处理ICMP回送过来的错误信息，这个信息会直接交由上层协议来处理。
+
+有关ICMP协议的内容[在这里](https://blog.npex.top/post/22.html)
+
 # 其他网络层协议
 
 ## DHCP
@@ -266,7 +270,6 @@ ARP协议就是来解决只知道IP地址，不知道MAC地址的问题的。ARP
 
 ![Image00187](https://github.com/user-attachments/assets/ee8a4fa9-10f2-4a81-88e0-153541c5f412)
 
-## ICMP
 
 
 // todo

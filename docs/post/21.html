@@ -256,6 +256,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>IP协议的数据发送逻辑是基于“尽力而为”的思路设计的，也就是说，IP协议会尽量把IP数据报送出去，但是并不保证一定能够到达，也不做重试，这些都交给上层协议来处理。</p>
 <p>导致数据无法到达的情况有很多种，例如：目标主机的网络不通、目标主机是关机的状态、转发的跳数超过了TTL等等都会导致IP数据报被丢弃。</p>
 <p>那当IP数据报被丢弃的时候怎么告知给上层协议的，答案是通过ICMP，丢弃IP数据报的节点会通过ICMP协议向发送端回送一个ICMP消息，通知发送端IP数据报被丢弃的具体原因。</p>
+<p>但是要注意的是，IP协议不会直接处理ICMP回送过来的错误信息，这个信息会直接交由上层协议来处理。</p>
+<p>有关ICMP协议的内容<a href="https://blog.npex.top/post/22.html" rel="nofollow">在这里</a></p>
 <h1>其他网络层协议</h1>
 <h2>DHCP</h2>
 <h2>NAT</h2>
@@ -269,7 +271,6 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>ARP协议就是来解决只知道IP地址，不知道MAC地址的问题的。ARP协议使用数据链路层的广播功能，在数据链路内广播ARP请求，ARP协议会携带下一个节点的IP地址，当对应地址的节点接收到请求后，会响应这个请求，在响应中填上自己的MAC地址，这样发送端收到响应后就知道下一个节点的MAC地址啦。</p>
 <p>还是借用一张《图解TCP/IP》的图：</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/ee8a4fa9-10f2-4a81-88e0-153541c5f412"><img src="https://github.com/user-attachments/assets/ee8a4fa9-10f2-4a81-88e0-153541c5f412" alt="Image00187" style="max-width: 100%;"></a></p>
-<h2>ICMP</h2>
 <p>// todo</p></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
 
