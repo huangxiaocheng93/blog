@@ -15,28 +15,14 @@
 [TCP/IP协议系列之网络层](https://blog.npex.top/post/21.html)
 
 # ICMP是什么
-ICMP协议工作在网络层，是IP的辅助协议，ICMP的主要职责如下：
-
-1. 通知发送端IP数据报未能送达接收端的原因；
-2. 诊断网络故障；
-
-# ICMP如何工作
-
-ICMP协议是基于IP协议的，IP协议的设计思路是“尽力而为”，所以ICMP协议。">
+ICMP全称是**互联网控制消息协议**（Internet Control Message Protocol）ICMP协议工作在网络层，是IP的辅助协议。">
 <meta property="og:title" content="[WIP]TCP/IP协议系列之ICMP协议">
 <meta property="og:description" content="# TCP/IP协议系列
 
 [TCP/IP协议系列之网络层](https://blog.npex.top/post/21.html)
 
 # ICMP是什么
-ICMP协议工作在网络层，是IP的辅助协议，ICMP的主要职责如下：
-
-1. 通知发送端IP数据报未能送达接收端的原因；
-2. 诊断网络故障；
-
-# ICMP如何工作
-
-ICMP协议是基于IP协议的，IP协议的设计思路是“尽力而为”，所以ICMP协议。">
+ICMP全称是**互联网控制消息协议**（Internet Control Message Protocol）ICMP协议工作在网络层，是IP的辅助协议。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://blog.npex.top/post/22.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
@@ -100,11 +86,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <div class="markdown-body" id="postBody"><h1>TCP/IP协议系列</h1>
 <p><a href="https://blog.npex.top/post/21.html" rel="nofollow">TCP/IP协议系列之网络层</a></p>
 <h1>ICMP是什么</h1>
-<p>ICMP协议工作在网络层，是IP的辅助协议，ICMP的主要职责如下：</p>
-<ol>
-<li>通知发送端IP数据报未能送达接收端的原因；</li>
-<li>诊断网络故障；</li>
-</ol>
+<p>ICMP全称是<strong>互联网控制消息协议</strong>（Internet Control Message Protocol）ICMP协议工作在网络层，是IP的辅助协议。由于IP协议的设计是“尽力而为”，IP数据报是否有成功送达接收端，发送端是完全不可知的。所以ICMP就是在IP数据报由于某些原因被节点丢弃时，会回送一个ICMP通知给发送端，告知发送端发送失败，通知附带了发送失败的原因。</p>
+<p>值得注意的是，ICMP并不是为了补齐IP协议的短板或者缺陷，IP协议设计如此，并不是缺陷。ICMP提供了一个类似callback的机制来告知发送端主机发送失败，而且这个callback消息并不是IP协议处理，而是直接交给上层协议跟进实际情况处理。</p>
 <h1>ICMP如何工作</h1>
 <p>ICMP协议是基于IP协议的，IP协议的设计思路是“尽力而为”，所以ICMP协议</p></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>

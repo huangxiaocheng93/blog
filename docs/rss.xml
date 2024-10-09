@@ -1,17 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Vincent的博客</title><link>https://blog.npex.top</link><description>Vincent的碎片知识集散地，边复习边整理，希望下次能一看就懂。偶尔也记录下其他的收获。</description><copyright>Vincent的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/33109308?s=400&amp;u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&amp;v=4</url><title>avatar</title><link>https://blog.npex.top</link></image><lastBuildDate>Wed, 09 Oct 2024 06:41:25 +0000</lastBuildDate><managingEditor>Vincent的博客</managingEditor><ttl>60</ttl><webMaster>Vincent的博客</webMaster><item><title>[WIP]TCP/IP协议系列之ICMP协议</title><link>https://blog.npex.top/post/22.html</link><description># TCP/IP协议系列&#13;
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Vincent的博客</title><link>https://blog.npex.top</link><description>Vincent的碎片知识集散地，边复习边整理，希望下次能一看就懂。偶尔也记录下其他的收获。</description><copyright>Vincent的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/33109308?s=400&amp;u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&amp;v=4</url><title>avatar</title><link>https://blog.npex.top</link></image><lastBuildDate>Wed, 09 Oct 2024 13:51:07 +0000</lastBuildDate><managingEditor>Vincent的博客</managingEditor><ttl>60</ttl><webMaster>Vincent的博客</webMaster><item><title>[WIP]TCP/IP协议系列之ICMP协议</title><link>https://blog.npex.top/post/22.html</link><description># TCP/IP协议系列&#13;
 &#13;
 [TCP/IP协议系列之网络层](https://blog.npex.top/post/21.html)&#13;
 &#13;
 # ICMP是什么&#13;
-ICMP协议工作在网络层，是IP的辅助协议，ICMP的主要职责如下：&#13;
-&#13;
-1. 通知发送端IP数据报未能送达接收端的原因；&#13;
-2. 诊断网络故障；&#13;
-&#13;
-# ICMP如何工作&#13;
-&#13;
-ICMP协议是基于IP协议的，IP协议的设计思路是“尽力而为”，所以ICMP协议。</description><guid isPermaLink="true">https://blog.npex.top/post/22.html</guid><pubDate>Wed, 09 Oct 2024 01:51:36 +0000</pubDate></item><item><title>[WIP]TCP/IP协议系列之网络层</title><link>https://blog.npex.top/post/21.html</link><description># TCP/IP协议系列&#13;
+ICMP全称是**互联网控制消息协议**（Internet Control Message Protocol）ICMP协议工作在网络层，是IP的辅助协议。</description><guid isPermaLink="true">https://blog.npex.top/post/22.html</guid><pubDate>Wed, 09 Oct 2024 01:51:36 +0000</pubDate></item><item><title>[WIP]TCP/IP协议系列之网络层</title><link>https://blog.npex.top/post/21.html</link><description># TCP/IP协议系列&#13;
 &#13;
 [TCP/IP协议系列之网络基础](https://huangxiaocheng93.github.io/blog/post/19.html)&#13;
 &#13;
