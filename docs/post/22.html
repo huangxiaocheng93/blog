@@ -53,7 +53,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 }
 
 </style>
-<style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-tip {border-left-color:var(--borderColor-success-emphasis, var(--color-success-emphasis));background-color:var(--color-success-subtle);}.markdown-alert.markdown-alert-tip .markdown-alert-title {color: var(--fgColor-success,var(--color-success-fg));}</style>
+<style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-note {border-left-color:var(--borderColor-accent-emphasis, var(--color-accent-emphasis));background-color:var(--color-accent-subtle);}.markdown-alert.markdown-alert-note .markdown-alert-title {color: var(--fgColor-accent,var(--color-accent-fg));}</style><style>.markdown-alert.markdown-alert-tip {border-left-color:var(--borderColor-success-emphasis, var(--color-success-emphasis));background-color:var(--color-success-subtle);}.markdown-alert.markdown-alert-tip .markdown-alert-title {color: var(--fgColor-success,var(--color-success-fg));}</style>
 
 
 
@@ -107,7 +107,14 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>ICMP使用IP协议发送，由于IP协议的设计是“尽力而为”，IP数据报是否有成功送达接收端，发送端是完全不可知的。ICMP协议自己本身也没有可靠传输的设计，所以ICMP消息也同样不保证一定可以送达。</p>
 <h1>ICMP协议的应用</h1>
 <h2>IP数据报发送失败的通知</h2>
-<p>这是其中一个很重要的应用，当某个IP数据报在某个网络节点要被丢弃时，这个网络节点就会发送一条ICMP消息给发送端主机。节点会在类型和代码字段中填写IP数据报无法送达的原因，例如：不可达、超时等等。发送端主机收到这条ICMP消息以后会上报给上层协议，上层协议就会采取相应的处理。</p></div>
+<p>这是其中一个很重要的应用，当某个IP数据报在某个网络节点要被丢弃时，这个网络节点就会发送一条ICMP消息给发送端主机。节点会在类型和代码字段中填写IP数据报无法送达的原因，例如：不可达、超时等等。发送端主机收到这条ICMP消息以后会上报给上层协议，上层协议就会采取相应的处理。</p>
+<p>但是我们上面有说，ICMP时使用IP协议发送的，IP协议没有实现可靠传输，ICMP协议自身也没有实现可靠传输，所以ICMP消息也是不可靠的。那么基于此，上层协议肯定不会依赖ICMP消息来实现功能，而是作为锦上添花的设计。</p>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>所以我个人认为，ICMP消息在数据传输流程里面扮演的角色并没有那么重要。</p>
+</div>
+<h2>ping</h2>
+<p>ping命令应该大部分人都知道，我们通常使用它检查到目标地址的网络通不通，ping就是使用ICMP协议实现的：</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/acf32bf3-b944-49c5-b10b-0adc18a1f50f"><img src="https://github.com/user-attachments/assets/acf32bf3-b944-49c5-b10b-0adc18a1f50f" alt="image" style="max-width: 100%;"></a></p>
+<p>具体说来，ping使用的是0（回送应答）和8（回送请求）两种消息类型。</p></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
