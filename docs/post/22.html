@@ -93,10 +93,21 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <h2>ICMP的报文格式</h2>
 <p>ICMP的报文格式如下：</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/fb0d56fd-4c07-492e-bc74-da64b23aef26"><img src="https://github.com/user-attachments/assets/fb0d56fd-4c07-492e-bc74-da64b23aef26" alt="image" style="max-width: 100%;"></a></p>
-<p>由于IP协议的设计是“尽力而为”，IP数据报是否有成功送达接收端，发送端是完全不可知的。所以ICMP就是在IP数据报由于某些原因被节点丢弃时，会回送一个ICMP通知给发送端，告知发送端发送失败，通知附带了发送失败的原因。</p>
-<p>值得注意的是，ICMP并不是为了补齐IP协议的短板或者缺陷，IP协议设计如此，并不是缺陷。ICMP提供了一个类似callback的机制来告知发送端主机发送失败，而且这个callback消息并不是IP协议处理，而是直接交给上层协议跟进实际情况处理。</p>
-<h1>ICMP如何工作</h1>
-<p>ICMP协议是基于IP协议的，IP协议的设计思路是“尽力而为”，所以ICMP协议</p></div>
+<p>ICMP的报文格式想对IP协议来说简单太多，总共就4个字段：类型、代码、校验和、Data。</p>
+<p>其中最重要的就是<strong>类型</strong>和<strong>代码</strong>，这两个字段确定了ICMP消息的类型。校验和无需多说了。</p>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>需要注意的是，这里的<strong>Data</strong>和其他协议不一样，ICMP消息的Data携带的是对应<strong>类型</strong>和<strong>代码</strong>的补充数据，而不是上层协议传递过来的数据。</p>
+</div>
+<h2>类型和代码</h2>
+<p>ICMP消息的类型如下：</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/1dfce6c6-2f08-47cf-941f-95611efc2382"><img src="https://github.com/user-attachments/assets/1dfce6c6-2f08-47cf-941f-95611efc2382" alt="Image00192" style="max-width: 100%;"></a></p>
+<p>ICMP消息的<strong>类型</strong>表示的消息的大类，例如<strong>目标不可达</strong>表示IP数据报无法送达目标地址，但是具体什么原因并不在类型字段里面给出，而是在<strong>代码</strong>字段里面做了具体的分类，例如类型<strong>目标不可达</strong>的<strong>代码</strong>如下：</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/85448aa6-ea80-49bf-a9b7-f510d13934c0"><img src="https://github.com/user-attachments/assets/85448aa6-ea80-49bf-a9b7-f510d13934c0" alt="Image00193" style="max-width: 100%;"></a></p>
+<p>可以看出来，不可达的原因有可能是网络不可达或者是主机不可达等等。</p>
+<h2>ICMP消息的传输</h2>
+<p>ICMP使用IP协议发送，由于IP协议的设计是“尽力而为”，IP数据报是否有成功送达接收端，发送端是完全不可知的。ICMP协议自己本身也没有可靠传输的设计，所以ICMP消息也同样不保证一定可以送达。</p>
+<h1>ICMP协议的应用</h1>
+<h2>IP数据报发送失败的通知</h2>
+<p>这是其中一个很重要的应用，当某个IP数据报在某个网络节点要被丢弃时，这个网络节点就会发送一条ICMP消息给发送端主机。节点会在类型和代码字段中填写IP数据报无法送达的原因，例如：不可达、超时等等。发送端主机收到这条ICMP消息以后会上报给上层协议，上层协议就会采取相应的处理。</p></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
