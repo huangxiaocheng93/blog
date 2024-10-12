@@ -12,11 +12,11 @@
     </script>
 <meta name="description" content="# ARP协议是什么
 
-在网络层，唯一地址是IP地址，所以在网络层，我们只能知道下一个节点的IP地址。">
+在网络层，唯一地址是IP地址，所以在网络层，只能知道下一个节点的IP地址。">
 <meta property="og:title" content="[WIP]TCP/IP协议系列之ARP协议">
 <meta property="og:description" content="# ARP协议是什么
 
-在网络层，唯一地址是IP地址，所以在网络层，我们只能知道下一个节点的IP地址。">
+在网络层，唯一地址是IP地址，所以在网络层，只能知道下一个节点的IP地址。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://blog.npex.top/post/23.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
@@ -78,11 +78,12 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
     <div id="content">
 <div class="markdown-body" id="postBody"><h1>ARP协议是什么</h1>
-<p>在网络层，唯一地址是IP地址，所以在网络层，我们只能知道下一个节点的IP地址。只知道IP地址还不够，我们知道如果要调用数据链路层发送数据，必须要知道下一个节点的MAC地址才行，ARP协议就是来解决这个问题的。</p>
-<p>ARP协议是网络层协议，是IP协议的辅助协议，它的职责是通过IP地址找到节点的MAC地址。ARP虽说是网络层协议，但它只能工作在同一个数据链路内，个人感觉它更像是网络层和数据链路层中间的胶水层。</p>
+<p>在网络层，唯一地址是IP地址，所以在网络层，只能知道下一个节点的IP地址。但是只知道IP地址还不够，因为我们如果要调用数据链路层发送数据，必须要知道下一个节点的MAC地址才行，ARP协议就是来解决这个问题的。</p>
+<p>ARP全称是Address Resolution Protocol，是网络层协议，是IP协议的辅助协议，它的职责是通过IP地址找到节点的MAC地址。ARP虽说是网络层协议，但它只能工作在同一个数据链路内，个人感觉它更像是网络层和数据链路层中间的胶水层。</p>
 <div class="markdown-alert markdown-alert-important"><p class="markdown-alert-title"><svg class="octicon octicon-report mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>Important</p><p><strong>IP数据报所在的当前节点和下一个节点一定是在同一个数据链路内的</strong>，这个点不知道好不好理解。因为说有的数据最终都是要通过数据链路层发送出去的，而数据链路层只能传输数据只能是在同一个数据链路内，所以说当前节点和下一个节点一定是在同一个数据链路内的。路由器是可以连接多个数据链路的，所以IP数据报就是从一个数据链路跳到另一个数据链路，最终找到目标主机。</p>
 </div>
-<h1>ARP怎么工作的</h1>
+<h1>ARP是怎么工作的</h1>
+<p>ARP协议定义了两种类型的包：ARP请求包和ARP响应包。</p>
 <p>ARP协议就是来解决只知道IP地址，不知道MAC地址的问题的。ARP协议使用数据链路层的广播功能，在数据链路内广播ARP请求，ARP协议会携带下一个节点的IP地址，当对应地址的节点接收到请求后，会响应这个请求，在响应中填上自己的MAC地址，这样发送端收到响应后就知道下一个节点的MAC地址啦。</p>
 <p>还是借用一张《图解TCP/IP》的图：</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/ee8a4fa9-10f2-4a81-88e0-153541c5f412"><img src="https://github.com/user-attachments/assets/ee8a4fa9-10f2-4a81-88e0-153541c5f412" alt="Image00187" style="max-width: 100%;"></a></p></div>
