@@ -257,7 +257,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>导致数据无法到达的情况有很多种，例如：目标主机的网络不通、目标主机是关机的状态、转发的跳数超过了TTL等等都会导致IP数据报被丢弃。</p>
 <p>那当IP数据报被丢弃的时候怎么告知给上层协议的，答案是通过ICMP，丢弃IP数据报的节点会通过ICMP协议向发送端回送一个ICMP消息，通知发送端IP数据报被丢弃的具体原因。</p>
 <p>但是要注意的是，IP协议不会直接处理ICMP回送过来的错误信息，这个信息会直接交由上层协议来处理。</p>
-<p>有关ICMP协议的内容<a href="https://blog.npex.top/post/22.html" rel="nofollow">在这里</a></p>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>有关ICMP协议的内容<a href="https://blog.npex.top/post/22.html" rel="nofollow">在这里</a></p>
+</div>
 <h1>其他网络层协议</h1>
 <h2>DHCP</h2>
 <h2>NAT</h2>
@@ -266,12 +267,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/6aed8c88-cd9c-415d-b466-d7261a5e6eca"><img src="https://github.com/user-attachments/assets/6aed8c88-cd9c-415d-b466-d7261a5e6eca" alt="Image00204" style="max-width: 100%;"></a></p>
 <p>从上面的描述可以看出来，路由器中肯定维护了一张映射表，来搞定转发的规则。但是如果内网中所有的主机共用同一个全局地址，该怎么映射呢？</p>
 <p>这就是NAT的别扭之处，因为全局地址只有一个，无法同时映射到多个私有地址，所以NAT用到了IP地址+端口号来做映射。我们知道网络层IP地址是唯一地址，但是NAT中无法仅使用IP地址完成功能，提前引入了传输层的端口号，那么NAT到底是网络层协议还是传输层协议呢？</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/e2fd71ed-a26b-48b3-8a12-f8c7df5ac481"><img src="https://github.com/user-attachments/assets/e2fd71ed-a26b-48b3-8a12-f8c7df5ac481" alt="Image00205" style="max-width: 100%;"></a></p>
-<h2>ARP</h2>
-<p>ARP协议就是来解决只知道IP地址，不知道MAC地址的问题的。ARP协议使用数据链路层的广播功能，在数据链路内广播ARP请求，ARP协议会携带下一个节点的IP地址，当对应地址的节点接收到请求后，会响应这个请求，在响应中填上自己的MAC地址，这样发送端收到响应后就知道下一个节点的MAC地址啦。</p>
-<p>还是借用一张《图解TCP/IP》的图：</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/ee8a4fa9-10f2-4a81-88e0-153541c5f412"><img src="https://github.com/user-attachments/assets/ee8a4fa9-10f2-4a81-88e0-153541c5f412" alt="Image00187" style="max-width: 100%;"></a></p>
-<p>// todo</p></div>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/e2fd71ed-a26b-48b3-8a12-f8c7df5ac481"><img src="https://github.com/user-attachments/assets/e2fd71ed-a26b-48b3-8a12-f8c7df5ac481" alt="Image00205" style="max-width: 100%;"></a></p></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>

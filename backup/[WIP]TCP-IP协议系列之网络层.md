@@ -240,7 +240,8 @@ IP协议的数据发送逻辑是基于“尽力而为”的思路设计的，也
 
 但是要注意的是，IP协议不会直接处理ICMP回送过来的错误信息，这个信息会直接交由上层协议来处理。
 
-有关ICMP协议的内容[在这里](https://blog.npex.top/post/22.html)
+> [!TIP]
+> 有关ICMP协议的内容[在这里](https://blog.npex.top/post/22.html)
 
 # 其他网络层协议
 
@@ -261,18 +262,6 @@ NAT的思路是在局域网内，主机都分配私有地址，当局域网内�
 
 ![Image00205](https://github.com/user-attachments/assets/e2fd71ed-a26b-48b3-8a12-f8c7df5ac481)
 
-
-## ARP
-
-ARP协议就是来解决只知道IP地址，不知道MAC地址的问题的。ARP协议使用数据链路层的广播功能，在数据链路内广播ARP请求，ARP协议会携带下一个节点的IP地址，当对应地址的节点接收到请求后，会响应这个请求，在响应中填上自己的MAC地址，这样发送端收到响应后就知道下一个节点的MAC地址啦。
-
-还是借用一张《图解TCP/IP》的图：
-
-![Image00187](https://github.com/user-attachments/assets/ee8a4fa9-10f2-4a81-88e0-153541c5f412)
-
-
-
-// todo
 
 
 
