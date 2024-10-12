@@ -16,7 +16,7 @@
 
 # ICMP是什么
 ICMP全称是**互联网控制报文协议**（Internet Control Message Protocol）ICMP协议工作在网络层，是IP的辅助协议，也是控制协议。">
-<meta property="og:title" content="[WIP]TCP/IP协议系列之ICMP协议">
+<meta property="og:title" content="TCP/IP协议系列之ICMP协议">
 <meta property="og:description" content="# TCP/IP协议系列
 
 [TCP/IP协议系列之网络层](https://blog.npex.top/post/21.html)
@@ -26,7 +26,7 @@ ICMP全称是**互联网控制报文协议**（Internet Control Message Protocol
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://blog.npex.top/post/22.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
-<title>[WIP]TCP/IP协议系列之ICMP协议</title>
+<title>TCP/IP协议系列之ICMP协议</title>
 
 
 
@@ -59,7 +59,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 
 <body>
     <div id="header">
-<h1 class="postTitle">[WIP]TCP/IP协议系列之ICMP协议</h1>
+<h1 class="postTitle">TCP/IP协议系列之ICMP协议</h1>
 <div class="title-right">
     <a href="https://blog.npex.top" id="buttonHome" class="btn btn-invisible circle" title="首页">
         <svg class="octicon" width="16" height="16">
@@ -123,8 +123,15 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>当接收端主机收到这个ICMP消息后，会回一个type 0的ICMP消息，携带相同的标识符和唯一ID，如果发送端收到了这个回送应答，那就说明网络是连通的。</p>
 <p>ping除了能检查网络通不通之外，还可以检查网络质量。</p>
 <p>前面说到了ICMP不保证可靠传输，在这里就派上了用场。假如网络是连通的，我们发出去100个回送请求，就应该收到100个回送应答。如果收到的回送请求没有100个，那说明中间发生了丢包，如果丢包很多，说明网络质量不好。另外通过回送请求和回送应答中间的时间差，也能看出来网络延迟的水平。</p>
-<h2>tracert</h2>
-<p>相对ping，tracert的实现就更加巧妙了。</p></div>
+<h2>traceroute</h2>
+<p>相对ping，traceroute的实现就更加巧妙了。traceroute的作用时列举出IP数据报从发送端到达接收端途经的每一个网络节点。</p>
+<p>traceroute利用的是IP数据报超时以后会回送一个ICMP消息的特性。当IP数据报在网络种转发是，TTL会相应递减，直到变成0，就会被节点丢弃，节点丢弃这个数据报时会给发送端主机回送一个ICMP消息，类型为0，代表网络不可达。<br>
+所以traceroute会发多个IP数据报出去，TTL依次+1，接收中间的路由器回送回来的ICMP消息，直到IP数据报送达到目标主机为止，这样就知道了IP数据报中间会经过多少个路由器了，如下图：</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/27732378-94b3-497e-a1b9-5ad16969e975"><img src="https://github.com/user-attachments/assets/27732378-94b3-497e-a1b9-5ad16969e975" alt="image" style="max-width: 100%;"></a></p>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>MAC和Linux上面是traceroute，Windows上是tracert，原理都是差不多的，都是接收ICMP超时消息。但是traceroute是使用UDP协议发包，tracert是直接使用ICMP。</p>
+</div>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>还有一个问题，IP数据报如果正常达到目标主机，是不会触发一个ICMP消息的，那么要怎么知道数据报到达目标主机了呢？traceroute的思路是还是要触发一个ICMP消息，因为它是使用UDP发包，所以会指定一个没人使用的端口号，那么数据到达以后没有应用程序接收，会触发类型为3的ICMP消息，这个时候发送端就知道已经到达目标主机了。</p>
+</div></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
