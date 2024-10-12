@@ -216,6 +216,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>发送数据需要调用数据链路层，数据链路层需要目标节点的MAC地址，但是我们现在只有IP地址，要怎么拿到MAC地址呢？<br>
 这里使用的就是<strong>ARP协议</strong>，ARP协议就是来解决只知道IP地址，不知道MAC地址的问题的，通过ARP协议我们就可以拿到下一个节点的MAC地址。</p>
 <p>知道下一个节点的MAC地址以后，我们就要把数据发送过去了，在发送之前，IP协议也和以太网协议一样，需要在数据上面附加上协议的一些数据，来实现网络层的相关功能。</p>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>ARP协议的详细内容<a href="https://blog.npex.top/post/23.html" rel="nofollow">看这里</a></p>
+</div>
 <h3>数据封装</h3>
 <p>之前我们了解过数据链路层对数据的封装，主要塞进去了源地址和目标地址、校验位等等信息。IP协议也对数据有一层封装，实际上IP层的封装比数据链路层要复杂一些，下面看看IP协议（IPv4）对数据的封装：</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/dd5e4156-144a-4249-a9d6-5ec5aaee828f"><img src="https://github.com/user-attachments/assets/dd5e4156-144a-4249-a9d6-5ec5aaee828f" alt="image" style="max-width: 100%;"></a></p>
