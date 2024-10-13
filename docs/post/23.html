@@ -13,14 +13,14 @@
 <meta name="description" content="# ARP协议是什么
 
 在网络层，唯一地址是IP地址，所以在网络层，只能知道下一个节点的IP地址。">
-<meta property="og:title" content="[WIP]TCP/IP协议系列之ARP协议">
+<meta property="og:title" content="TCP/IP协议系列之ARP协议">
 <meta property="og:description" content="# ARP协议是什么
 
 在网络层，唯一地址是IP地址，所以在网络层，只能知道下一个节点的IP地址。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://blog.npex.top/post/23.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
-<title>[WIP]TCP/IP协议系列之ARP协议</title>
+<title>TCP/IP协议系列之ARP协议</title>
 
 
 
@@ -53,7 +53,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 
 <body>
     <div id="header">
-<h1 class="postTitle">[WIP]TCP/IP协议系列之ARP协议</h1>
+<h1 class="postTitle">TCP/IP协议系列之ARP协议</h1>
 <div class="title-right">
     <a href="https://blog.npex.top" id="buttonHome" class="btn btn-invisible circle" title="首页">
         <svg class="octicon" width="16" height="16">
@@ -92,7 +92,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p><strong>不知道目的MAC地址，ARP协议是怎么把包送到目标主机的呢？</strong></p>
 <p>是用了数据链路层的广播功能，数据链路层的所有主机都会收到这条消息，IP地址匹配的主机就会发送一个ARP响应包，响应包中就会携带自己的MAC地址。</p>
 <h2>ARP表</h2>
-<p>如果我们向一个节点发送过一次包，那么就极有可能会继续发送多次，如果每次发送都需要发ARP包询问MAC地址的话，那就有点太费时了，所以所有网络节点都会维护一个IP地址和MAC地址的映射表缓存，叫<strong>ARP表</strong>。</p>
+<p>如果我们向一个节点发送过一次包，那么就极有可能会继续发送多次，如果每次发送都需要发ARP包询问MAC地址的话，那就有点太费时了，所以所有网络节点都会维护一个IP地址和MAC地址的映射表缓存，叫<strong>ARP表</strong>。下一次发送的时候就可以直接查表找到目标节点的MAC地址。</p>
 <div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>但是IP地址时有可能变化的，所以ARP表还会有维护的逻辑。</p>
 </div></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
