@@ -47,7 +47,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 }
 
 </style>
-<style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-important {border-left-color:var(--borderColor-done-emphasis, var(--color-done-emphasis));background-color:var(--color-done-subtle);}.markdown-alert.markdown-alert-important .markdown-alert-title {color: var(--fgColor-done,var(--color-done-fg));}</style>
+<style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-note {border-left-color:var(--borderColor-accent-emphasis, var(--color-accent-emphasis));background-color:var(--color-accent-subtle);}.markdown-alert.markdown-alert-note .markdown-alert-title {color: var(--fgColor-accent,var(--color-accent-fg));}</style><style>.markdown-alert.markdown-alert-important {border-left-color:var(--borderColor-done-emphasis, var(--color-done-emphasis));background-color:var(--color-done-subtle);}.markdown-alert.markdown-alert-important .markdown-alert-title {color: var(--fgColor-done,var(--color-done-fg));}</style>
 
 
 
@@ -84,10 +84,17 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 <h1>ARP是怎么工作的</h1>
 <p>ARP协议就是来解决只知道IP地址，不知道MAC地址的问题的。ARP协议使用数据链路层的广播功能，在数据链路内广播ARP请求，ARP协议会携带下一个节点的IP地址，当对应地址的节点接收到请求后，会响应这个请求，在响应中填上自己的MAC地址，这样发送端收到响应后就知道下一个节点的MAC地址啦。</p>
-<p>ARP协议定义了两种类型的包：ARP请求包和ARP响应包，包格式如下：</p>
+<p>ARP协议定义了两种类型的包，ARP请求包和ARP响应包，包格式如下：</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/bcacaedd-b077-451f-9130-62f8bba32775"><img src="https://github.com/user-attachments/assets/bcacaedd-b077-451f-9130-62f8bba32775" alt="image" style="max-width: 100%;"></a></p>
+<p>目的MAC地址在请求包中是不存在的，因为不知道，所以用0填充。</p>
 <p>还是借用一张《图解TCP/IP》的图：</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/ee8a4fa9-10f2-4a81-88e0-153541c5f412"><img src="https://github.com/user-attachments/assets/ee8a4fa9-10f2-4a81-88e0-153541c5f412" alt="Image00187" style="max-width: 100%;"></a></p></div>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/ee8a4fa9-10f2-4a81-88e0-153541c5f412"><img src="https://github.com/user-attachments/assets/ee8a4fa9-10f2-4a81-88e0-153541c5f412" alt="Image00187" style="max-width: 100%;"></a></p>
+<p><strong>不知道目的MAC地址，ARP协议是怎么把包送到目标主机的呢？</strong></p>
+<p>是用了数据链路层的广播功能，数据链路层的所有主机都会收到这条消息，IP地址匹配的主机就会发送一个ARP响应包，响应包中就会携带自己的MAC地址。</p>
+<h2>ARP表</h2>
+<p>如果我们向一个节点发送过一次包，那么就极有可能会继续发送多次，如果每次发送都需要发ARP包询问MAC地址的话，那就有点太费时了，所以所有网络节点都会维护一个IP地址和MAC地址的映射表缓存，叫<strong>ARP表</strong>。</p>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>但是IP地址时有可能变化的，所以ARP表还会有维护的逻辑。</p>
+</div></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
