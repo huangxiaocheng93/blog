@@ -263,6 +263,18 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 <h1>其他网络层协议</h1>
 <h2>DHCP</h2>
+<p>DHCP设计出来是用来搞定IP地址分配的问题的。试想一下一个大型局域网如果有1000个节点，每个节点都需要网络管理员来设置和维护IP地址，工作量肯定会非常大，还需要管理员能记录所有已分配的地址和未分配的地址信息。<br>
+所以就需要一个管理IP地址分配的服务，也就是DHCP服务，通常由局域网内的路由器来承担这个职责。<br>
+DHCP服务提供了如下几个能力：</p>
+<ol>
+<li>管理可用的IP地址池；</li>
+<li>自动给新加入网络的节点设置IP信息，包括IP地址，子网掩码，默认网关等等；</li>
+<li>管理IP地址租期，给IP地址续期或回收；</li>
+</ol>
+<h3>DHCP发现</h3>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/109dc27d-0c99-453c-a050-d4bcde788f9a"><img src="https://github.com/user-attachments/assets/109dc27d-0c99-453c-a050-d4bcde788f9a" alt="Image00202" style="max-width: 100%;"></a></p>
+<p>DHCP通过4次请求完成IP地址的分配。</p>
+<p>// todo</p>
 <h2>NAT</h2>
 <p>NAT的背景上面有聊到过一些，原因还是因为IP地址的不足，导致没办法给每台接入网络的主机都分一个全局地址，但是主机又要接入广域网，那怎么办呢？NAT就应运而生了。</p>
 <p>NAT的思路是在局域网内，主机都分配私有地址，当局域网内的主机作为发送端发送数据到广域网时，在路由器中，对发送端的IP地址做一次转换，转换成公网地址；在局域网主机作为接收端时也是一样的处理方式，路由器接收到数据时，会将全局地址转换为私有地址，然后转发给对应的主机。</p>
