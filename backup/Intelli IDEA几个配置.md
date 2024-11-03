@@ -1,7 +1,11 @@
-记录几个自己习惯的idea配置，方便下次重新设置
+记录几个自己习惯的idea配置，方便下次重新设置的时候直接对照
 # 快捷键配置
 
+## 
+
 #实时模板
+
+## 类注释模板
 
 ```java
 /**
@@ -11,3 +15,10 @@
  * @since $date$ $time$
  */
 ```
+
+![806f4daf1e9a88a7745cdd9fd4883e09_](https://github.com/user-attachments/assets/773aa03c-e444-4a58-8622-96290407fd61)
+
+<img width="543" alt="1e928ad4d6f021954b8eb44f230db1ee_" src="https://github.com/user-attachments/assets/b528a5b2-10f3-45b4-be74-ae5891e82fff">
+
+
+![6954e0f96fc566622bb8ca5991dff0c9_](https://github.com/user-attachments/assets/49a77ec5-8b17-41a5-84c3-9484324ca722)
