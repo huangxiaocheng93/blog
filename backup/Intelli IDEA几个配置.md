@@ -1,9 +1,14 @@
 记录几个自己习惯的idea配置，方便下次重新设置的时候直接对照
 # 快捷键配置
 
-## 
+## 前进和后退
 
-#实时模板
+关键字
+
+![image](https://github.com/user-attachments/assets/b803c4f0-5e9b-47a5-87f9-be817ecd5835)
+
+
+# 实时模板
 
 ## 类注释模板
 

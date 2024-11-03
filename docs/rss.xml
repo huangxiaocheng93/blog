@@ -1,10 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Vincent的博客</title><link>https://blog.npex.top</link><description>Vincent的碎片知识集散地，边复习边整理，希望下次能一看就懂。偶尔也记录下其他的收获。</description><copyright>Vincent的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/33109308?s=400&amp;u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&amp;v=4</url><title>avatar</title><link>https://blog.npex.top</link></image><lastBuildDate>Sun, 03 Nov 2024 12:11:20 +0000</lastBuildDate><managingEditor>Vincent的博客</managingEditor><ttl>60</ttl><webMaster>Vincent的博客</webMaster><item><title>Intelli IDEA几个配置</title><link>https://blog.npex.top/post/25.html</link><description>记录几个自己习惯的idea配置，方便下次重新设置的时候直接对照&#13;
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Vincent的博客</title><link>https://blog.npex.top</link><description>Vincent的碎片知识集散地，边复习边整理，希望下次能一看就懂。偶尔也记录下其他的收获。</description><copyright>Vincent的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/33109308?s=400&amp;u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&amp;v=4</url><title>avatar</title><link>https://blog.npex.top</link></image><lastBuildDate>Sun, 03 Nov 2024 12:44:43 +0000</lastBuildDate><managingEditor>Vincent的博客</managingEditor><ttl>60</ttl><webMaster>Vincent的博客</webMaster><item><title>Intelli IDEA几个配置</title><link>https://blog.npex.top/post/25.html</link><description>记录几个自己习惯的idea配置，方便下次重新设置的时候直接对照&#13;
 # 快捷键配置&#13;
 &#13;
-## &#13;
+## 前进和后退&#13;
 &#13;
-#实时模板&#13;
+关键字&#13;
+&#13;
+![image](https://github.com/user-attachments/assets/b803c4f0-5e9b-47a5-87f9-be817ecd5835)&#13;
+&#13;
+&#13;
+# 实时模板&#13;
 &#13;
 ## 类注释模板&#13;
 &#13;
