@@ -3,9 +3,20 @@
 
 ## 前进和后退
 
-关键字
+**前进**英文关键字是`forward`，中文关键字是`前进`
 
 ![image](https://github.com/user-attachments/assets/b803c4f0-5e9b-47a5-87f9-be817ecd5835)
+
+**后退**英文关键字是`back`，中文关键字是`后退`
+
+![image](https://github.com/user-attachments/assets/fe449256-0565-44d1-b5ce-4e0add1dbc94)
+
+## 删除整行
+
+删除整行习惯了`ctrl + D`
+
+![image](https://github.com/user-attachments/assets/7cdb295f-3612-4f1b-9b38-9f56d73a7b52)
+
 
 
 # 实时模板
