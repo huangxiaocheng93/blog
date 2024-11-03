@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Vincent的博客</title><link>https://blog.npex.top</link><description>Vincent的碎片知识集散地，边复习边整理，希望下次能一看就懂。偶尔也记录下其他的收获。</description><copyright>Vincent的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/33109308?s=400&amp;u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&amp;v=4</url><title>avatar</title><link>https://blog.npex.top</link></image><lastBuildDate>Sun, 03 Nov 2024 12:10:06 +0000</lastBuildDate><managingEditor>Vincent的博客</managingEditor><ttl>60</ttl><webMaster>Vincent的博客</webMaster><item><title>Intelli IDEA几个配置</title><link>https://blog.npex.top/post/25.html</link><description>记录几个自己习惯的idea配置，方便下次重新设置的时候直接对照&#13;
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Vincent的博客</title><link>https://blog.npex.top</link><description>Vincent的碎片知识集散地，边复习边整理，希望下次能一看就懂。偶尔也记录下其他的收获。</description><copyright>Vincent的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/33109308?s=400&amp;u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&amp;v=4</url><title>avatar</title><link>https://blog.npex.top</link></image><lastBuildDate>Sun, 03 Nov 2024 12:11:20 +0000</lastBuildDate><managingEditor>Vincent的博客</managingEditor><ttl>60</ttl><webMaster>Vincent的博客</webMaster><item><title>Intelli IDEA几个配置</title><link>https://blog.npex.top/post/25.html</link><description>记录几个自己习惯的idea配置，方便下次重新设置的时候直接对照&#13;
 # 快捷键配置&#13;
 &#13;
 ## &#13;
@@ -8,22 +8,7 @@
 &#13;
 ## 类注释模板&#13;
 &#13;
-```java&#13;
-/**&#13;
- * TODO description&#13;
- *&#13;
- * @author huangxiaocheng&#13;
- * @since $date$ $time$&#13;
- */&#13;
-```&#13;
-&#13;
-![806f4daf1e9a88a7745cdd9fd4883e09_](https://github.com/user-attachments/assets/773aa03c-e444-4a58-8622-96290407fd61)&#13;
-&#13;
-&lt;img width='543' alt='1e928ad4d6f021954b8eb44f230db1ee_' src='https://github.com/user-attachments/assets/b528a5b2-10f3-45b4-be74-ae5891e82fff'&gt;&#13;
-&#13;
-&#13;
-![6954e0f96fc566622bb8ca5991dff0c9_](https://github.com/user-attachments/assets/49a77ec5-8b17-41a5-84c3-9484324ca722)&#13;
-。</description><guid isPermaLink="true">https://blog.npex.top/post/25.html</guid><pubDate>Thu, 31 Oct 2024 01:53:30 +0000</pubDate></item><item><title>MySQL几种字符集的区别</title><link>https://blog.npex.top/post/24.html</link><description># 字符集&#13;
+这里一般会配置两个关键字，一个是`/c`，一个是`、c`，主要是兼容中文输入法时的问题。</description><guid isPermaLink="true">https://blog.npex.top/post/25.html</guid><pubDate>Thu, 31 Oct 2024 01:53:30 +0000</pubDate></item><item><title>MySQL几种字符集的区别</title><link>https://blog.npex.top/post/24.html</link><description># 字符集&#13;
 MySQL使用较多的字符集就是**utf8**和**utf8mb4**，了解一下这两者的区别。</description><guid isPermaLink="true">https://blog.npex.top/post/24.html</guid><pubDate>Thu, 24 Oct 2024 08:41:06 +0000</pubDate></item><item><title>TCP/IP协议系列之ARP协议</title><link>https://blog.npex.top/post/23.html</link><description># ARP协议是什么&#13;
 &#13;
 在网络层，唯一地址是IP地址，所以在网络层，只能知道下一个节点的IP地址。</description><guid isPermaLink="true">https://blog.npex.top/post/23.html</guid><pubDate>Sat, 12 Oct 2024 11:38:40 +0000</pubDate></item><item><title>TCP/IP协议系列之ICMP协议</title><link>https://blog.npex.top/post/22.html</link><description># TCP/IP协议系列&#13;
