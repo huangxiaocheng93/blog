@@ -84,7 +84,19 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <h2>总结</h2>
 <p>现在使用比较多的MySQL版本是<strong>5.7</strong>和<strong>8.0</strong>，都建议使用utf8mb4字符集，在utf8mb4字符集下，建议使用<strong>varchar</strong>类型来代替<strong>char</strong>类型，因为在utf8mb4下MySQL势必要为char类型保留更多的字节。</p>
 <h1>排序规则</h1>
-<p>在字符集之下，还要选择对应的排序规则，这个排序规则主要应用在字段的排序上。字符集为utf8mb4时，5.7的默认排序规则是<strong>utf8mb4_general_ci</strong>，8.0的默认排序规则是<strong>utf8mb4_0900_ai_ci</strong>，了解一下这两者的区别。</p></div>
+<p>在字符集之下，还要选择对应的排序规则，这个排序规则主要应用在字段的排序上。字符集为utf8mb4时，5.7的默认排序规则是<strong>utf8mb4_general_ci</strong>，8.0的默认排序规则是<strong>utf8mb4_0900_ai_ci</strong>，了解一下这两者的区别。</p>
+<h2>命名方式</h2>
+<p>这两种命名的规则不太一样，先看比较新的。</p>
+<h3>utf8mb4_0900_ai_ci</h3>
+<p><strong>utf8mb4</strong>毫无疑问代表的是字符集；<br>
+<strong>0900</strong>代表的是unicode校对算法的版本，表示的是unicode校对算法的9.0版本，校对算法是指比较两个unicode的算法；<br>
+<strong>ai</strong>中的<strong>a</strong>指的是是否区分重音，例如中文的四个音调，英文也有类似的东西，<strong>i</strong>指的是不区分重音，相对应的还有<strong>s</strong>表示区分重音；<br>
+<strong>ci</strong>中的<strong>c</strong>表示是否区分大小写，例如A和a，同样的道理，<strong>i</strong>表示不区分大小写，相对应的还有<strong>s</strong>表示区分大小写；</p>
+<h3>utf8mb4_general_ci</h3>
+<p>这个排序算法和上面不太一样，并不是使用的unicode的校对算法，所以它也没有版本号啥的，它就叫general，是一个独立实现的排序算法。</p>
+<h2>对比</h2>
+<p>utf8mb4_general_ci相对来说排序性能会更好，但是准确性差一点；</p>
+<p>utf8mb4_0900_ai_ci由于实现了unicode的排序算法，所以准确性没问题，但是性能相比会稍差点；</p></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
