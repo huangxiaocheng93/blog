@@ -99,19 +99,32 @@
 
 包含的额外信息，无法在一个字段中概述但是依旧重要的额外信息
 
-- **using filesort** 
+### **Using filesort** 
 文件排序意为MySQL无法利用索引进行排序，而使用了外部的排序算法，常见于order by 或 group by
-- **using temporary** 
+
+### **Using temporary** 
 使用了临时表保存中间结果，查询完成后临时表删除
-- **using index** 
+
+### **Using index**
 索引覆盖意为直接从索引中读取数据，而不用访问数据表，如果同时出现 using where 表明索引被用来执行索引键值的查找，否则，索引被用来读取数据而不是执行查找操作
-- **using where** 
-使用where进行条件过滤
-- **using join buffer** 
+
+### **Using index condition** 
+说明是使用索引作为查询条件，但是索引中的数据不足以满足目标查询的字段，也就是无法使用覆盖索引，需要再次回表。
+
+### **Using where** 
+说明where条件语句没有完全包含在索引中，使用索引筛选完后，还要执行额外的where语句。
+
+### **Using join buffer** 
 使用了连接缓存
-- **impossible where**  
+
+### **impossible where**  
 where语句结果是false
-- **select tables optimized away** 
+
+### **select tables optimized away** 
 在没有group by字句情况下，基于索引优化操作或对于MyISAM存储引擎优化COUNT（*）操作，不必等到执行阶段再进行计算，查询执行计划生成的阶段即完成优化
-- **distinct** 
+
+### **distinct** 
 优化distinct操作，在找到第一匹配的元祖后即停止找同样值的动作
+
+### **Backward index scan**
+使用索引进行倒序的扫描。
