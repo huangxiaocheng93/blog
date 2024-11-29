@@ -118,10 +118,7 @@
 使用了临时表保存中间结果，查询完成后临时表删除
 
 ### **Using index**
-索引覆盖意为直接从索引中读取数据，而不用访问数据表，如果同时出现 using where 表明索引被用来执行索引键值的查找，否则，索引被用来读取数据而不是执行查找操作
-
-### **Using index condition** 
-说明是使用索引作为查询条件，但是索引中的数据不足以满足目标查询的字段，也就是无法使用覆盖索引，需要再次回表。">
+代表使用了**覆盖索引**。">
 <meta property="og:title" content="MySQL执行计划详解">
 <meta property="og:description" content="| Column | Meaning |
 |--------|---------|
@@ -231,10 +228,7 @@
 使用了临时表保存中间结果，查询完成后临时表删除
 
 ### **Using index**
-索引覆盖意为直接从索引中读取数据，而不用访问数据表，如果同时出现 using where 表明索引被用来执行索引键值的查找，否则，索引被用来读取数据而不是执行查找操作
-
-### **Using index condition** 
-说明是使用索引作为查询条件，但是索引中的数据不足以满足目标查询的字段，也就是无法使用覆盖索引，需要再次回表。">
+代表使用了**覆盖索引**。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://blog.npex.top/post/11.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
@@ -424,7 +418,9 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <h3><strong>Using temporary</strong></h3>
 <p>使用了临时表保存中间结果，查询完成后临时表删除</p>
 <h3><strong>Using index</strong></h3>
-<p>索引覆盖意为直接从索引中读取数据，而不用访问数据表，如果同时出现 using where 表明索引被用来执行索引键值的查找，否则，索引被用来读取数据而不是执行查找操作</p>
+<p>代表使用了<strong>覆盖索引</strong>。<br>
+当前命中的索引中包含了sql语句查询的所有字段时，就不需要再回表了，直接使用索引中的字段即可。</p>
+<p><strong>Using index</strong></p>
 <h3><strong>Using index condition</strong></h3>
 <p>说明是使用索引作为查询条件，但是索引中的数据不足以满足目标查询的字段，也就是无法使用覆盖索引，需要再次回表。</p>
 <h3><strong>Using where</strong></h3>
