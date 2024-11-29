@@ -109,7 +109,8 @@
 代表使用了**覆盖索引**。
 当前命中的索引中包含了sql语句查询的所有字段时，就不需要再回表了，直接使用索引中的字段即可。
 
-**Using index**
+> [!TIP]
+> 需要注意的是**Using index**并不代表一定使用了这个索引做查询，例如：`test_table`表有索引`idx_a_b`是`a,b`两个字段, 此时执行`select a, b from test_table`，会命中`idx_a_b`，执行计划`extra`字段包含`Using index`，但是此时做的是全索引扫描。
 
 
 ### **Using index condition** 
