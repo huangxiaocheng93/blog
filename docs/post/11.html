@@ -63,7 +63,7 @@
 
 显示这一行的数据是关于哪张表，内容为表名或者别名，可能是临时表或者union合并结果集
 
-## type
+## **type**字段
 
 显示访问类型，表示以何种方式访问了数据，从最好到最差的排列为：
 
@@ -72,43 +72,7 @@
 **一般情况下，得保证查询至少达到range，最好能达到ref**
 
 - **system** 
-表里只有一行记录，是const的特例，一般不会出现
-- **const**
-表里至多有一个匹配行
-- **eq_ref** 
-主键索引（primary key）或者非空唯一索引（unique not null）等值扫描
-- **ref** 
-非主键非唯一索引等值扫描
-- **range** 
-利用索引查询的时候限定了范围，一般出现于between <（<=） > (>=) in 等查询
-- **index** 
-全索引扫描，比all效率高，index从索引中扫描，而all是从硬盘上扫描
-- **all** 
-全表扫描，一般出现此类型的sql并且数据量较大的话就要进行优化
-
-## **possible_keys**
-
-显示的是可能应用在这张表中的索引，一个或多个，查询涉及到的字段若存在索引，则该索引会被列出，但不一定被查询实际使用
-
-## **key**
-
-实际使用的索引，如果为null，则没有用到索引
-若查询中用到了索引覆盖，则该索引和查询的select字段重叠，仅出现在key列表中
-
-## **key_len**
-
-表示索引中使用的字节数，可以通过key_len计算查询中使用的索引长度，在不损失精度的情况下长度越短越好
-
-## **ref**
-
-显示索引的哪一列被使用了，如果可能的话，是一个常数
-
-## **rows**
-
- 根据表的统计信息及索引选用情况，大致估算出找到所需记录需要读取的行数
-
-## **filtered**
-filtered是结果集行数和扫描行数的比值的百分数，这个值是越大越好。">
+表里只有一行记录，是const的特例，一般不会出现，知道即可。">
 <meta property="og:title" content="MySQL执行计划详解">
 <meta property="og:description" content="| Column | Meaning |
 |--------|---------|
@@ -163,7 +127,7 @@ filtered是结果集行数和扫描行数的比值的百分数，这个值是越
 
 显示这一行的数据是关于哪张表，内容为表名或者别名，可能是临时表或者union合并结果集
 
-## type
+## **type**字段
 
 显示访问类型，表示以何种方式访问了数据，从最好到最差的排列为：
 
@@ -172,43 +136,7 @@ filtered是结果集行数和扫描行数的比值的百分数，这个值是越
 **一般情况下，得保证查询至少达到range，最好能达到ref**
 
 - **system** 
-表里只有一行记录，是const的特例，一般不会出现
-- **const**
-表里至多有一个匹配行
-- **eq_ref** 
-主键索引（primary key）或者非空唯一索引（unique not null）等值扫描
-- **ref** 
-非主键非唯一索引等值扫描
-- **range** 
-利用索引查询的时候限定了范围，一般出现于between <（<=） > (>=) in 等查询
-- **index** 
-全索引扫描，比all效率高，index从索引中扫描，而all是从硬盘上扫描
-- **all** 
-全表扫描，一般出现此类型的sql并且数据量较大的话就要进行优化
-
-## **possible_keys**
-
-显示的是可能应用在这张表中的索引，一个或多个，查询涉及到的字段若存在索引，则该索引会被列出，但不一定被查询实际使用
-
-## **key**
-
-实际使用的索引，如果为null，则没有用到索引
-若查询中用到了索引覆盖，则该索引和查询的select字段重叠，仅出现在key列表中
-
-## **key_len**
-
-表示索引中使用的字节数，可以通过key_len计算查询中使用的索引长度，在不损失精度的情况下长度越短越好
-
-## **ref**
-
-显示索引的哪一列被使用了，如果可能的话，是一个常数
-
-## **rows**
-
- 根据表的统计信息及索引选用情况，大致估算出找到所需记录需要读取的行数
-
-## **filtered**
-filtered是结果集行数和扫描行数的比值的百分数，这个值是越大越好。">
+表里只有一行记录，是const的特例，一般不会出现，知道即可。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://blog.npex.top/post/11.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
@@ -360,26 +288,40 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </ul>
 <h2>table</h2>
 <p>显示这一行的数据是关于哪张表，内容为表名或者别名，可能是临时表或者union合并结果集</p>
-<h2>type</h2>
+<h2><strong>type</strong>字段</h2>
 <p>显示访问类型，表示以何种方式访问了数据，从最好到最差的排列为：</p>
 <p><strong>system &gt; const &gt; eq_ref &gt; ref &gt; range &gt; index &gt; all</strong></p>
 <p><strong>一般情况下，得保证查询至少达到range，最好能达到ref</strong></p>
 <ul>
-<li><strong>system</strong><br>
-表里只有一行记录，是const的特例，一般不会出现</li>
-<li><strong>const</strong><br>
-表里至多有一个匹配行</li>
-<li><strong>eq_ref</strong><br>
-主键索引（primary key）或者非空唯一索引（unique not null）等值扫描</li>
-<li><strong>ref</strong><br>
-非主键非唯一索引等值扫描</li>
-<li><strong>range</strong><br>
-利用索引查询的时候限定了范围，一般出现于between &lt;（&lt;=） &gt; (&gt;=) in 等查询</li>
-<li><strong>index</strong><br>
-全索引扫描，比all效率高，index从索引中扫描，而all是从硬盘上扫描</li>
-<li><strong>all</strong><br>
-全表扫描，一般出现此类型的sql并且数据量较大的话就要进行优化</li>
+<li>
+<p><strong>system</strong><br>
+表里只有一行记录，是const的特例，一般不会出现，知道即可。</p>
+</li>
+<li>
+<p><strong>const</strong><br>
+表里至多有一个匹配行。</p>
+</li>
+<li>
+<p><strong>eq_ref</strong><br>
+主键索引（primary key）或者非空唯一索引（unique not null）等值扫描</p>
+</li>
+<li>
+<p><strong>ref</strong><br>
+非主键非唯一索引等值扫描。</p>
+</li>
+<li>
+<p><strong>range</strong><br>
+利用索引查询的时候限定了范围，一般出现于between &lt;（&lt;=） &gt; (&gt;=) in 等查询</p>
+</li>
 </ul>
+<h3><strong>index</strong></h3>
+<p><strong>全索引扫描</strong>。<br>
+index说明查询在做全索引扫描，这种情况只比全表扫描要稍微好一点，相当于是逐条遍历数据，只不过是遍历的索引。<br>
+这种情况，应该已经是慢查的范围， 我们在优化中需要避免，不应该出现需要全索引扫描的情况。</p>
+<h3><strong>all</strong></h3>
+<p><strong>全表扫描</strong>。<br>
+最差的情况，说明查询没有命中任何索引，必须逐条数据过滤。<br>
+这种情况应该坚决杜绝出现，必须优化。</p>
 <h2><strong>possible_keys</strong></h2>
 <p>显示的是可能应用在这张表中的索引，一个或多个，查询涉及到的字段若存在索引，则该索引会被列出，但不一定被查询实际使用</p>
 <h2><strong>key</strong></h2>
