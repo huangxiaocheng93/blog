@@ -326,13 +326,19 @@ index说明查询在做全索引扫描，这种情况只比全表扫描要稍微
 <p>本次查询可能用到的key，查询中涉及到的字段，如果存在于索引中，那么这个索引就是本次查询可能用到的索引，所有可能用到的索引组成当前这个字段。<br>
 但是这些索引最终只会有一个被用到，或者一个都不会被用到。</p>
 <h2><strong>key</strong></h2>
-<p>本次查询实际用到的索引，如果时空，说明没有用到索引。</p>
+<p>本次查询实际用到的索引，如果是空，说明没有用到索引。<br>
+通常情况下，我们在测试环境优化sql语句，然后发布到生产去使用，毕竟我们不可能在生产环境随意的修改索引。但是偶尔就会出现我们在测试环境跑的好好的语句，到了生产环境死活无法命中我们目标的索引，</p>
 <h1><strong>key_len</strong>字段</h1>
-<p>当前查询命中的索引中使用的字节数。举例来说明这个字段。<br>
+<p>当前查询命中的索引中使用的字节数。在不考虑其他影响因素的情况下，索引长度越短，索引的效率越高。这是因为索引索引长度越短，需要进行的读操作也就越少，查询主要的耗时就是来源于读操作的I/O耗时。</p>
+<p>但是key_len不用作为优化的主要方面，首先是设计合理的索引，当多个索引其他方面差异不大，或者key_len差异非常大的，再考虑key_len指标也不迟。</p>
+<p>举例来说明这个长度的计算规则：<br>
 设定如下：<code class="notranslate">test_table</code>表有索引<code class="notranslate">idx_a_b</code>是<code class="notranslate">a,b</code>两个字段, 其中<code class="notranslate">a</code>字段是<code class="notranslate">varchar(50)</code>，<code class="notranslate">b</code>字段是<code class="notranslate">bigint</code>，都是不允许为空的字段。</p>
 <h2>查询1</h2>
 <p><code class="notranslate">select * from test_table where a='test_a' and b=0</code><br>
-此时很明显会命中<code class="notranslate">idx_a_b</code>这个索引，那么索引长度就是<code class="notranslate">a,b</code>两个字段的长度，50*4+2+8，varchar一个字符占4个字节，而且由于varchar是变成字段，所以需要额外2个字节记录长度信息，<code class="notranslate">bigint</code>占8个字节，所以key_len=210。</p>
+此时很明显会命中<code class="notranslate">idx_a_b</code>这个索引，那么索引长度就是<code class="notranslate">a,b</code>两个字段的长度：50*4+2+8，varchar一个字符占4个字节，而且由于varchar是变成字段，所以需要额外2个字节记录长度信息，<code class="notranslate">bigint</code>占8个字节，所以key_len=210。</p>
+<h2>查询2</h2>
+<p><code class="notranslate">select * from test_table where a='test_a'</code><br>
+此时也会命中<code class="notranslate">idx_a_b</code>这个索引，但是根据最左匹配原则，只会用到字段<code class="notranslate">a</code>，所以索引长度也是<code class="notranslate">a</code>字段的长度：50*4+2=202，所以key_len就是202。</p>
 <h1><strong>ref</strong>字段</h1>
 <p>显示索引的哪一列被使用了，如果可能的话，是一个常数</p>
 <h1><strong>rows</strong>字段</h1>
