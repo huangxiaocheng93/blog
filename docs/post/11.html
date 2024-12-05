@@ -369,9 +369,19 @@ index说明查询在做全索引扫描，这种情况只比全表扫描要稍微
 还是上面的表：<code class="notranslate">test_table</code>，索引是<code class="notranslate">idx_a_b(a, b)</code>，假设<code class="notranslate">a,b</code>都是<code class="notranslate">int</code>型。</p>
 <h3>等值查询</h3>
 <p>如果是等值查询：<code class="notranslate">select a, b from test_table where a=10 and b=20</code><br>
-如果是等值查询的情况，根据最左匹配原则，引擎会先从索引树找<code class="notranslate">a=10</code>的节点，因为是等值，所以我们可以利用索引树的结构准确的找到<code class="notranslate">a=10</code>的节点；那么以此为起点，再匹配<code class="notranslate">b=20</code>的节点，因为在<code class="notranslate">a</code>字段值确定时，<code class="notranslate">b</code>字段是有序的，所以我们查找<code class="notranslate">b=20</code>的节点时仍然可以利用索引树的结构来查找，就可以准确的找到等值的数据，<strong>同时保证每一条读到的数据都是我们的目标数据</strong>。</p>
+根据最左匹配原则，引擎会先从索引树找<code class="notranslate">a=10</code>的节点，因为是等值，所以我们可以利用索引树的结构准确的找到<code class="notranslate">a=10</code>的节点；那么以此为起点，再匹配<code class="notranslate">b=20</code>的节点，因为在<code class="notranslate">a</code>字段值确定时，<code class="notranslate">b</code>字段是有序的，所以我们查找<code class="notranslate">b=20</code>的节点时仍然可以利用索引树的结构来查找，就可以准确的找到等值的数据，<strong>同时保证每一条读到的数据都是我们的目标数据</strong>。</p>
 <h3>非等值查询</h3>
-<p>非等值查询有多重情况，例如范围查询或者模糊查询，以范围查询举例。</p>
+<p>非等值查询有多重情况，例如范围查询或者模糊查询，以范围查询举例。<br>
+如果是范围查询：<code class="notranslate">select * from test_table where a=10 and b&gt;20 and b&lt;30</code><br>
+因为<code class="notranslate">a</code>字段还是等值查询，根据最左匹配原则，引擎还是会先利用索引树的结构准确的找到<code class="notranslate">a=10</code>的节点，但是在处理<code class="notranslate">b</code>字段时有所不同了。<br>
+由于<code class="notranslate">b</code>字段并不是等值查询，所以没有办法再利用树结构准确的找到符合<code class="notranslate">b</code>字段条件的节点，所以只能轮询去找当前节点下的子节点去寻找符合<code class="notranslate">b</code>字段条件的节点，此时就有可能读取一些并不符合条件的记录，就会出现<strong>Using index condition</strong>提示。意思就是虽然查询使用了索引，但是仍然需要过滤一些额外的数据来圈定查询的结果集。</p>
+<h3>ICP</h3>
+<h3>一些有趣的现象</h3>
+<h4>b字段查询范围的影响</h4>
+<p>按照非等值查询设定的场景，如果当<code class="notranslate">a=10</code>过滤出来的数据，<code class="notranslate">b</code>字段的值全都落在20到30之间，我们会发现<strong>Using index condition</strong>提示没有了。<br>
+这里我没有找到非常准确的解释，但是按照我的理解，这种情况下，虽然引擎扫描了所有<code class="notranslate">a=10</code>的索引数据，但是并没有扫描任何一条<strong>额外</strong>的数据，也就是没有扫描不会被加入结果集的数据，所以mysql认为并没有额外的开销产生。</p>
+<h4>覆盖索引的影响</h4>
+<p>按照非等值查询设定的场景，我们把查询的字段改成只查询<code class="notranslate">id, a, b</code>三个字段，然后我们发现<strong>Using index condition</strong>变成了<strong>Using index</strong>。</p>
 <h3><strong>Using filesort</strong></h3>
 <p>文件排序意为MySQL无法利用索引进行排序，而使用了外部的排序算法，常见于order by 或 group by</p>
 <h3><strong>Using join buffer</strong></h3>
