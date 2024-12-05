@@ -366,11 +366,12 @@ index说明查询在做全索引扫描，这种情况只比全表扫描要稍微
 <p>这个提示是花了我挺多时间研究的一个提示，网络上的大部分资料讲的都不是很清楚，现在尝试来讲清楚这个提示。<br>
 这个提示通常在使用<strong>非聚簇索引</strong>的<strong>非等值查询</strong>的情况下可能会出现，那它表示的是啥意思呢？<br>
 它的意思是，凭借索引无法准确的命中记录，还需要根据where条件额外的扫描一些记录才能最终确定结果集，为啥会这样，举个例子来说明：<br>
-还是上面的查询：<code class="notranslate">select a, b from test_table</code>，索引是<code class="notranslate">idx_a_b(a, b)</code>，假设<code class="notranslate">a,b</code>都是<code class="notranslate">int</code>型。</p>
+还是上面的表：<code class="notranslate">test_table</code>，索引是<code class="notranslate">idx_a_b(a, b)</code>，假设<code class="notranslate">a,b</code>都是<code class="notranslate">int</code>型。</p>
 <h3>等值查询</h3>
-<p>如果是等值查询的情况，根据最左匹配原则，引擎会先从索引树找<code class="notranslate">a</code>字段，因为是等值，所以我们可以通过索引树准确的找到对应记录所在的节点；那么以此为起点，再匹配<code class="notranslate">b</code>字段，因为在<code class="notranslate">a</code>字段值确定时，<code class="notranslate">b</code>字段是有序的，所以我们查找<code class="notranslate">b</code>字段时仍然可以通过利用索引树的结构来查找，此时我们就可以准确的找到等值的数据，<strong>保证每一条读到的数据都是我们需要的</strong>。</p>
+<p>如果是等值查询：<code class="notranslate">select a, b from test_table where a=10 and b=20</code><br>
+如果是等值查询的情况，根据最左匹配原则，引擎会先从索引树找<code class="notranslate">a=10</code>的节点，因为是等值，所以我们可以利用索引树的结构准确的找到<code class="notranslate">a=10</code>的节点；那么以此为起点，再匹配<code class="notranslate">b=20</code>的节点，因为在<code class="notranslate">a</code>字段值确定时，<code class="notranslate">b</code>字段是有序的，所以我们查找<code class="notranslate">b=20</code>的节点时仍然可以利用索引树的结构来查找，就可以准确的找到等值的数据，<strong>同时保证每一条读到的数据都是我们的目标数据</strong>。</p>
 <h3>非等值查询</h3>
-<p>非等值查询有多重情况，例如范围查询或者模糊查询，以范围查询距离。</p>
+<p>非等值查询有多重情况，例如范围查询或者模糊查询，以范围查询举例。</p>
 <h3><strong>Using filesort</strong></h3>
 <p>文件排序意为MySQL无法利用索引进行排序，而使用了外部的排序算法，常见于order by 或 group by</p>
 <h3><strong>Using join buffer</strong></h3>
