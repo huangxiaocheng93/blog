@@ -376,6 +376,7 @@ index说明查询在做全索引扫描，这种情况只比全表扫描要稍微
 因为<code class="notranslate">a</code>字段还是等值查询，根据最左匹配原则，引擎还是会先利用索引树的结构准确的找到<code class="notranslate">a=10</code>的节点，但是在处理<code class="notranslate">b</code>字段时有所不同了。<br>
 由于<code class="notranslate">b</code>字段并不是等值查询，所以没有办法再利用树结构准确的找到符合<code class="notranslate">b</code>字段条件的节点，所以只能轮询去找当前节点下的子节点去寻找符合<code class="notranslate">b</code>字段条件的节点，此时就有可能读取一些并不符合条件的记录，就会出现<strong>Using index condition</strong>提示。意思就是虽然查询使用了索引，但是仍然需要过滤一些额外的数据来圈定查询的结果集。</p>
 <h3>ICP</h3>
+<p><strong>ICP</strong>全称是<code class="notranslate">Index Condition Pushdown</code>，是MySQL5.6开始支持的一种查询优化技术，在支</p>
 <h3>一些有趣的现象</h3>
 <h4>b字段查询范围的影响</h4>
 <p>按照非等值查询设定的场景，如果当<code class="notranslate">a=10</code>过滤出来的数据，<code class="notranslate">b</code>字段的值全都落在20到30之间，我们会发现<strong>Using index condition</strong>提示没有了。<br>

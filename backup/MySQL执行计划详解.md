@@ -164,6 +164,8 @@ filtered是结果集行数和扫描行数的比值的百分数，所以filetered
 
 ### ICP
 
+**ICP**全称是`Index Condition Pushdown`，是MySQL5.6开始支持的一种查询优化技术，在支
+
 ### 一些有趣的现象
 
 #### b字段查询范围的影响
