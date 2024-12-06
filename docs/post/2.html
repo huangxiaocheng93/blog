@@ -98,7 +98,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <h1><strong>线程池的构造</strong></h1>
 <p>Java 主要是通过构建 ThreadPoolExecutor 来创建线程池的。接下来我们看一下线程池是如何构造出来的</p>
 <p>ThreadPoolExecutor 的构造方法：</p>
-<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">public</span> <span class="pl-s1">ThreadPoolExecutor</span>(<span class="pl-smi">int</span> <span class="pl-s1">corePoolSize</span>,
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">public</span> <span class="pl-smi">ThreadPoolExecutor</span><span class="pl-en"></span>(<span class="pl-smi">int</span> <span class="pl-s1">corePoolSize</span>,
                               <span class="pl-smi">int</span> <span class="pl-s1">maximumPoolSize</span>,
                               <span class="pl-smi">long</span> <span class="pl-s1">keepAliveTime</span>,
                               <span class="pl-smi">TimeUnit</span> <span class="pl-s1">unit</span>,
@@ -142,15 +142,15 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-k">final</span> <span class="pl-smi">int</span> <span class="pl-c1">TERMINATED</span> =  <span class="pl-c1">3</span> &lt;&lt; <span class="pl-c1">COUNT_BITS</span>;
 
 <span class="pl-c">// Packing and unpacking ctl</span>
-<span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-smi">int</span> <span class="pl-s1">runStateOf</span>(<span class="pl-smi">int</span> <span class="pl-s1">c</span>)     { <span class="pl-k">return</span> <span class="pl-s1">c</span> &amp; ~<span class="pl-c1">CAPACITY</span>; }
-<span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-smi">int</span> <span class="pl-s1">workerCountOf</span>(<span class="pl-smi">int</span> <span class="pl-s1">c</span>)  { <span class="pl-k">return</span> <span class="pl-s1">c</span> &amp; <span class="pl-c1">CAPACITY</span>; }
-<span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-smi">int</span> <span class="pl-s1">ctlOf</span>(<span class="pl-smi">int</span> <span class="pl-s1">rs</span>, <span class="pl-smi">int</span> <span class="pl-s1">wc</span>) { <span class="pl-k">return</span> <span class="pl-s1">rs</span> | <span class="pl-s1">wc</span>; }</pre></div>
+<span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-smi">int</span> <span class="pl-en">runStateOf</span>(<span class="pl-smi">int</span> <span class="pl-s1">c</span>)     { <span class="pl-k">return</span> <span class="pl-s1">c</span> &amp; ~<span class="pl-c1">CAPACITY</span>; }
+<span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-smi">int</span> <span class="pl-en">workerCountOf</span>(<span class="pl-smi">int</span> <span class="pl-s1">c</span>)  { <span class="pl-k">return</span> <span class="pl-s1">c</span> &amp; <span class="pl-c1">CAPACITY</span>; }
+<span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-smi">int</span> <span class="pl-en">ctlOf</span>(<span class="pl-smi">int</span> <span class="pl-s1">rs</span>, <span class="pl-smi">int</span> <span class="pl-s1">wc</span>) { <span class="pl-k">return</span> <span class="pl-s1">rs</span> | <span class="pl-s1">wc</span>; }</pre></div>
 <p>线程池的状态保存在<code class="notranslate">ctl</code>这个变量中，这个变量中同时还保存了当前线程池的线程个数，变量的高3位保存的是线程池状态，低29位保存的是线程数。</p>
 <p><code class="notranslate">workerCountOf(int c)</code> 方法从变量中取出线程数；</p>
 <p><code class="notranslate">runStateOf(int c)</code> 方法从变量中取出线程池状态；</p>
 <h1>提交任务</h1>
 <p>提交任务调用的是线程池的<code class="notranslate">execute(Runnable command)</code> 方法：</p>
-<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">public</span> <span class="pl-smi">void</span> <span class="pl-s1">execute</span>(<span class="pl-smi">Runnable</span> <span class="pl-s1">command</span>) {
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">public</span> <span class="pl-smi">void</span> <span class="pl-en">execute</span>(<span class="pl-smi">Runnable</span> <span class="pl-s1">command</span>) {
         <span class="pl-k">if</span> (<span class="pl-s1">command</span> == <span class="pl-c1">null</span>)
             <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-smi">NullPointerException</span>();
          
@@ -186,7 +186,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
             <span class="pl-en">reject</span>(<span class="pl-s1">command</span>);
     }</pre></div>
 <p>接下来时调用到的<code class="notranslate">addWorker(Runnable firstTask, boolean core)</code>方法：</p>
-<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">private</span> <span class="pl-smi">boolean</span> <span class="pl-s1">addWorker</span>(<span class="pl-smi">Runnable</span> <span class="pl-s1">firstTask</span>, <span class="pl-smi">boolean</span> <span class="pl-s1">core</span>) {
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">private</span> <span class="pl-smi">boolean</span> <span class="pl-en">addWorker</span>(<span class="pl-smi">Runnable</span> <span class="pl-s1">firstTask</span>, <span class="pl-smi">boolean</span> <span class="pl-s1">core</span>) {
     <span class="pl-s1">retry</span>:
     <span class="pl-k">for</span> (;;) {
         <span class="pl-smi">int</span> <span class="pl-s1">c</span> = <span class="pl-s1">ctl</span>.<span class="pl-en">get</span>();
@@ -348,7 +348,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     }
 }</pre></div>
 <p>从上面的方法可以看出worker的run方法主要就是调用了 <code class="notranslate">runWorker(Worker w)</code>方法，此时就已经是在工作线程中执行了：</p>
-<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">final</span> <span class="pl-smi">void</span> <span class="pl-s1">runWorker</span>(<span class="pl-smi">Worker</span> <span class="pl-s1">w</span>) {
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">final</span> <span class="pl-smi">void</span> <span class="pl-en">runWorker</span>(<span class="pl-smi">Worker</span> <span class="pl-s1">w</span>) {
     <span class="pl-smi">Thread</span> <span class="pl-s1">wt</span> = <span class="pl-smi">Thread</span>.<span class="pl-en">currentThread</span>();
     <span class="pl-c">// 拿到初始任务</span>
     <span class="pl-smi">Runnable</span> <span class="pl-s1">task</span> = <span class="pl-s1">w</span>.<span class="pl-s1">firstTask</span>;
@@ -375,8 +375,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
                 <span class="pl-en">beforeExecute</span>(<span class="pl-s1">wt</span>, <span class="pl-s1">task</span>);
                 <span class="pl-smi">Throwable</span> <span class="pl-s1">thrown</span> = <span class="pl-c1">null</span>;
                 <span class="pl-k">try</span> {
-		                执行任务
-                    <span class="pl-s1">task</span>.<span class="pl-en">run</span>();
+		                <span class="pl-smi">执行任务</span>
+                    <span class="pl-s1">task</span>.<span class="pl-s1">run</span>();
                 } <span class="pl-k">catch</span> (<span class="pl-smi">RuntimeException</span> <span class="pl-s1">x</span>) {
                     <span class="pl-s1">thrown</span> = <span class="pl-s1">x</span>; <span class="pl-k">throw</span> <span class="pl-s1">x</span>;
                 } <span class="pl-k">catch</span> (<span class="pl-smi">Error</span> <span class="pl-s1">x</span>) {
@@ -402,7 +402,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 }</pre></div>
 <p>这里我们可以看到，worker如果获取不到任务就直接退出循环，在finally块里面调用了worker退出的方法，那工作线程的等待时间是怎么实现的呢，答案就在getTask方法中；</p>
 <h1>getTask</h1>
-<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">private</span> <span class="pl-smi">Runnable</span> <span class="pl-s1">getTask</span>() {
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">private</span> <span class="pl-smi">Runnable</span> <span class="pl-en">getTask</span>() {
     <span class="pl-smi">boolean</span> <span class="pl-s1">timedOut</span> = <span class="pl-c1">false</span>; <span class="pl-c">// Did the last poll() time out?</span>
 
     <span class="pl-k">for</span> (;;) {
