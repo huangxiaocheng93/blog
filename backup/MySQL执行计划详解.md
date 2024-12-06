@@ -192,23 +192,23 @@ filtered是结果集行数和扫描行数的比值的百分数，所以filetered
 
 
 
-### **Using filesort** 
+## **Using filesort** 
 文件排序意为MySQL无法利用索引进行排序，而使用了外部的排序算法，常见于order by 或 group by
 
-### **Using join buffer** 
+## **Using join buffer** 
 使用了连接缓存
 
-### **impossible where**  
+## **impossible where**  
 where语句结果是false
 
-### **select tables optimized away** 
+## **select tables optimized away** 
 在没有group by字句情况下，基于索引优化操作或对于MyISAM存储引擎优化COUNT（*）操作，不必等到执行阶段再进行计算，查询执行计划生成的阶段即完成优化
 
-### **distinct** 
+## **distinct** 
 优化distinct操作，在找到第一匹配的元祖后即停止找同样值的动作
 
-### **Backward index scan**
+## **Backward index scan**
 使用索引进行倒序的扫描。
 
-### **Using temporary** 
+## **Using temporary** 
 使用了临时表保存中间结果，查询完成后临时表删除

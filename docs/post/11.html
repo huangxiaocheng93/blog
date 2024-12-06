@@ -430,19 +430,19 @@ index说明查询在做全索引扫描，这种情况只比全表扫描要稍微
 这里我没有找到非常准确的解释，但是按照我的理解，这种情况下，虽然引擎扫描了所有<code class="notranslate">a=10</code>的索引数据，但是并没有扫描任何一条<strong>额外</strong>的数据，也就是没有扫描不会被加入结果集的数据，所以mysql认为并没有额外的开销产生。</p>
 <h4>覆盖索引的影响</h4>
 <p>按照非等值查询设定的场景，我们把查询的字段改成只查询<code class="notranslate">id, a, b</code>三个字段，然后我们发现<strong>Using index condition</strong>变成了<strong>Using index</strong>。</p>
-<h3><strong>Using filesort</strong></h3>
+<h2><strong>Using filesort</strong></h2>
 <p>文件排序意为MySQL无法利用索引进行排序，而使用了外部的排序算法，常见于order by 或 group by</p>
-<h3><strong>Using join buffer</strong></h3>
+<h2><strong>Using join buffer</strong></h2>
 <p>使用了连接缓存</p>
-<h3><strong>impossible where</strong></h3>
+<h2><strong>impossible where</strong></h2>
 <p>where语句结果是false</p>
-<h3><strong>select tables optimized away</strong></h3>
+<h2><strong>select tables optimized away</strong></h2>
 <p>在没有group by字句情况下，基于索引优化操作或对于MyISAM存储引擎优化COUNT（*）操作，不必等到执行阶段再进行计算，查询执行计划生成的阶段即完成优化</p>
-<h3><strong>distinct</strong></h3>
+<h2><strong>distinct</strong></h2>
 <p>优化distinct操作，在找到第一匹配的元祖后即停止找同样值的动作</p>
-<h3><strong>Backward index scan</strong></h3>
+<h2><strong>Backward index scan</strong></h2>
 <p>使用索引进行倒序的扫描。</p>
-<h3><strong>Using temporary</strong></h3>
+<h2><strong>Using temporary</strong></h2>
 <p>使用了临时表保存中间结果，查询完成后临时表删除</p></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
 
