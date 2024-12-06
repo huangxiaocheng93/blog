@@ -13,8 +13,21 @@
 | filtered | Percentage of rows filtered by table condition |
 | extra | Additional information |
 
+# 场景设定
+因为后面反复要用到查询来举例，所以这里设定一个场景，方便后面举例：
+```sql
+CREATE TABLE test_table (
+  id bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  a int NOT NULL DEFAULT '0' COMMENT 'a',
+  b int NOT NULL DEFAULT '0' COMMENT 'b',
+  c int NOT NULL DEFAULT '0' COMMENT 'c',
+  d int NOT NULL DEFAULT '0' COMMENT 'd',
+  PRIMARY KEY (id),
+  KEY idx_a_b (a, b)
+) COMMENT='测试表';
+```
 
-## id
+# id字段
 
 意为select查询的序列号，包含一组数字，表示查询中执行select字句或操作表的顺序
 
@@ -22,7 +35,7 @@
 - id全不同，如果是子查询，id的序号会递增，id数字越大越先执行
 - id部分相同，先按数字大的先执行，数字相同的按自上而下顺序执行
 
-## select_type
+# select_type字段
 
 查询类型，用于区别普通查询、联合查询、子查询等复杂查询
 
@@ -47,11 +60,11 @@
     若第二个select出现在union之后，则被标记为UNION，若UNION包含在from子句的子查询中，外层select将被标记为DERIVED
     
 
-## table
+# table字段
 
 显示这一行的数据是关于哪张表，内容为表名或者别名，可能是临时表或者union合并结果集
 
-## **type**字段
+# **type**字段
 
 显示访问类型，表示以何种方式访问了数据，从最好到最差的排列为：
 
@@ -84,12 +97,12 @@ index说明查询在做全索引扫描，这种情况只比全表扫描要稍微
 说明查询没有命中任何索引，必须扫描全表逐条数据过滤。
 这种情况基本上是不可接受的，必须要优化。
 
-## **possible_keys**
+# **possible_keys**字段
 
 本次查询可能用到的key，查询中涉及到的字段，如果存在于索引中，那么这个索引就是本次查询可能用到的索引，所有可能用到的索引组成当前这个字段。
 但是这些索引最终只会有一个被用到，或者一个都不会被用到。
 
-## **key**
+# **key**字段
 
 本次查询实际用到的索引，如果是空，说明没有用到索引。
 通常情况下，我们在测试环境优化sql语句，然后发布到生产去使用，毕竟我们不可能在生产环境随意的修改索引。但是偶尔就会出现我们在测试环境跑的好好的语句，到了生产环境死活无法命中我们目标的索引，

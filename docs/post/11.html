@@ -25,8 +25,21 @@
 | filtered | Percentage of rows filtered by table condition |
 | extra | Additional information |
 
+# 场景设定
+因为后面反复要用到查询来举例，所以这里设定一个场景，方便后面举例：
+```sql
+CREATE TABLE test_table (
+  id bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  a int NOT NULL DEFAULT '0' COMMENT 'a',
+  b int NOT NULL DEFAULT '0' COMMENT 'b',
+  c int NOT NULL DEFAULT '0' COMMENT 'c',
+  d int NOT NULL DEFAULT '0' COMMENT 'd',
+  PRIMARY KEY (id),
+  KEY idx_a_b (a, b)
+) COMMENT='测试表';
+```
 
-## id
+# id字段
 
 意为select查询的序列号，包含一组数字，表示查询中执行select字句或操作表的顺序
 
@@ -34,7 +47,7 @@
 - id全不同，如果是子查询，id的序号会递增，id数字越大越先执行
 - id部分相同，先按数字大的先执行，数字相同的按自上而下顺序执行
 
-## select_type
+# select_type字段
 
 查询类型，用于区别普通查询、联合查询、子查询等复杂查询
 
@@ -59,11 +72,11 @@
     若第二个select出现在union之后，则被标记为UNION，若UNION包含在from子句的子查询中，外层select将被标记为DERIVED
     
 
-## table
+# table字段
 
 显示这一行的数据是关于哪张表，内容为表名或者别名，可能是临时表或者union合并结果集
 
-## **type**字段
+# **type**字段
 
 显示访问类型，表示以何种方式访问了数据，从最好到最差的排列为：
 
@@ -89,8 +102,21 @@
 | filtered | Percentage of rows filtered by table condition |
 | extra | Additional information |
 
+# 场景设定
+因为后面反复要用到查询来举例，所以这里设定一个场景，方便后面举例：
+```sql
+CREATE TABLE test_table (
+  id bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  a int NOT NULL DEFAULT '0' COMMENT 'a',
+  b int NOT NULL DEFAULT '0' COMMENT 'b',
+  c int NOT NULL DEFAULT '0' COMMENT 'c',
+  d int NOT NULL DEFAULT '0' COMMENT 'd',
+  PRIMARY KEY (id),
+  KEY idx_a_b (a, b)
+) COMMENT='测试表';
+```
 
-## id
+# id字段
 
 意为select查询的序列号，包含一组数字，表示查询中执行select字句或操作表的顺序
 
@@ -98,7 +124,7 @@
 - id全不同，如果是子查询，id的序号会递增，id数字越大越先执行
 - id部分相同，先按数字大的先执行，数字相同的按自上而下顺序执行
 
-## select_type
+# select_type字段
 
 查询类型，用于区别普通查询、联合查询、子查询等复杂查询
 
@@ -123,11 +149,11 @@
     若第二个select出现在union之后，则被标记为UNION，若UNION包含在from子句的子查询中，外层select将被标记为DERIVED
     
 
-## table
+# table字段
 
 显示这一行的数据是关于哪张表，内容为表名或者别名，可能是临时表或者union合并结果集
 
-## **type**字段
+# **type**字段
 
 显示访问类型，表示以何种方式访问了数据，从最好到最差的排列为：
 
@@ -141,7 +167,7 @@
 <meta property="og:url" content="https://blog.npex.top/post/11.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
 <title>MySQL执行计划详解</title>
-
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
 
 
 </head>
@@ -165,7 +191,17 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     body {padding: 8px;}
     .postTitle{font-size:24px;}
 }
-
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
 </style>
 <style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-tip {border-left-color:var(--borderColor-success-emphasis, var(--color-success-emphasis));background-color:var(--color-success-subtle);}.markdown-alert.markdown-alert-tip .markdown-alert-title {color: var(--fgColor-success,var(--color-success-fg));}</style>
 
@@ -255,14 +291,25 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </tr>
 </tbody>
 </table></markdown-accessiblity-table>
-<h2>id</h2>
+<h1>场景设定</h1>
+<p>因为后面反复要用到查询来举例，所以这里设定一个场景，方便后面举例：</p>
+<div class="highlight highlight-source-sql"><pre class="notranslate"><span class="pl-k">CREATE</span> <span class="pl-k">TABLE</span> <span class="pl-en">test_table</span> (
+  id <span class="pl-k">bigint</span> unsigned <span class="pl-k">NOT NULL</span> AUTO_INCREMENT COMMENT <span class="pl-s"><span class="pl-pds">'</span>主键<span class="pl-pds">'</span></span>,
+  a <span class="pl-k">int</span> <span class="pl-k">NOT NULL</span> DEFAULT <span class="pl-s"><span class="pl-pds">'</span>0<span class="pl-pds">'</span></span> COMMENT <span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>,
+  b <span class="pl-k">int</span> <span class="pl-k">NOT NULL</span> DEFAULT <span class="pl-s"><span class="pl-pds">'</span>0<span class="pl-pds">'</span></span> COMMENT <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>,
+  c <span class="pl-k">int</span> <span class="pl-k">NOT NULL</span> DEFAULT <span class="pl-s"><span class="pl-pds">'</span>0<span class="pl-pds">'</span></span> COMMENT <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>,
+  d <span class="pl-k">int</span> <span class="pl-k">NOT NULL</span> DEFAULT <span class="pl-s"><span class="pl-pds">'</span>0<span class="pl-pds">'</span></span> COMMENT <span class="pl-s"><span class="pl-pds">'</span>d<span class="pl-pds">'</span></span>,
+  <span class="pl-k">PRIMARY KEY</span> (id),
+  KEY idx_a_b (a, b)
+) COMMENT<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>测试表<span class="pl-pds">'</span></span>;</pre></div>
+<h1>id字段</h1>
 <p>意为select查询的序列号，包含一组数字，表示查询中执行select字句或操作表的顺序</p>
 <ul>
 <li>id相同，顺序自然自上而下</li>
 <li>id全不同，如果是子查询，id的序号会递增，id数字越大越先执行</li>
 <li>id部分相同，先按数字大的先执行，数字相同的按自上而下顺序执行</li>
 </ul>
-<h2>select_type</h2>
+<h1>select_type字段</h1>
 <p>查询类型，用于区别普通查询、联合查询、子查询等复杂查询</p>
 <ul>
 <li>
@@ -286,9 +333,9 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>若第二个select出现在union之后，则被标记为UNION，若UNION包含在from子句的子查询中，外层select将被标记为DERIVED</p>
 </li>
 </ul>
-<h2>table</h2>
+<h1>table字段</h1>
 <p>显示这一行的数据是关于哪张表，内容为表名或者别名，可能是临时表或者union合并结果集</p>
-<h2><strong>type</strong>字段</h2>
+<h1><strong>type</strong>字段</h1>
 <p>显示访问类型，表示以何种方式访问了数据，从最好到最差的排列为：</p>
 <p><strong>system &gt; const &gt; eq_ref &gt; ref &gt; range &gt; index &gt; all</strong></p>
 <p><strong>一般情况下，得保证查询至少达到range，最好能达到ref</strong></p>
@@ -322,10 +369,10 @@ index说明查询在做全索引扫描，这种情况只比全表扫描要稍微
 <p><strong>全表扫描</strong>。<br>
 说明查询没有命中任何索引，必须扫描全表逐条数据过滤。<br>
 这种情况基本上是不可接受的，必须要优化。</p>
-<h2><strong>possible_keys</strong></h2>
+<h1><strong>possible_keys</strong>字段</h1>
 <p>本次查询可能用到的key，查询中涉及到的字段，如果存在于索引中，那么这个索引就是本次查询可能用到的索引，所有可能用到的索引组成当前这个字段。<br>
 但是这些索引最终只会有一个被用到，或者一个都不会被用到。</p>
-<h2><strong>key</strong></h2>
+<h1><strong>key</strong>字段</h1>
 <p>本次查询实际用到的索引，如果是空，说明没有用到索引。<br>
 通常情况下，我们在测试环境优化sql语句，然后发布到生产去使用，毕竟我们不可能在生产环境随意的修改索引。但是偶尔就会出现我们在测试环境跑的好好的语句，到了生产环境死活无法命中我们目标的索引，</p>
 <h1><strong>key_len</strong>字段</h1>
@@ -421,7 +468,7 @@ if(""!=""){
 </script></div>
 </body>
 <script>
-var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z'};
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
 var utterancesLoad=0;
 
 let themeSettings={
@@ -494,7 +541,70 @@ function iFrameLoading(){
     }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
 
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
 
 </script>
 <script src='https://blog.meekdai.com/Gmeek/plugins/GmeekTOC.js'></script><script src='https://blog.meekdai.com/Gmeek/plugins/lightbox.js'></script>
