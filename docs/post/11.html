@@ -87,7 +87,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     font-size: 12px;
 }
 </style>
-<style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-tip {border-left-color:var(--borderColor-success-emphasis, var(--color-success-emphasis));background-color:var(--color-success-subtle);}.markdown-alert.markdown-alert-tip .markdown-alert-title {color: var(--fgColor-success,var(--color-success-fg));}</style>
+<style>.markdown-alert{padding:0.5rem 1rem;margin-bottom:1rem;border-left:.25em solid var(--borderColor-default,var(--color-border-default));}.markdown-alert .markdown-alert-title {display:flex;font-weight:var(--base-text-weight-medium,500);align-items:center;line-height:1;}.markdown-alert>:first-child {margin-top:0;}.markdown-alert>:last-child {margin-bottom:0;}</style><style>.markdown-alert.markdown-alert-tip {border-left-color:var(--borderColor-success-emphasis, var(--color-success-emphasis));background-color:var(--color-success-subtle);}.markdown-alert.markdown-alert-tip .markdown-alert-title {color: var(--fgColor-success,var(--color-success-fg));}</style><style>.markdown-alert.markdown-alert-important {border-left-color:var(--borderColor-done-emphasis, var(--color-done-emphasis));background-color:var(--color-done-subtle);}.markdown-alert.markdown-alert-important .markdown-alert-title {color: var(--fgColor-done,var(--color-done-fg));}</style>
 
 
 
@@ -200,24 +200,20 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>查询类型，用于区别普通查询、联合查询、子查询等复杂查询</p>
 <ul>
 <li>
-<p><strong>simple</strong></p>
-<p>简单的select查询，查询中不包含子查询或union</p>
+<p><strong>simple</strong>：简单的select查询，查询中不包含子查询或union；</p>
 </li>
 <li>
-<p><strong>primary</strong></p>
-<p>查询中包含子查询，最外层查询则标记为primary</p>
+<p><strong>primary</strong>：查询中包含子查询，最外层查询则标记为primary；</p>
 </li>
 <li>
-<p><strong>subquery</strong></p>
-<p>在select或where中包含子查询</p>
+<p><strong>subquery</strong>：在select或where中包含子查询；</p>
 </li>
 <li>
-<p><strong>derived</strong></p>
-<p>在from列表中包含的子查询，也叫派生类，MySQL会递归执行这些子查询，把结果放在临时表里</p>
+<p><strong>derived</strong>：在from列表中包含的子查询，也叫派生类，MySQL会递归执行这些子查询，把结果放在临时表里；</p>
 </li>
+<li></li>
 <li>
-<p><strong>union</strong></p>
-<p>若第二个select出现在union之后，则被标记为UNION，若UNION包含在from子句的子查询中，外层select将被标记为DERIVED</p>
+<p><strong>union</strong>：若第二个select出现在union之后，则被标记为UNION，若UNION包含在from子句的子查询中，外层select将被标记为DERIVED；</p>
 </li>
 </ul>
 <h1>table字段</h1>
@@ -229,7 +225,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <ul>
 <li>
 <p><strong>system</strong><br>
-表里只有一行记录，是const的特例，一般不会出现，知道即可。</p>
+表里只有一行记录，是const的特例，一般不会出现。</p>
 </li>
 <li>
 <p><strong>const</strong><br>
@@ -265,25 +261,25 @@ index说明查询在做全索引扫描，这种情况只比全表扫描要稍微
 <h1><strong>key_len</strong>字段</h1>
 <p>当前查询命中的索引中使用的字节数。在不考虑其他影响因素的情况下，索引长度越短，索引的效率越高。这是因为索引索引长度越短，需要进行的读操作也就越少，查询主要的耗时就是来源于读操作的I/O耗时。</p>
 <p>但是key_len不用作为优化的主要方面，首先是设计合理的索引，当多个索引其他方面差异不大，或者key_len差异非常大的，再考虑key_len指标也不迟。</p>
-<p>举例来说明这个长度的计算规则：<br>
-设定如下：<code class="notranslate">test_table</code>表有索引<code class="notranslate">idx_a_b</code>是<code class="notranslate">a,b</code>两个字段, 其中<code class="notranslate">a</code>字段是<code class="notranslate">varchar(50)</code>，<code class="notranslate">b</code>字段是<code class="notranslate">bigint</code>，都是不允许为空的字段。</p>
 <h2>查询1</h2>
-<p><code class="notranslate">select * from test_table where a='test_a' and b=0</code><br>
-此时很明显会命中<code class="notranslate">idx_a_b</code>这个索引，那么索引长度就是<code class="notranslate">a,b</code>两个字段的长度：50*4+2+8，varchar一个字符占4个字节，而且由于varchar是变成字段，所以需要额外2个字节记录长度信息，<code class="notranslate">bigint</code>占8个字节，所以key_len=210。</p>
+<p><code class="notranslate">select * from test_table where c='test_a' and a=0</code><br>
+此时很明显会命中<code class="notranslate">idx_c_a</code>这个索引，那么索引长度就是<code class="notranslate">a,c</code>两个字段的长度：50*4+2+4，varchar一个字符占4个字节，而且由于varchar是变成字段，所以需要额外2个字节记录长度信息，<code class="notranslate">bigint</code>占8个字节，所以key_len=206。</p>
 <h2>查询2</h2>
-<p><code class="notranslate">select * from test_table where a='test_a'</code><br>
-此时也会命中<code class="notranslate">idx_a_b</code>这个索引，但是根据最左匹配原则，只会用到字段<code class="notranslate">a</code>，所以索引长度也是<code class="notranslate">a</code>字段的长度：50*4+2=202，所以key_len就是202。</p>
+<p><code class="notranslate">select * from test_table where c='test_a'</code><br>
+此时也会命中<code class="notranslate">idx_c_a</code>这个索引，但是根据最左匹配原则，只会用到字段<code class="notranslate">c</code>，所以索引长度也是<code class="notranslate">c</code>字段的长度：50*4+2=202，所以key_len就是202。</p>
 <h1><strong>ref</strong>字段</h1>
 <p>显示索引的哪一列被使用了，如果可能的话，是一个常数</p>
 <h1><strong>rows</strong>字段</h1>
-<p>根据表的统计信息及索引选用情况，大致估算出的当前查询需要扫描的行数。<br>
-这个数字虽然有零有整，但是实际上是个估算出来的数值，并不是直接执行查询的结果。</p>
+<p>查询扫描的行数。<br>
+根据表的统计信息及索引选用情况，大致估算出的当前查询需要扫描的行数。这个数字虽然有零有整，但是实际上是个估算出来的数值，并不是直接执行查询的结果。</p>
+<div class="markdown-alert markdown-alert-important"><p class="markdown-alert-title"><svg class="octicon octicon-report mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>Important</p><p>rows是非常重要的指标之一，rows如果非常大，索引当前查询mysql要扫描的数据非常多，扫描的数据越多，查询的效率一定越慢。rows字段值非常大时需要结合filtered字段来看：如果filtered也很大，说明查询的结果集就很大，需要从减小查询的结果集入手来优化；如果filtered很小，说明当前使用的索引没能很好的分离出结果集，需要做大量的回表来过滤数据，需要从优化索引的角度来入手。</p>
+</div>
 <h1><strong>filtered</strong>字段</h1>
 <p>filtered是结果集行数和扫描行数的比值的百分数，所以filetered的最大值是100，这个值是越大越好，值越大代表索引越精确。<br>
 举几个例子：<br>
 1、如果我们使用主键等值查询，那么结果集是1行，由于可以通过聚簇索引直接找到这行记录，所以总共只需要扫描1行，filtered就会是100；<br>
 2、如果我们一个查询的结果集是10行，为了查到这10行数据，mysql扫描了100行数据，那么filtered值就是10。</p>
-<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>filtered是判断索引好坏的重要指标之一，如果filtered非常小，要考虑当前索引是不是不能很好的匹配查询条件，或者索引字段的离散度很低，要考虑优化索引或者查询条件。</p>
+<div class="markdown-alert markdown-alert-important"><p class="markdown-alert-title"><svg class="octicon octicon-report mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>Important</p><p>filtered是非常重要指标之一，如果filtered非常小，表示当前查询使用的索引，能过滤掉的数据非常少，必须要通过回表的方式来过滤掉大量的数据，要考虑当前索引是不是不能很好的匹配查询条件，要考虑优化索引或者查询条件。</p>
 </div>
 <h1><strong>extra</strong>字段</h1>
 <p>额外信息，无法在一个字段中概述但是依旧重要的信息。</p>
