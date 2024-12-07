@@ -25,67 +25,9 @@
 | filtered | Percentage of rows filtered by table condition |
 | extra | Additional information |
 
-# 场景设定
-因为后面反复要用到查询来举例，所以这里设定一个场景，方便后面举例：
-```sql
-CREATE TABLE test_table (
-  id bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-  a int NOT NULL DEFAULT '0' COMMENT 'a',
-  b int NOT NULL DEFAULT '0' COMMENT 'b',
-  c int NOT NULL DEFAULT '0' COMMENT 'c',
-  d int NOT NULL DEFAULT '0' COMMENT 'd',
-  PRIMARY KEY (id),
-  KEY idx_a_b (a, b)
-) COMMENT='测试表';
-```
+# SQL语句优化的目标
 
-# id字段
-
-意为select查询的序列号，包含一组数字，表示查询中执行select字句或操作表的顺序
-
-- id相同，顺序自然自上而下
-- id全不同，如果是子查询，id的序号会递增，id数字越大越先执行
-- id部分相同，先按数字大的先执行，数字相同的按自上而下顺序执行
-
-# select_type字段
-
-查询类型，用于区别普通查询、联合查询、子查询等复杂查询
-
-- **simple**
-    
-    简单的select查询，查询中不包含子查询或union
-    
-- **primary**
-    
-    查询中包含子查询，最外层查询则标记为primary
-    
-- **subquery**
-    
-    在select或where中包含子查询
-    
-- **derived**
-    
-    在from列表中包含的子查询，也叫派生类，MySQL会递归执行这些子查询，把结果放在临时表里
-    
-- **union**
-    
-    若第二个select出现在union之后，则被标记为UNION，若UNION包含在from子句的子查询中，外层select将被标记为DERIVED
-    
-
-# table字段
-
-显示这一行的数据是关于哪张表，内容为表名或者别名，可能是临时表或者union合并结果集
-
-# **type**字段
-
-显示访问类型，表示以何种方式访问了数据，从最好到最差的排列为：
-
-**system > const > eq_ref > ref > range > index > all**
-
-**一般情况下，得保证查询至少达到range，最好能达到ref**
-
-- **system** 
-表里只有一行记录，是const的特例，一般不会出现，知道即可。">
+SQL优化的指标很多，优化手段也是很多， 往往我们迷思在这些指标和优化手段里的时候，就是遗忘了SQL优化最本质的目标。">
 <meta property="og:title" content="MySQL执行计划详解">
 <meta property="og:description" content="| Column | Meaning |
 |--------|---------|
@@ -102,67 +44,9 @@ CREATE TABLE test_table (
 | filtered | Percentage of rows filtered by table condition |
 | extra | Additional information |
 
-# 场景设定
-因为后面反复要用到查询来举例，所以这里设定一个场景，方便后面举例：
-```sql
-CREATE TABLE test_table (
-  id bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-  a int NOT NULL DEFAULT '0' COMMENT 'a',
-  b int NOT NULL DEFAULT '0' COMMENT 'b',
-  c int NOT NULL DEFAULT '0' COMMENT 'c',
-  d int NOT NULL DEFAULT '0' COMMENT 'd',
-  PRIMARY KEY (id),
-  KEY idx_a_b (a, b)
-) COMMENT='测试表';
-```
+# SQL语句优化的目标
 
-# id字段
-
-意为select查询的序列号，包含一组数字，表示查询中执行select字句或操作表的顺序
-
-- id相同，顺序自然自上而下
-- id全不同，如果是子查询，id的序号会递增，id数字越大越先执行
-- id部分相同，先按数字大的先执行，数字相同的按自上而下顺序执行
-
-# select_type字段
-
-查询类型，用于区别普通查询、联合查询、子查询等复杂查询
-
-- **simple**
-    
-    简单的select查询，查询中不包含子查询或union
-    
-- **primary**
-    
-    查询中包含子查询，最外层查询则标记为primary
-    
-- **subquery**
-    
-    在select或where中包含子查询
-    
-- **derived**
-    
-    在from列表中包含的子查询，也叫派生类，MySQL会递归执行这些子查询，把结果放在临时表里
-    
-- **union**
-    
-    若第二个select出现在union之后，则被标记为UNION，若UNION包含在from子句的子查询中，外层select将被标记为DERIVED
-    
-
-# table字段
-
-显示这一行的数据是关于哪张表，内容为表名或者别名，可能是临时表或者union合并结果集
-
-# **type**字段
-
-显示访问类型，表示以何种方式访问了数据，从最好到最差的排列为：
-
-**system > const > eq_ref > ref > range > index > all**
-
-**一般情况下，得保证查询至少达到range，最好能达到ref**
-
-- **system** 
-表里只有一行记录，是const的特例，一般不会出现，知道即可。">
+SQL优化的指标很多，优化手段也是很多， 往往我们迷思在这些指标和优化手段里的时候，就是遗忘了SQL优化最本质的目标。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://blog.npex.top/post/11.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
@@ -291,16 +175,19 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </tr>
 </tbody>
 </table></markdown-accessiblity-table>
+<h1>SQL语句优化的目标</h1>
+<p>SQL优化的指标很多，优化手段也是很多， 往往我们迷思在这些指标和优化手段里的时候，就是遗忘了SQL优化最本质的目标。SQL优化的目标就一个：<strong>减少数据库读取磁盘的IO次数</strong>。</p>
 <h1>场景设定</h1>
 <p>因为后面反复要用到查询来举例，所以这里设定一个场景，方便后面举例：</p>
 <div class="highlight highlight-source-sql"><pre class="notranslate"><span class="pl-k">CREATE</span> <span class="pl-k">TABLE</span> <span class="pl-en">test_table</span> (
   id <span class="pl-k">bigint</span> unsigned <span class="pl-k">NOT NULL</span> AUTO_INCREMENT COMMENT <span class="pl-s"><span class="pl-pds">'</span>主键<span class="pl-pds">'</span></span>,
   a <span class="pl-k">int</span> <span class="pl-k">NOT NULL</span> DEFAULT <span class="pl-s"><span class="pl-pds">'</span>0<span class="pl-pds">'</span></span> COMMENT <span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>,
   b <span class="pl-k">int</span> <span class="pl-k">NOT NULL</span> DEFAULT <span class="pl-s"><span class="pl-pds">'</span>0<span class="pl-pds">'</span></span> COMMENT <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>,
-  c <span class="pl-k">int</span> <span class="pl-k">NOT NULL</span> DEFAULT <span class="pl-s"><span class="pl-pds">'</span>0<span class="pl-pds">'</span></span> COMMENT <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>,
-  d <span class="pl-k">int</span> <span class="pl-k">NOT NULL</span> DEFAULT <span class="pl-s"><span class="pl-pds">'</span>0<span class="pl-pds">'</span></span> COMMENT <span class="pl-s"><span class="pl-pds">'</span>d<span class="pl-pds">'</span></span>,
+  c <span class="pl-k">varchar</span>(<span class="pl-c1">50</span>) <span class="pl-k">NOT NULL</span> DEFAULT <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span> COMMENT <span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>,
+  d datetime(<span class="pl-c1">3</span>) <span class="pl-k">NOT NULL</span> DEFAULT <span class="pl-c1">CURRENT_TIMESTAMP</span>(<span class="pl-c1">3</span>) COMMENT <span class="pl-s"><span class="pl-pds">'</span>d<span class="pl-pds">'</span></span>,
   <span class="pl-k">PRIMARY KEY</span> (id),
-  KEY idx_a_b (a, b)
+  KEY idx_a_b (a, b),
+  KEY idx_c_a(c, a)
 ) COMMENT<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>测试表<span class="pl-pds">'</span></span>;</pre></div>
 <h1>id字段</h1>
 <p>意为select查询的序列号，包含一组数字，表示查询中执行select字句或操作表的顺序</p>
@@ -399,12 +286,17 @@ index说明查询在做全索引扫描，这种情况只比全表扫描要稍微
 <div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>filtered是判断索引好坏的重要指标之一，如果filtered非常小，要考虑当前索引是不是不能很好的匹配查询条件，或者索引字段的离散度很低，要考虑优化索引或者查询条件。</p>
 </div>
 <h1><strong>extra</strong>字段</h1>
-<p>额外信息，无法在一个字段中概述但是依旧重要的额外信息。</p>
+<p>额外信息，无法在一个字段中概述但是依旧重要的信息。</p>
 <h2><strong>Using index</strong></h2>
-<p>代表使用了<strong>覆盖索引</strong>。<br>
-当前命中的索引中包含了sql语句查询的所有字段时，就不需要再回表了，直接使用索引中的字段即可。</p>
-<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>需要注意的是<strong>Using index</strong>并不代表一定使用了这个索引做查询，例如：<code class="notranslate">test_table</code>表有索引<code class="notranslate">idx_a_b</code>是<code class="notranslate">a,b</code>两个字段, 此时执行<code class="notranslate">select a, b from test_table</code>，会命中<code class="notranslate">idx_a_b</code>，执行计划<code class="notranslate">extra</code>字段包含<code class="notranslate">Using index</code>，但是此时做的是全索引扫描。<br>
-在实操中没必要特意去追求覆盖索引，一般情况下，回表都不会是瓶颈所在。</p>
+<p>代表使用了<strong>覆盖索引</strong>。表示当前的查询语句只需要使用命中的索引就可以完成查询，不需要额外的回表操作。<br>
+使用到覆盖索引一定是个好兆头，但是也有一些问题要注意：</p>
+<h3>覆盖索引的条件</h3>
+<p>只有当查询回收的字段和搜索条件字段全都包含在索引内时，才能走覆盖索引。</p>
+<p>除了索引字段外，我们额外回收主键字段，也能走覆盖索引，因为主键字段就保存在非聚簇索引的叶子节点上，不需要额外回表。</p>
+<p>如果搜索条件使用了非等值查询，那么即使所有字段全都包含在索引内，也不一定能走覆盖索引。</p>
+<h3>覆盖索引并不一定等于效率高</h3>
+<p>例如：<code class="notranslate">select id, a, b from test_table</code>, 执行计划会提示<strong>Using index</strong>使用了覆盖索引，但是这条sql语句效率高吗，不见得，回收的结果集过大也一定会影响sql效率。</p>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>在实操中没必要特意去追求覆盖索引，例如为了覆盖索引专门去增加一些字段进索引，这个就需要认真权衡是否划算，一般场景下，如果回收的结果集不大，回表不会是瓶颈所在。</p>
 </div>
 <h2><strong>Using where</strong></h2>
 <p>说明where条件没有全都包含在索引内，在使用索引筛选完数据后，还需要再次回表筛选其他的where条件。</p>
@@ -423,13 +315,19 @@ index说明查询在做全索引扫描，这种情况只比全表扫描要稍微
 因为<code class="notranslate">a</code>字段还是等值查询，根据最左匹配原则，引擎还是会先利用索引树的结构准确的找到<code class="notranslate">a=10</code>的节点，但是在处理<code class="notranslate">b</code>字段时有所不同了。<br>
 由于<code class="notranslate">b</code>字段并不是等值查询，所以没有办法再利用树结构准确的找到符合<code class="notranslate">b</code>字段条件的节点，所以只能轮询去找当前节点下的子节点去寻找符合<code class="notranslate">b</code>字段条件的节点，此时就有可能读取一些并不符合条件的记录，就会出现<strong>Using index condition</strong>提示。意思就是虽然查询使用了索引，但是仍然需要过滤一些额外的数据来圈定查询的结果集。</p>
 <h3>ICP</h3>
-<p><strong>ICP</strong>全称是<code class="notranslate">Index Condition Pushdown</code>，是MySQL5.6开始支持的一种查询优化技术，在支</p>
+<p><strong>ICP</strong>全称是<code class="notranslate">Index Condition Pushdown</code>，是MySQL5.6开始支持的一种查询优化技术。</p>
+<p>在<strong>ICP</strong>出现之前，如果出现上述场景的非等值查询，在引擎层只能用到<code class="notranslate">a</code>字段过滤数据，引擎将拿到的数据返回给server层，服务层再通过回表的方式，去过滤<code class="notranslate">b</code>字段，此时就会出现<strong>using where</strong>的提示。</p>
+<p>当使用了<strong>ICP</strong>优化之后，server层会将<code class="notranslate">b</code>字段的过滤也交给innodb，innodb在索引中直接做过滤，这个优势是显而易见的，减小了需要回表的数据集大小。</p>
+<p><strong>ICP</strong>并不是只能作用在范围查询，模糊查询也同样可以生效，只是字段是否匹配的判断方式变了。</p>
+<p>当使用到了<strong>ICP</strong>特性，并且确实通过<strong>ICP</strong>特性能过滤掉一些数据，我们就会在执行计划中收到<strong>Using index condition</strong>的提示。</p>
 <h3>一些有趣的现象</h3>
 <h4>b字段查询范围的影响</h4>
 <p>按照非等值查询设定的场景，如果当<code class="notranslate">a=10</code>过滤出来的数据，<code class="notranslate">b</code>字段的值全都落在20到30之间，我们会发现<strong>Using index condition</strong>提示没有了。<br>
 这里我没有找到非常准确的解释，但是按照我的理解，这种情况下，虽然引擎扫描了所有<code class="notranslate">a=10</code>的索引数据，但是并没有扫描任何一条<strong>额外</strong>的数据，也就是没有扫描不会被加入结果集的数据，所以mysql认为并没有额外的开销产生。</p>
 <h4>覆盖索引的影响</h4>
-<p>按照非等值查询设定的场景，我们把查询的字段改成只查询<code class="notranslate">id, a, b</code>三个字段，然后我们发现<strong>Using index condition</strong>变成了<strong>Using index</strong>。</p>
+<p>按照非等值查询设定的场景，我们把查询的字段改成只查询<code class="notranslate">id, a, b</code>三个字段，然后我们发现<strong>Using index condition</strong>变成了<br>
+<strong>Using index</strong>。<br>
+这里我也没有非常准确的找到答案，我认为是mysql是发现这里已经是覆盖索引了，不会再涉及后面回表的操作了，所以没有必要使用ICP了，所以直接取回数据在server层处理，当然这只是猜测。</p>
 <h2><strong>Using filesort</strong></h2>
 <p>文件排序意为MySQL无法利用索引进行排序，而使用了外部的排序算法，常见于order by 或 group by</p>
 <h2><strong>Using join buffer</strong></h2>
@@ -443,7 +341,10 @@ index说明查询在做全索引扫描，这种情况只比全表扫描要稍微
 <h2><strong>Backward index scan</strong></h2>
 <p>使用索引进行倒序的扫描。</p>
 <h2><strong>Using temporary</strong></h2>
-<p>使用了临时表保存中间结果，查询完成后临时表删除</p></div>
+<p>使用了临时表保存中间结果，查询完成后临时表删除</p>
+<h1>SQL优化小技巧</h1>
+<h2>控制结果集的大小</h2>
+<p>结果集条数和结果集的空间大小</p></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>

@@ -13,6 +13,10 @@
 | filtered | Percentage of rows filtered by table condition |
 | extra | Additional information |
 
+# SQL语句优化的目标
+
+SQL优化的指标很多，优化手段也是很多， 往往我们迷思在这些指标和优化手段里的时候，就是遗忘了SQL优化最本质的目标。SQL优化的目标就一个：**减少数据库读取磁盘的IO次数**。
+
 # 场景设定
 因为后面反复要用到查询来举例，所以这里设定一个场景，方便后面举例：
 ```sql
@@ -20,10 +24,11 @@ CREATE TABLE test_table (
   id bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   a int NOT NULL DEFAULT '0' COMMENT 'a',
   b int NOT NULL DEFAULT '0' COMMENT 'b',
-  c int NOT NULL DEFAULT '0' COMMENT 'c',
-  d int NOT NULL DEFAULT '0' COMMENT 'd',
+  c varchar(50) NOT NULL DEFAULT '' COMMENT 'c',
+  d datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'd',
   PRIMARY KEY (id),
-  KEY idx_a_b (a, b)
+  KEY idx_a_b (a, b),
+  KEY idx_c_a(c, a)
 ) COMMENT='测试表';
 ```
 
@@ -144,15 +149,26 @@ filtered是结果集行数和扫描行数的比值的百分数，所以filetered
 
 # **extra**字段
 
-额外信息，无法在一个字段中概述但是依旧重要的额外信息。
+额外信息，无法在一个字段中概述但是依旧重要的信息。
 
 ## **Using index**
-代表使用了**覆盖索引**。
-当前命中的索引中包含了sql语句查询的所有字段时，就不需要再回表了，直接使用索引中的字段即可。
+代表使用了**覆盖索引**。表示当前的查询语句只需要使用命中的索引就可以完成查询，不需要额外的回表操作。
+使用到覆盖索引一定是个好兆头，但是也有一些问题要注意：
+
+### 覆盖索引的条件
+
+只有当查询回收的字段和搜索条件字段全都包含在索引内时，才能走覆盖索引。
+
+除了索引字段外，我们额外回收主键字段，也能走覆盖索引，因为主键字段就保存在非聚簇索引的叶子节点上，不需要额外回表。
+
+如果搜索条件使用了非等值查询，那么即使所有字段全都包含在索引内，也不一定能走覆盖索引。
+
+### 覆盖索引并不一定等于效率高
+
+例如：`select id, a, b from test_table`, 执行计划会提示**Using index**使用了覆盖索引，但是这条sql语句效率高吗，不见得，回收的结果集过大也一定会影响sql效率。
 
 > [!TIP]
-> 需要注意的是**Using index**并不代表一定使用了这个索引做查询，例如：`test_table`表有索引`idx_a_b`是`a,b`两个字段, 此时执行`select a, b from test_table`，会命中`idx_a_b`，执行计划`extra`字段包含`Using index`，但是此时做的是全索引扫描。
-在实操中没必要特意去追求覆盖索引，一般情况下，回表都不会是瓶颈所在。
+> 在实操中没必要特意去追求覆盖索引，例如为了覆盖索引专门去增加一些字段进索引，这个就需要认真权衡是否划算，一般场景下，如果回收的结果集不大，回表不会是瓶颈所在。
 
 ## **Using where** 
 说明where条件没有全都包含在索引内，在使用索引筛选完数据后，还需要再次回表筛选其他的where条件。
@@ -177,7 +193,15 @@ filtered是结果集行数和扫描行数的比值的百分数，所以filetered
 
 ### ICP
 
-**ICP**全称是`Index Condition Pushdown`，是MySQL5.6开始支持的一种查询优化技术，在支
+**ICP**全称是`Index Condition Pushdown`，是MySQL5.6开始支持的一种查询优化技术。
+
+在**ICP**出现之前，如果出现上述场景的非等值查询，在引擎层只能用到`a`字段过滤数据，引擎将拿到的数据返回给server层，服务层再通过回表的方式，去过滤`b`字段，此时就会出现**using where**的提示。
+
+当使用了**ICP**优化之后，server层会将`b`字段的过滤也交给innodb，innodb在索引中直接做过滤，这个优势是显而易见的，减小了需要回表的数据集大小。
+
+**ICP**并不是只能作用在范围查询，模糊查询也同样可以生效，只是字段是否匹配的判断方式变了。
+
+当使用到了**ICP**特性，并且确实通过**ICP**特性能过滤掉一些数据，我们就会在执行计划中收到**Using index condition**的提示。
 
 ### 一些有趣的现象
 
@@ -188,9 +212,9 @@ filtered是结果集行数和扫描行数的比值的百分数，所以filetered
 
 #### 覆盖索引的影响
 
-按照非等值查询设定的场景，我们把查询的字段改成只查询`id, a, b`三个字段，然后我们发现**Using index condition**变成了**Using index**。
-
-
+按照非等值查询设定的场景，我们把查询的字段改成只查询`id, a, b`三个字段，然后我们发现**Using index condition**变成了
+**Using index**。
+这里我也没有非常准确的找到答案，我认为是mysql是发现这里已经是覆盖索引了，不会再涉及后面回表的操作了，所以没有必要使用ICP了，所以直接取回数据在server层处理，当然这只是猜测。
 
 ## **Using filesort** 
 文件排序意为MySQL无法利用索引进行排序，而使用了外部的排序算法，常见于order by 或 group by
@@ -212,3 +236,8 @@ where语句结果是false
 
 ## **Using temporary** 
 使用了临时表保存中间结果，查询完成后临时表删除
+
+# SQL优化小技巧
+
+## 控制结果集的大小
+结果集条数和结果集的空间大小
