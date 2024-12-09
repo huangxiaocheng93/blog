@@ -222,33 +222,21 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>显示访问类型，表示以何种方式访问了数据，从最好到最差的排列为：</p>
 <p><strong>system &gt; const &gt; eq_ref &gt; ref &gt; range &gt; index &gt; all</strong></p>
 <p><strong>一般情况下，得保证查询至少达到range，最好能达到ref</strong></p>
-<ul>
-<li>
-<p><strong>system</strong><br>
-表里只有一行记录，是const的特例，一般不会出现。</p>
-</li>
-<li>
-<p><strong>const</strong><br>
-表里至多有一个匹配行。</p>
-</li>
-<li>
-<p><strong>eq_ref</strong><br>
-主键索引（primary key）或者非空唯一索引（unique not null）等值扫描</p>
-</li>
-<li>
-<p><strong>ref</strong><br>
-非主键非唯一索引等值扫描。</p>
-</li>
-<li>
-<p><strong>range</strong><br>
-利用索引查询的时候限定了范围，一般出现于between &lt;（&lt;=） &gt; (&gt;=) in 等查询</p>
-</li>
-</ul>
-<h3><strong>index</strong></h3>
+<h2><strong>system</strong></h2>
+<p>表里只有一行记录，是const的特例，一般不会出现。</p>
+<h2><strong>const</strong></h2>
+<p>表里至多有一个匹配行。</p>
+<h2><strong>eq_ref</strong></h2>
+<p>主键索引（primary key）或者非空唯一索引（unique not null）等值扫描</p>
+<h2><strong>ref</strong></h2>
+<p>非主键非唯一索引等值扫描。</p>
+<h2><strong>range</strong></h2>
+<p>利用索引查询的时候限定了范围，一般出现于between &lt;（&lt;=） &gt; (&gt;=) in 等查询</p>
+<h2><strong>index</strong></h2>
 <p><strong>全索引扫描</strong>。<br>
 index说明查询在做全索引扫描，这种情况只比全表扫描要稍微好一点，相当于是逐条遍历数据，只不过是遍历的索引。<br>
 这种情况，应该已经是慢查的范围， 我们在优化中需要避免，不应该出现需要全索引扫描的情况。</p>
-<h3><strong>all</strong></h3>
+<h2><strong>all</strong></h2>
 <p><strong>全表扫描</strong>。<br>
 说明查询没有命中任何索引，必须扫描全表逐条数据过滤。<br>
 这种情况基本上是不可接受的，必须要优化。</p>
