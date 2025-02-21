@@ -63,4 +63,33 @@ void createMap(Thread t, T firstValue) {
 ```
 我们可以看到这里面出现了一个`ThreadLocalMap`类型的对象，`ThreadLocalMap`是`ThreadLocal`中的一个内部类。
 
-重点来了，`set`方法中获取了`currentThread`，然后通过`currentThread`来获取`ThreadLocalMap`，通过`getMap`方法，我们可以看出来，`Thread`对象中包含有一个`ThreadLocalMap`对象的实例，到这里`ThreadLocal`是怎么实现线程安全的就清楚了，引文`ThreadLocal`操作的对象就保存在线程里面，能不线程安全吗？
+重点来了，`set`方法中获取了`currentThread`，然后通过`currentThread`来获取`ThreadLocalMap`，通过`getMap`方法，我们可以看出来，`Thread`对象中包含有一个`ThreadLocalMap`对象的实例，到这里`ThreadLocal`是怎么实现线程安全的就清楚了，引文`ThreadLocal`操作的对象就保存在线程里面，妥妥的线程安全。
+
+我们再来看看`ThreadLocalMap`的结构：
+```java
+static class ThreadLocalMap {
+    
+    static class Entry extends WeakReference<ThreadLocal<?>> {
+        /**
+         * The value associated with this ThreadLocal.
+         */
+        Object value;
+
+        Entry(ThreadLocal<?> k, Object v) {
+            super(k);
+            value = v;
+        }
+    }
+
+    /**
+     * The table, resized as necessary.
+     * table.length MUST always be a power of two.
+     */
+    private ThreadLocal.ThreadLocalMap.Entry[] table;
+    
+}
+```
+
+`ThreadLocalMap`是一个类似`HashMap`的结构，如果不知道`HashMap`长啥样，那另外去学习`HashMap`。
+这里我们主要关注里面`Entry`的结构，`Entry`使用`ThreadLocal`对象本身作为key，我们传进来的`UserInfo`对象作为value，最最最关键的是它继承了`WeakReference`，也就是弱引用，这个是我们平时不太常见的。
+

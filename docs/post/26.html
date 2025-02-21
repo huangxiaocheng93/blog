@@ -134,7 +134,31 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <span class="pl-s1">t</span>.<span class="pl-s1">threadLocals</span> = <span class="pl-k">new</span> <span class="pl-smi">ThreadLocal</span>.<span class="pl-smi">ThreadLocalMap</span>(<span class="pl-smi">this</span>, <span class="pl-s1">firstValue</span>);
 }</pre></div>
 <p>我们可以看到这里面出现了一个<code class="notranslate">ThreadLocalMap</code>类型的对象，<code class="notranslate">ThreadLocalMap</code>是<code class="notranslate">ThreadLocal</code>中的一个内部类。</p>
-<p>重点来了，<code class="notranslate">set</code>方法中获取了<code class="notranslate">currentThread</code>，然后通过<code class="notranslate">currentThread</code>来获取<code class="notranslate">ThreadLocalMap</code>，通过<code class="notranslate">getMap</code>方法，我们可以看出来，<code class="notranslate">Thread</code>对象中包含有一个<code class="notranslate">ThreadLocalMap</code>对象的实例，到这里<code class="notranslate">ThreadLocal</code>是怎么实现线程安全的就清楚了，引文<code class="notranslate">ThreadLocal</code>操作的对象就保存在线程里面，能不线程安全吗？</p></div>
+<p>重点来了，<code class="notranslate">set</code>方法中获取了<code class="notranslate">currentThread</code>，然后通过<code class="notranslate">currentThread</code>来获取<code class="notranslate">ThreadLocalMap</code>，通过<code class="notranslate">getMap</code>方法，我们可以看出来，<code class="notranslate">Thread</code>对象中包含有一个<code class="notranslate">ThreadLocalMap</code>对象的实例，到这里<code class="notranslate">ThreadLocal</code>是怎么实现线程安全的就清楚了，引文<code class="notranslate">ThreadLocal</code>操作的对象就保存在线程里面，妥妥的线程安全。</p>
+<p>我们再来看看<code class="notranslate">ThreadLocalMap</code>的结构：</p>
+<div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-smi">ThreadLocalMap</span> {
+    
+    <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-smi">Entry</span> <span class="pl-k">extends</span> <span class="pl-smi">WeakReference</span>&lt;<span class="pl-smi">ThreadLocal</span>&lt;?&gt;&gt; {
+        <span class="pl-c">/**</span>
+<span class="pl-c">         * The value associated with this ThreadLocal.</span>
+<span class="pl-c">         */</span>
+        <span class="pl-smi">Object</span> <span class="pl-s1">value</span>;
+
+        <span class="pl-smi">Entry</span>(<span class="pl-smi">ThreadLocal</span>&lt;?&gt; <span class="pl-s1">k</span>, <span class="pl-smi">Object</span> <span class="pl-s1">v</span>) {
+            <span class="pl-en">super</span>(<span class="pl-s1">k</span>);
+            <span class="pl-s1">value</span> = <span class="pl-s1">v</span>;
+        }
+    }
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * The table, resized as necessary.</span>
+<span class="pl-c">     * table.length MUST always be a power of two.</span>
+<span class="pl-c">     */</span>
+    <span class="pl-k">private</span> <span class="pl-smi">ThreadLocal</span>.<span class="pl-smi">ThreadLocalMap</span>.<span class="pl-smi">Entry</span>[] <span class="pl-s1">table</span>;
+    
+}</pre></div>
+<p><code class="notranslate">ThreadLocalMap</code>是一个类似<code class="notranslate">HashMap</code>的结构，如果不知道<code class="notranslate">HashMap</code>长啥样，那另外去学习<code class="notranslate">HashMap</code>。<br>
+这里我们主要关注里面<code class="notranslate">Entry</code>的结构，<code class="notranslate">Entry</code>使用<code class="notranslate">ThreadLocal</code>对象本身作为key，我们传进来的<code class="notranslate">UserInfo</code>对象作为value，最最最关键的是它继承了<code class="notranslate">WeakReference</code>，也就是弱引用，这个是我们平时不太常见的。</p></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
