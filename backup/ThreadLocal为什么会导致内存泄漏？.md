@@ -10,12 +10,9 @@ private static final ThreadLocal<RequestContext> REQUEST_CONTEXT = new ThreadLoc
 
 # ThreadLocal常用来做什么？
 因为ThreadLocal的**线程安全**属性，所以我们常常用他来记录线程相关的信息，例如记录线程的上下文信息。
-在日常的开发过程中，我们经常会遇到需要登录态的接口，在接口处理逻辑中经常会使用到当前登录用户的信息，此时就用ThreadLocal来创建一个线程的上下文信息来记录登录用户信息就很合适，优点是不需要显式的传递登录用户的信息，可以在任意地方获取上下文信息，缺点就是在退出时必须要将上下文信息清理干净。
 
-# ThreadLocal的实现
-
-接下来我们用代码片段加上图解的方式来讲解ThreadLocal的实现，下面我们实现了一个简单的用户信息的上下文信息，等处理完用户登录信息以后，我们可以使用`setUserInfo`方法将用户信息设置进去，然后在需要使用时，直接使用`getUserInfo`拿出来用户信息，非常的方便：
-
+应用场景举例
+在日常的开发过程中，我们经常会遇到需要登录态的接口，在接口处理逻辑中经常会使用到当前登录用户的信息，此时就用ThreadLocal来创建一个线程的上下文信息来记录登录用户信息就很合适，可以在任意地方获取上下文信息，比带着用户信息一直往下传递方便很多：
 ```java
 public class UserInfoContext {
     private static final ThreadLocal<UserInfo> USER_INFO = new ThreadLocal<>();
@@ -40,8 +37,11 @@ public class UserInfoContext {
     }
 }
 ```
+上面面我们实现了一个简单的用户信息的上下文信息，等处理完用户登录信息以后，我们可以使用`setUserInfo`方法将用户信息设置进去，然后在需要使用时，直接使用`getUserInfo`拿出来用户信息，非常的方便。
 
-可以看到我们上面new了一个`ThreadLocal`包装的`UserInfo`对象出来，那它是怎么实现线程安全的呢，答案就在`set`方法里面：
+# ThreadLocal的实现
+
+接下来我们用代码片段加上图解的方式来讲解ThreadLocal的实现，参考我们上面new了一个`ThreadLocal`包装的`UserInfo`对象出来，那它是怎么实现线程安全的呢，答案就在`set`方法里面：
 ```java
 public void set(T value) {
     Thread t = Thread.currentThread();
@@ -92,4 +92,16 @@ static class ThreadLocalMap {
 
 `ThreadLocalMap`是一个类似`HashMap`的结构，如果不知道`HashMap`长啥样，那另外去学习`HashMap`。
 这里我们主要关注里面`Entry`的结构，`Entry`使用`ThreadLocal`对象本身作为key，我们传进来的`UserInfo`对象作为value，最最最关键的是它继承了`WeakReference`，也就是弱引用，这个是我们平时不太常见的。
+
+
+这里简单解释下弱引用：如果一个对象只被其他对象持有弱引用，没有其他强引用，那么这个对象随时都有可能被GC回收。
+
+当我们创建了一个`ThreadLocal`对象，并且调用了`set`方法以后，我们来看看当前对象的引用关系是什么情况（不考虑其他存活对象对`ThreadLocal`和`UserInfo`的关系，主要看他们和线程对象之间的引用关系）：
+
+<img width="514" alt="Image" src="https://github.com/user-attachments/assets/be1a5802-c197-4ea2-a2a7-aec3959ea3fe" />
+
+上图我们可以看出来，当`ThreadLocal`一旦走出了它的作用域，那么它就仅剩了一个弱引用指向它，那么它就岌岌可危，随时都会被回收。
+
+为什么会这么设计呢？我们先来看看，假如这里是强引用，那么`ThreadLocal`对象即使走出了它的作用域，仍然存在一条从`Thread`对象开始的强引用链，那么它的生命周期将会和`Thread`对象一样长，即使它已经用不上了，而且会导致UserInfo对象也无法回收；
+那么弱引用会有什么区别呢？弱引用的场景下，当`ThreadLocal`一旦走出了它的作用域，那么它就仅剩了一个弱引用指向它，然后他就会被回收，当`ThreadLocal`被回收以后，`Entry`中的key会变成null，当下次线程的`ThreadLocalMap`对象被操作到的时候，key为null的value也会同步被清空掉，看到这里，应该就清楚这里为什么会涉及为弱引用了。
 
