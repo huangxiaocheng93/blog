@@ -165,7 +165,11 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/be1a5802-c197-4ea2-a2a7-aec3959ea3fe"><img width="514" alt="Image" src="https://github.com/user-attachments/assets/be1a5802-c197-4ea2-a2a7-aec3959ea3fe" style="max-width: 100%;"></a></p>
 <p>上图我们可以看出来，当<code class="notranslate">ThreadLocal</code>一旦走出了它的作用域，那么它就仅剩了一个弱引用指向它，那么它就岌岌可危，随时都会被回收。</p>
 <p>为什么会这么设计呢？我们先来看看，假如这里是强引用，那么<code class="notranslate">ThreadLocal</code>对象即使走出了它的作用域，仍然存在一条从<code class="notranslate">Thread</code>对象开始的强引用链，那么它的生命周期将会和<code class="notranslate">Thread</code>对象一样长，即使它已经用不上了，而且会导致UserInfo对象也无法回收；<br>
-那么弱引用会有什么区别呢？弱引用的场景下，当<code class="notranslate">ThreadLocal</code>一旦走出了它的作用域，那么它就仅剩了一个弱引用指向它，然后他就会被回收，当<code class="notranslate">ThreadLocal</code>被回收以后，<code class="notranslate">Entry</code>中的key会变成null，当下次线程的<code class="notranslate">ThreadLocalMap</code>对象被操作到的时候，key为null的value也会同步被清空掉，看到这里，应该就清楚这里为什么会涉及为弱引用了。</p></div>
+那么弱引用会有什么区别呢？弱引用的场景下，当<code class="notranslate">ThreadLocal</code>一旦走出了它的作用域，那么它就仅剩了一个弱引用指向它，然后他就会被回收，当<code class="notranslate">ThreadLocal</code>被回收以后，<code class="notranslate">Entry</code>中的key会变成null，当下次线程的<code class="notranslate">ThreadLocalMap</code>对象被操作到的时候，key为null的value也会同步被清空掉，看到这里，应该就清楚这里为什么会设计为弱引用了。</p>
+<h1>再看内存泄露</h1>
+<p>当我们理解了<code class="notranslate">ThreadLocal</code>的原理以后就很容易理解内存泄露产生的场景了，我总结有以下几个要素：<br>
+1- 使用线程池，线程具有超长的生命周期，例如tomcat线程池等等；<br>
+2- <code class="notranslate">ThreadLocal</code>在离开作用域之前没有调用<code class="notranslate">remove</code>方法；</p></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
