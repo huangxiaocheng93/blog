@@ -4,7 +4,7 @@
 
 `ThreadLocal`是一个包装类，被`ThreadLocal`包装的变量会和线程挂钩，实现线程安全。
 ```java
-private static final ThreadLocal<RequestContext> REQUEST_CONTEXT = new ThreadLocal<>();
+ThreadLocal<RequestContext> REQUEST_CONTEXT = new ThreadLocal<>();
 ```
 每个使用`REQUEST_CONTEXT`变量的线程都拥有一个`REQUEST_CONTEXT`的副本，这样就实现了`REQUEST_CONTEXT`的线程安全。
 
@@ -106,6 +106,8 @@ static class ThreadLocalMap {
 那么弱引用会有什么区别呢？弱引用的场景下，当`ThreadLocal`一旦走出了它的作用域，那么它就仅剩了一个弱引用指向它，然后他就会被回收，当`ThreadLocal`被回收以后，`Entry`中的key会变成null，当下次线程的`ThreadLocalMap`对象被操作到的时候，key为null的value也会同步被清空掉，看到这里，应该就清楚这里为什么会设计为弱引用了。
 
 # 再看内存泄露
+
+什么叫内存泄露？
 
 当我们理解了`ThreadLocal`的原理以后就很容易理解内存泄露产生的场景了，我总结有以下几个要素：
 1- 使用线程池，线程具有超长的生命周期，例如tomcat线程池等等；
