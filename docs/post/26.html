@@ -171,12 +171,20 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>在看<code class="notranslate">ThreadLocal</code>什么情况下会导致内存泄漏之前，先复习一下什么叫做内存泄漏。</p>
 <p>用比较简单易懂的方式来说明：内存泄漏就是一个对象既无法被获取到引用，又无法正常被GC回收，那么我们就可以说这个对象出现了内存泄漏。</p>
 <p>我们分析一下内存泄漏对象的特征：</p>
-<p>1- 无法正常获取到它的引用，说明代码已经走过了它的作用域，无法再拿到它的引用了；</p>
-<p>2- 无法被GC回收，由于当下GC基本都是用可达性分析算法，一个对象无法被GC回收说明它还关联在根节点上；</p>
+<ol>
+<li>
+<p>无法正常获取到它的引用，说明代码已经走过了它的作用域，无法再拿到它的引用了；</p>
+</li>
+<li>
+<p>无法被GC回收，由于当下GC基本都是用可达性分析算法，一个对象无法被GC回收说明它还关联在根节点上；</p>
+</li>
+</ol>
 <h2>ThreadLocal的内存泄漏</h2>
-<p>当我们理解了<code class="notranslate">ThreadLocal</code>的原理以后就很容易理解内存泄漏产生的场景了，我总结有以下几个要素：<br>
-1- 使用线程池，线程具有超长的生命周期，例如tomcat线程池等等；<br>
-2- <code class="notranslate">ThreadLocal</code>在离开作用域之前没有调用<code class="notranslate">remove</code>方法；</p></div>
+<p>当我们理解了<code class="notranslate">ThreadLocal</code>的原理以后就很容易理解内存泄漏产生的场景了，我总结有以下几个要素：</p>
+<ol>
+<li>使用线程池，线程具有超长的生命周期，例如tomcat线程池等等；</li>
+<li><code class="notranslate">ThreadLocal</code>在离开作用域之前没有调用<code class="notranslate">remove</code>方法；</li>
+</ol></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
