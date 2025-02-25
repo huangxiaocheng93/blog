@@ -1,6 +1,6 @@
 一直在看到各种文章说ThreadLocal会导致内存泄漏，但是具体是什么场景下会泄漏，具体怎么导致的泄漏实际上都讲的不是很清楚，这次来研究清楚。
 
-# ThreadLocal是个啥？
+# ThreadLocal是什么？
 
 `ThreadLocal`是一个包装类，被`ThreadLocal`包装的变量会和线程挂钩，实现线程安全。
 ```java
