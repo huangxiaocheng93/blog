@@ -175,17 +175,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <h2>ThreadLocal的弱引用设计</h2>
 <p>我们看下<code class="notranslate">ThreadLocalMap</code>里面<code class="notranslate">Entry</code>的结构，<code class="notranslate">Entry</code>使用<code class="notranslate">ThreadLocal</code>对象作为key，我们传进来的<code class="notranslate">UserInfo</code>对象作为value，最关键的是它继承了<code class="notranslate">WeakReference</code>，也就是弱引用，这个是我们平时不太常见的。</p>
 <p>这里简单解释下弱引用：如果一个对象只被其他对象持有弱引用，没有其他强引用，那么这个对象随时都有可能被GC回收。</p>
-<p>当我们创建了一个<code class="notranslate">ThreadLocal</code>对象，并且调用了<code class="notranslate">set</code>方法以后，我们来看看当前对象的引用关系是什么情况（不考虑其他存活对象对<code class="notranslate">ThreadLocal</code>和<code class="notranslate">UserInfo</code>的关系，主要看他们和线程对象之间的引用关系）：</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/be1a5802-c197-4ea2-a2a7-aec3959ea3fe"><img width="514" alt="Image" src="https://github.com/user-attachments/assets/be1a5802-c197-4ea2-a2a7-aec3959ea3fe" style="max-width: 100%;"></a></p>
-<p><strong>那么</strong><code class="notranslate">ThreadLocalMap</code><strong>为什么要把key设计为弱引用呢？</strong></p>
-<p>先说答案，<code class="notranslate">ThreadLocalMap</code> 将key设计为弱引用就是为了减小内存泄露带来的影响。</p>
-<p>上图我们可以看出来，当<code class="notranslate">ThreadLocal</code>一旦走出了它的作用域，那么它就仅剩了一个弱引用指向它，那么它随时都会被回收。当它被回收以后，<code class="notranslate">ThreadLocalMap</code> 里面就出现了一个key为null的键值对，那么<code class="notranslate">ThreadLocalMap</code> 就能很清楚的知道哪些<code class="notranslate">value</code>是不会再被访问的，在后续的操作用就可以做一些清除的动作。</p>
-<p>在这种情况下，即使用户没有主动清理，在后续的流程中<code class="notranslate">ThreadLocalMap</code> 也可以主动的做出一些清理的动作来避免内存泄露。</p>
-<p>我们再假设这里是强引用，看看有什么不同。那么<code class="notranslate">ThreadLocal</code>对象即使走出了它的作用域，仍然存在一条从<code class="notranslate">Thread</code>对象开始的强引用链，那么它的生命周期将会和<code class="notranslate">Thread</code>对象一样长，即使它已经用不上了，那么这个时候如果没有被主动清理，<code class="notranslate">ThreadLocalMap</code> 也无法知道哪些对象是无效的，所以就无法做清理。<br>
-那么在哪些动作中，<code class="notranslate">ThreadLocal</code> 回去做清除动作呢？</p>
-<p>在<code class="notranslate">set</code>和<code class="notranslate">get</code> 方法中都会调用到清理的逻辑。</p>
-<h2>ThreadLocal的内存泄漏</h2>
-<p>当搞懂了上面的内容以后就很容易理解<code class="notranslate">ThreadLocal</code>内存泄漏产生的场景了，举个例子来看：</p>
+<p>接下来用一段代码来举例说明：</p>
 <div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">java</span>.<span class="pl-s1">util</span>.<span class="pl-s1">concurrent</span>.<span class="pl-s1">ExecutorService</span>;
 <span class="pl-k">import</span> <span class="pl-s1">java</span>.<span class="pl-s1">util</span>.<span class="pl-s1">concurrent</span>.<span class="pl-s1">Executors</span>;
 
@@ -194,7 +184,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 
     <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-smi">void</span> <span class="pl-en">main</span>(<span class="pl-smi">String</span>[] <span class="pl-s1">args</span>) {
         <span class="pl-k">while</span> (<span class="pl-c1">true</span>) {
-            <span class="pl-c">// 每次循环创建新对象（模拟业务场景）</span>
+            
             <span class="pl-smi">LeakyContainer</span> <span class="pl-s1">container</span> = <span class="pl-k">new</span> <span class="pl-smi">LeakyContainer</span>();
             <span class="pl-s1">executor</span>.<span class="pl-en">execute</span>(<span class="pl-s1">container</span>::<span class="pl-s1">doWork</span>);
             
@@ -204,7 +194,6 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     }
 
     <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-smi">LeakyContainer</span> {
-        <span class="pl-c">// 非静态ThreadLocal，生命周期与对象绑定</span>
         <span class="pl-k">private</span> <span class="pl-k">final</span> <span class="pl-smi">ThreadLocal</span>&lt;<span class="pl-smi">byte</span>[]&gt; <span class="pl-s1">threadLocal</span> = <span class="pl-k">new</span> <span class="pl-smi">ThreadLocal</span>&lt;&gt;();
 
         <span class="pl-smi">void</span> <span class="pl-en">doWork</span>() {
@@ -212,11 +201,24 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
                 <span class="pl-s1">threadLocal</span>.<span class="pl-en">set</span>(<span class="pl-k">new</span> <span class="pl-smi">byte</span>[<span class="pl-c1">1024</span> * <span class="pl-c1">1024</span>]); <span class="pl-c">// 1MB</span>
                 <span class="pl-smi">System</span>.<span class="pl-s1">out</span>.<span class="pl-en">println</span>(<span class="pl-smi">Thread</span>.<span class="pl-en">currentThread</span>().<span class="pl-en">getName</span>() + <span class="pl-s">" set value"</span>);
             } <span class="pl-k">finally</span> {
-                <span class="pl-c">// 未调用threadLocal.remove()</span>
+      
             }
         }
     }
 }</pre></div>
+<p>当这段代码执行到<code class="notranslate">System.out.println(Thread.currentThread().getName() + " set value");</code>时，我们来分析下对象的引用关系：</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/d507ac67-e43b-4864-8d4b-028237c92407"><img src="https://github.com/user-attachments/assets/d507ac67-e43b-4864-8d4b-028237c92407" alt="Image" style="max-width: 100%;"></a></p>
+<p>我们是用实线代表强引用，虚线代表弱引用，如上图，线程栈会持有当前线程对象的引用(threadObjRef)和当前正在执行对象的应用(currObjRef)，假定就是当前对象正在执行的方法创建了这个ThreadLocal对象，那么当前的引用关系就如图所示。<br>
+我们再假定，如果这个ThreadLocal对象是一个局部变量，那么当前正在执行的方法退出后，</p>
+<p><strong>那么</strong><code class="notranslate">ThreadLocalMap</code><strong>为什么要把key设计为弱引用呢？</strong></p>
+<p>先说答案，<code class="notranslate">ThreadLocalMap</code> 将key设计为弱引用就是为了减小内存泄露带来的影响。</p>
+<p>上图我们可以看出来，当<code class="notranslate">ThreadLocal</code>一旦走出了它的作用域，那么它就仅剩了一个弱引用指向它，那么它随时都会被回收。当它被回收以后，<code class="notranslate">ThreadLocalMap</code> 里面就出现了一个key为null的键值对，那么<code class="notranslate">ThreadLocalMap</code> 就能很清楚的知道哪些<code class="notranslate">value</code>是不会再被访问的，在后续的操作用就可以做一些清除的动作。</p>
+<p>在这种情况下，即使用户没有主动清理，在后续的流程中<code class="notranslate">ThreadLocalMap</code> 也可以主动的做出一些清理的动作来避免内存泄露。</p>
+<p>我们再假设这里是强引用，看看有什么不同。那么<code class="notranslate">ThreadLocal</code>对象即使走出了它的作用域，仍然存在一条从<code class="notranslate">Thread</code>对象开始的强引用链，那么它的生命周期将会和<code class="notranslate">Thread</code>对象一样长，即使它已经用不上了，那么这个时候如果没有被主动清理，<code class="notranslate">ThreadLocalMap</code> 也无法知道哪些对象是无效的，所以就无法做清理。<br>
+那么在哪些动作中，<code class="notranslate">ThreadLocal</code> 回去做清除动作呢？</p>
+<p>在<code class="notranslate">set</code>和<code class="notranslate">get</code> 方法中都会调用到清理的逻辑。</p>
+<h2>ThreadLocal的内存泄漏</h2>
+<p>当搞懂了上面的内容以后就很容易理解<code class="notranslate">ThreadLocal</code>内存泄漏产生的场景了，举个例子来看：</p>
 <p>上面的例子有如下几个特征：</p>
 <p>1、使用了线程池，线程具有很长的生命周期；</p>
 <p>2、线程每次执行<code class="notranslate">doWork</code>方法时都创建了新的<code class="notranslate">LeakyContainer</code>对象，也就意味每次都是新的<code class="notranslate">threadLocal</code>对象；</p>

@@ -125,9 +125,51 @@ static class ThreadLocalMap {
 
 这里简单解释下弱引用：如果一个对象只被其他对象持有弱引用，没有其他强引用，那么这个对象随时都有可能被GC回收。
 
-当我们创建了一个`ThreadLocal`对象，并且调用了`set`方法以后，我们来看看当前对象的引用关系是什么情况（不考虑其他存活对象对`ThreadLocal`和`UserInfo`的关系，主要看他们和线程对象之间的引用关系）：
+接下来用一段代码来举例说明：
+```java
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-<img width="514" alt="Image" src="https://github.com/user-attachments/assets/be1a5802-c197-4ea2-a2a7-aec3959ea3fe" />
+public class ThreadLocalLeakRealDemo {
+    private static final ExecutorService executor = Executors.newFixedThreadPool(5);
+
+    public static void main(String[] args) {
+        while (true) {
+            
+            LeakyContainer container = new LeakyContainer();
+            executor.execute(container::doWork);
+            
+            try { Thread.sleep(100); } 
+            catch (InterruptedException e) { e.printStackTrace(); }
+        }
+    }
+
+    static class LeakyContainer {
+        private final ThreadLocal<byte[]> threadLocal = new ThreadLocal<>();
+
+        void doWork() {
+            try {
+                threadLocal.set(new byte[1024 * 1024]); // 1MB
+                System.out.println(Thread.currentThread().getName() + " set value");
+            } finally {
+      
+            }
+        }
+    }
+}
+
+```
+
+当这段代码执行到`System.out.println(Thread.currentThread().getName() + " set value");`时，我们来分析下对象的引用关系：
+
+![Image](https://github.com/user-attachments/assets/d507ac67-e43b-4864-8d4b-028237c92407)
+
+
+
+
+
+我们是用实线代表强引用，虚线代表弱引用，如上图，线程栈会持有当前线程对象的引用(threadObjRef)和当前正在执行对象的应用(currObjRef)，假定就是当前对象正在执行的方法创建了这个ThreadLocal对象，那么当前的引用关系就如图所示。
+我们再假定，如果这个ThreadLocal对象是一个局部变量，那么当前正在执行的方法退出后，
 
 **那么**`ThreadLocalMap`**为什么要把key设计为弱引用呢？**
 
@@ -146,40 +188,6 @@ static class ThreadLocalMap {
 
 当搞懂了上面的内容以后就很容易理解`ThreadLocal`内存泄漏产生的场景了，举个例子来看：
 
-```java
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-public class ThreadLocalLeakRealDemo {
-    private static final ExecutorService executor = Executors.newFixedThreadPool(5);
-
-    public static void main(String[] args) {
-        while (true) {
-            // 每次循环创建新对象（模拟业务场景）
-            LeakyContainer container = new LeakyContainer();
-            executor.execute(container::doWork);
-            
-            try { Thread.sleep(100); } 
-            catch (InterruptedException e) { e.printStackTrace(); }
-        }
-    }
-
-    static class LeakyContainer {
-        // 非静态ThreadLocal，生命周期与对象绑定
-        private final ThreadLocal<byte[]> threadLocal = new ThreadLocal<>();
-
-        void doWork() {
-            try {
-                threadLocal.set(new byte[1024 * 1024]); // 1MB
-                System.out.println(Thread.currentThread().getName() + " set value");
-            } finally {
-                // 未调用threadLocal.remove()
-            }
-        }
-    }
-}
-
-```
 
 上面的例子有如下几个特征：
 
