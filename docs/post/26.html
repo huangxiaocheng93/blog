@@ -13,14 +13,14 @@
 <meta name="description" content="# 背景
 
 `ThreadLocal` 是什么，什么场景会出现内存泄露，为什么会导致内存泄漏，我们能应该怎么用。">
-<meta property="og:title" content="ThreadLocal为什么会导致内存泄漏？">
+<meta property="og:title" content="ThreadLocal和内存泄漏">
 <meta property="og:description" content="# 背景
 
 `ThreadLocal` 是什么，什么场景会出现内存泄露，为什么会导致内存泄漏，我们能应该怎么用。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://blog.npex.top/post/26.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/33109308?s=400&u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&v=4">
-<title>ThreadLocal为什么会导致内存泄漏？</title>
+<title>ThreadLocal和内存泄漏</title>
 <link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
 
 
@@ -63,7 +63,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 
 <body>
     <div id="header">
-<h1 class="postTitle">ThreadLocal为什么会导致内存泄漏？</h1>
+<h1 class="postTitle">ThreadLocal和内存泄漏</h1>
 <div class="title-right">
     <a href="https://blog.npex.top" id="buttonHome" class="btn btn-invisible circle" title="首页">
         <svg class="octicon" width="16" height="16">
@@ -197,26 +197,28 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>现在我们发现了一个问题，byte[]对象已经没有可能再被使用到了，但是仍然存在一条强引用链导致它无法被回收。</p>
 <p>这就是<code class="notranslate">ThreadLocalMap</code> 将key设计为弱引用的答案：<strong>为了减小内存泄漏带来的影响</strong>。</p>
 <h2>弱引用在怎样解决问题</h2>
-<p>上图可以看出来，<code class="notranslate">ThreadLocal</code>仅剩了一个弱引用指向它，那么它随时都会被回收。当它被回收以后，<code class="notranslate">ThreadLocalMap</code> 里面就出现了一个key为null的键值对，那么<code class="notranslate">ThreadLocalMap</code> 就能很清楚的知道哪些<code class="notranslate">value</code>是不会再被访问的，在后续的操作用就可以做一些清除的动作。</p>
-<p>在这种情况下，即使用户没有主动清理，在后续的流程中<code class="notranslate">ThreadLocalMap</code> 也可以主动的做出一些清理的动作来避免内存泄露。</p>
-<p>我们再假设这里是强引用，看看有什么不同。那么<code class="notranslate">ThreadLocal</code>对象即使走出了它的作用域，仍然存在一条从<code class="notranslate">Thread</code>对象开始的强引用链，那么它的生命周期将会和<code class="notranslate">Thread</code>对象一样长，即使它已经用不上了，那么这个时候如果没有被主动清理，<code class="notranslate">ThreadLocalMap</code> 也无法知道哪些对象是无效的，所以就无法做清理。<br>
-那么在哪些动作中，<code class="notranslate">ThreadLocal</code> 回去做清除动作呢？</p>
-<p>在<code class="notranslate">set</code>和<code class="notranslate">get</code> 方法中都会调用到清理的逻辑。</p>
+<p>上图可以看出来，<code class="notranslate">ThreadLocal</code>仅剩了一个弱引用指向它，那么它会在下一次GC时被回收。</p>
+<p>当它被回收以后，<code class="notranslate">ThreadLocalMap</code> 里面就出现了一个key为null的entry，那么<code class="notranslate">ThreadLocalMap</code> 就能知道这个entry已经没有用了。在这种情况下，如果用户没有主动清理，在后续的流程中<code class="notranslate">ThreadLocalMap</code> 也可以主动的做出一些清理的动作来避免内存泄漏。</p>
+<p>我们再假设这里是强引用，看看有什么不同。那么<code class="notranslate">ThreadLocal</code>对象即使走出了它的作用域，仍然存在一条从<code class="notranslate">Thread</code>对象开始的强引用链，那么它的生命周期将会和<code class="notranslate">Thread</code>对象一样长，即使它已经用不上了，那么这个时候如果没有被主动清理，<code class="notranslate">ThreadLocalMap</code> 也无法知道哪些对象是无效的，所以就无法做清理。</p>
+<p>那么在哪些动作中，<code class="notranslate">ThreadLocal</code> 会做清除动作呢？</p>
+<p>实际上在<code class="notranslate">set</code>和<code class="notranslate">get</code> 方法中都会调用到清理的逻辑。</p>
+<p>例如在<code class="notranslate">get</code>方法中，在查找对应key值时，如果遇到key为null的entry，就会主动将它清理掉，<code class="notranslate">set</code>方法中也是一样的原理。</p>
+<p>但是这样够吗？</p>
 <h2>ThreadLocal的内存泄漏</h2>
-<p>当搞懂了上面的内容以后就很容易理解<code class="notranslate">ThreadLocal</code>内存泄漏产生的场景了，举个例子来看：</p>
-<p>上面的例子有如下几个特征：</p>
-<p>1、使用了线程池，线程具有很长的生命周期；</p>
-<p>2、线程每次执行<code class="notranslate">doWork</code>方法时都创建了新的<code class="notranslate">LeakyContainer</code>对象，也就意味每次都是新的<code class="notranslate">threadLocal</code>对象；</p>
-<p>3、doWork方法在执行完毕后并没有清理<code class="notranslate">threadLocal</code> ；</p>
-<p>接下来我们分析下OOM的过程：</p>
+<p>如果上面的内容都看明白了，这个问题的答案就很明显了（或者把上面的demo跑起来也可能得出结论），是不够的。</p>
+<p>接下来我们分析下上面的示例程序执行的过程：</p>
 <p>线程每执行一次都往内存塞进去1MB大小的数据；</p>
 <p>等到内存占用到了临界值就会触发GC，但是由于线程都是存活状态，所以这次GC只能回收<code class="notranslate">threadLocal</code> 对象，也就是key被回收了，可以想象回收效果并不好；</p>
 <p>然后<code class="notranslate">threadLocal</code> 继续调用<code class="notranslate">set</code>方法去塞数据，此时由于产生了一些key为null的value，所以会触发<code class="notranslate">threadLocal</code> 的清理策略，但是需要注意的是<code class="notranslate">threadLocal</code> 的策略并不是触发一次就清掉所有异常的value，只会清理操作相关的，所以清理速度肯定是跟不上写入的速度；</p>
 <p>程序继续执行，GC无法完成数据清理，<code class="notranslate">threadLocal</code> 本身的清理速度也跟不上写入，最终结果只能是OOM。</p>
 <h1>总结</h1>
-<h1>ThreadLocal常用来做什么</h1>
+<h2>ThreadLocal的弱引用设计到底有没有用</h2>
+<p>个人认为是有用，但是作用并不大，为什么会这么说呢？<br>
+虽然threadLocal会主动清掉一些出现内存泄漏的对象，但是并没有从根本上解决问题，内存泄漏的问题仍然存在。</p>
+<p>如果threadLocal每次都清掉所有失效的entry是否可以呢？<br>
+首先，内存泄漏的情况肯定会比现在好，但是问题仍然没有解决，一方面如果每次都要轮询entry，肯定会导致性能大打折扣；另一方面内存泄漏仍然存在，如果不明白为什么需要再复习一次什么是内存泄漏。</p>
+<h2>ThreadLocal应该怎么使用才正确</h2>
 <p>因为ThreadLocal的<strong>线程安全</strong>属性，所以我们常常用他来记录线程相关的信息，例如记录线程的上下文信息。</p>
-<h2>应用场景举例</h2>
 <p>在日常的开发过程中，我们经常会遇到需要登录态的接口，在接口处理逻辑中经常会使用到当前登录用户的信息，此时就用ThreadLocal来创建一个线程的上下文信息来记录登录用户信息就很合适，可以在任意地方获取上下文信息，比带着用户信息一直往下传递方便很多：</p>
 <div class="highlight highlight-source-java"><pre class="notranslate"><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-smi">UserInfoContext</span> {
     <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-k">final</span> <span class="pl-smi">ThreadLocal</span>&lt;<span class="pl-smi">UserInfo</span>&gt; <span class="pl-c1">USER_INFO</span> = <span class="pl-k">new</span> <span class="pl-smi">ThreadLocal</span>&lt;&gt;();
@@ -240,13 +242,11 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     }
 }</pre></div>
 <p>上面实现了一个简单的用户信息的上下文信息，等处理完用户登录信息以后，我们可以使用<code class="notranslate">setUserInfo</code>方法将用户信息设置进去，然后在需要使用时，直接使用<code class="notranslate">getUserInfo</code>拿出来用户信息，非常的方便。</p>
-<h2>ThreadLocal的弱引用设计到底有没有用</h2>
-<p>个人认为是有用，但是作用并不大。</p>
-<h2>ThreadLocal应该怎么使用才正确</h2>
-<p>事实上一开始举的UserInfo的例子就是非常正确的使用方式，需要保证如下几点：</p>
-<p>1、<code class="notranslate">USER_INFO</code> 被<code class="notranslate">static</code> 修饰，那么它一定有一个强应用，就永远都不会被回收；</p>
-<p>2、我们每次set的时候使用的都是同一个threadLocal对象，这样每次都会覆盖原来的数据，同一个线程内不会出现多份UserInfo数据；</p>
-<p>3、在使用完后调用remove方法，主动将UserInfo移除，这样做有两个好处，一是避免可能出现的内存泄漏，二是避免线程复用时读取到错误的上下文信息；</p></div>
+<p>上面的示例有如下几个特点：</p>
+<ol>
+<li><code class="notranslate">USER_INFO</code> 被<code class="notranslate">static</code> 修饰，那么它一定有一个强引用，就永远都不会被回收，这样我们每次set的时候使用的都是同一个threadLocal对象，这样每次都会覆盖原来的数据，同一个线程内不会出现多份UserInfo数据；</li>
+<li>在使用完后调用remove方法，主动将UserInfo移除，这样做有两个好处，一是避免可能出现的内存泄漏，二是避免线程复用时读取到错误的上下文信息；</li>
+</ol></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
