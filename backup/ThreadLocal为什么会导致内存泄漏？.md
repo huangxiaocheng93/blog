@@ -1,6 +1,6 @@
 # 背景
 
-`ThreadLocal` 是什么，怎么用，什么场景会出现内存泄露，为什么会导致内存泄漏。读了挺多文章感觉都解释的不是很清楚，现在尝试自己梳理一次，尝试讲清楚这些问题。
+`ThreadLocal` 是什么，什么场景会出现内存泄露，为什么会导致内存泄漏，我们能应该怎么用。读了挺多文章感觉都解释的不是很清楚，现在尝试自己梳理一次，尝试讲清楚这些问题。
 
 # ThreadLocal是什么
 
@@ -13,44 +13,9 @@ ThreadLocal<RequestContext> REQUEST_CONTEXT = new ThreadLocal<>();
 
 每个使用`REQUEST_CONTEXT`变量的线程都拥有一个`REQUEST_CONTEXT`的副本，这样就实现了`REQUEST_CONTEXT`对象的线程安全。
 
-# ThreadLocal常用来做什么
-
-因为ThreadLocal的**线程安全**属性，所以我们常常用他来记录线程相关的信息，例如记录线程的上下文信息。
-
-## 应用场景举例
-
-在日常的开发过程中，我们经常会遇到需要登录态的接口，在接口处理逻辑中经常会使用到当前登录用户的信息，此时就用ThreadLocal来创建一个线程的上下文信息来记录登录用户信息就很合适，可以在任意地方获取上下文信息，比带着用户信息一直往下传递方便很多：
-
-```java
-public class UserInfoContext {
-    private static final ThreadLocal<UserInfo> USER_INFO = new ThreadLocal<>();
-
-    public static void setUserInfo(UserInfo userInfo) {
-        USER_INFO.set(userInfo);
-    }
-
-    public static UserInfo getUserInfo() {
-        return USER_INFO.get();
-    }
-
-    public static void clean() {
-        USER_INFO.remove();
-    }
-
-    @Data
-    public static class UserInfo {
-
-        private String userId;
-    }
-}
-
-```
-
-上面面我们实现了一个简单的用户信息的上下文信息，等处理完用户登录信息以后，我们可以使用`setUserInfo`方法将用户信息设置进去，然后在需要使用时，直接使用`getUserInfo`拿出来用户信息，非常的方便。
-
 # ThreadLocal是怎么实现线程安全的
 
-接下来我们用代码片段加上图解的方式来讲解`ThreadLocal`是怎么实现线程安全的，参考我们上面new了一个`ThreadLocal`包装的`UserInfo`对象出来，那它是怎么实现线程安全的呢，答案就在`set`方法里面：
+下面通过源码片段来看一下`ThreadLocal`是怎么实现线程安全的，答案就在`set`方法里面：
 
 ```java
 public void set(T value) {
@@ -121,11 +86,12 @@ static class ThreadLocalMap {
 
 ## ThreadLocal的弱引用设计
 
-我们看下`ThreadLocalMap`里面`Entry`的结构，`Entry`使用`ThreadLocal`对象作为key，我们传进来的`UserInfo`对象作为value，最关键的是它继承了`WeakReference`，也就是弱引用，这个是我们平时不太常见的。
+ThreadLocal的弱引用设计用在`ThreadLocalMap`的key上面，`Entry`使用`ThreadLocal`对象作为key，它继承了`WeakReference`，也就是弱引用，这个是我们平时不太常见的。
 
 这里简单解释下弱引用：如果一个对象只被其他对象持有弱引用，没有其他强引用，那么这个对象随时都有可能被GC回收。
 
 接下来用一段代码来举例说明：
+
 ```java
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -135,11 +101,13 @@ public class ThreadLocalLeakRealDemo {
 
     public static void main(String[] args) {
         while (true) {
-            
-            LeakyContainer container = new LeakyContainer();
-            executor.execute(container::doWork);
-            
-            try { Thread.sleep(100); } 
+
+            executor.execute(() -> {
+                LeakyContainer container = new LeakyContainer();
+                container.doWork();
+            });
+
+            try { Thread.sleep(100); }
             catch (InterruptedException e) { e.printStackTrace(); }
         }
     }
@@ -152,7 +120,7 @@ public class ThreadLocalLeakRealDemo {
                 threadLocal.set(new byte[1024 * 1024]); // 1MB
                 System.out.println(Thread.currentThread().getName() + " set value");
             } finally {
-      
+
             }
         }
     }
@@ -164,18 +132,21 @@ public class ThreadLocalLeakRealDemo {
 
 ![Image](https://github.com/user-attachments/assets/d507ac67-e43b-4864-8d4b-028237c92407)
 
+图上使用实线代表强引用，虚线代表弱引用，箭头指向被引用的方向。通过这个图可以看出来：此时threadLocalMap持有了threadLocal对象的弱引用，其他的引用关系都是强引用。
 
+当代码继续执行，从doWork方法退出，走到`Thread.sleep(100); `是，可以思考一下引用关系会是什么样子，如下图：
 
+![Image](https://github.com/user-attachments/assets/45fd8258-5016-4dd7-b7b7-e9046994294d)
 
+此时，线程中的代码已经执行完成了，所以线程栈已经被回收了，container对象也离开了作用域，所以可以正常被GC回收，所以也忽略它。但是Thread对象的引用由于被线程池持有，所以线程对象不会被回收。
 
-我们是用实线代表强引用，虚线代表弱引用，如上图，线程栈会持有当前线程对象的引用(threadObjRef)和当前正在执行对象的应用(currObjRef)，假定就是当前对象正在执行的方法创建了这个ThreadLocal对象，那么当前的引用关系就如图所示。
-我们再假定，如果这个ThreadLocal对象是一个局部变量，那么当前正在执行的方法退出后，
+现在我们发现了一个问题，byte[]对象已经没有可能再被使用到了，但是仍然存在一条强引用链导致它无法被回收。
 
-**那么**`ThreadLocalMap`**为什么要把key设计为弱引用呢？**
+这就是`ThreadLocalMap` 将key设计为弱引用的答案：**为了减小内存泄漏带来的影响**。
 
-先说答案，`ThreadLocalMap` 将key设计为弱引用就是为了减小内存泄露带来的影响。
+## 弱引用在怎样解决问题
 
-上图我们可以看出来，当`ThreadLocal`一旦走出了它的作用域，那么它就仅剩了一个弱引用指向它，那么它随时都会被回收。当它被回收以后，`ThreadLocalMap` 里面就出现了一个key为null的键值对，那么`ThreadLocalMap` 就能很清楚的知道哪些`value`是不会再被访问的，在后续的操作用就可以做一些清除的动作。
+上图可以看出来，`ThreadLocal`仅剩了一个弱引用指向它，那么它随时都会被回收。当它被回收以后，`ThreadLocalMap` 里面就出现了一个key为null的键值对，那么`ThreadLocalMap` 就能很清楚的知道哪些`value`是不会再被访问的，在后续的操作用就可以做一些清除的动作。
 
 在这种情况下，即使用户没有主动清理，在后续的流程中`ThreadLocalMap` 也可以主动的做出一些清理的动作来避免内存泄露。
 
@@ -208,6 +179,41 @@ public class ThreadLocalLeakRealDemo {
 程序继续执行，GC无法完成数据清理，`threadLocal` 本身的清理速度也跟不上写入，最终结果只能是OOM。
 
 # 总结
+
+# ThreadLocal常用来做什么
+
+因为ThreadLocal的**线程安全**属性，所以我们常常用他来记录线程相关的信息，例如记录线程的上下文信息。
+
+## 应用场景举例
+
+在日常的开发过程中，我们经常会遇到需要登录态的接口，在接口处理逻辑中经常会使用到当前登录用户的信息，此时就用ThreadLocal来创建一个线程的上下文信息来记录登录用户信息就很合适，可以在任意地方获取上下文信息，比带着用户信息一直往下传递方便很多：
+
+```java
+public class UserInfoContext {
+    private static final ThreadLocal<UserInfo> USER_INFO = new ThreadLocal<>();
+
+    public static void setUserInfo(UserInfo userInfo) {
+        USER_INFO.set(userInfo);
+    }
+
+    public static UserInfo getUserInfo() {
+        return USER_INFO.get();
+    }
+
+    public static void clean() {
+        USER_INFO.remove();
+    }
+
+    @Data
+    public static class UserInfo {
+
+        private String userId;
+    }
+}
+
+```
+
+上面实现了一个简单的用户信息的上下文信息，等处理完用户登录信息以后，我们可以使用`setUserInfo`方法将用户信息设置进去，然后在需要使用时，直接使用`getUserInfo`拿出来用户信息，非常的方便。
 
 ## ThreadLocal的弱引用设计到底有没有用
 
