@@ -247,7 +247,7 @@ index说明查询在做全索引扫描，这种情况只比全表扫描要稍微
 <div class="highlight highlight-source-sql"><pre class="notranslate"><span class="pl-k">select</span> <span class="pl-k">*</span> <span class="pl-k">from</span> test_table <span class="pl-k">where</span> a<span class="pl-k">=</span><span class="pl-c1">1</span> <span class="pl-k">and</span> c<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>test<span class="pl-pds">'</span></span></pre></div>
 <p>在我们不知道数据分布的情况下，这行查询语句有可能选中索引idx_a_b，也有可能选中idx_c_d。还有一种可能，优化器觉得这两个索引都不太理想，也有可能分别使用idx_a_b和idx_c_d扫描获得两个结果集，然后取交集，这就是index_merge。<br>
 除了出现在and条件，or条件也同样会出现。<br>
-为什么优化器会选择索引合并，个人觉得还是和优化器判断需要回表的行数有很大关系（应该学习一下mysql优化器在怎么工作）。<br>
+为什么优化器会选择索引合并，个人觉得还是和优化器判断需要回表扫描的行数有很大关系，回表的行数在优化器的决策中占了很大的比重，为了减少回表的行数，甚至会不惜多扫描几个索引。<br>
 但是索引合并并不一定能获得更好的性能，偶尔也会出现比使用单一索引性能更差，这是因为多次扫描索引在拖慢查询速度。</p>
 <h1><strong>possible_keys</strong>字段</h1>
 <p>本次查询可能用到的key，查询中涉及到的字段，如果存在于索引中，那么这个索引就是本次查询可能用到的索引，所有可能用到的索引组成当前这个字段。<br>
