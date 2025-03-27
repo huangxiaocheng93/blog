@@ -274,14 +274,14 @@ DHCP服务提供了如下几个能力：</p>
 <h3>DHCP发现</h3>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/109dc27d-0c99-453c-a050-d4bcde788f9a"><img src="https://github.com/user-attachments/assets/109dc27d-0c99-453c-a050-d4bcde788f9a" alt="Image00202" style="max-width: 100%;"></a></p>
 <p>DHCP通过4次请求完成IP地址的分配。</p>
-<p>// todo</p>
 <h2>NAT</h2>
 <p>NAT的背景上面有聊到过一些，原因还是因为IP地址的不足，导致没办法给每台接入网络的主机都分一个全局地址，但是主机又要接入广域网，那怎么办呢？NAT就应运而生了。</p>
 <p>NAT的思路是在局域网内，主机都分配私有地址，当局域网内的主机作为发送端发送数据到广域网时，在路由器中，对发送端的IP地址做一次转换，转换成公网地址；在局域网主机作为接收端时也是一样的处理方式，路由器接收到数据时，会将全局地址转换为私有地址，然后转发给对应的主机。</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/6aed8c88-cd9c-415d-b466-d7261a5e6eca"><img src="https://github.com/user-attachments/assets/6aed8c88-cd9c-415d-b466-d7261a5e6eca" alt="Image00204" style="max-width: 100%;"></a></p>
 <p>从上面的描述可以看出来，路由器中肯定维护了一张映射表，来搞定转发的规则。但是如果内网中所有的主机共用同一个全局地址，该怎么映射呢？</p>
 <p>这就是NAT的别扭之处，因为全局地址只有一个，无法同时映射到多个私有地址，所以NAT用到了IP地址+端口号来做映射。我们知道网络层IP地址是唯一地址，但是NAT中无法仅使用IP地址完成功能，提前引入了传输层的端口号，那么NAT到底是网络层协议还是传输层协议呢？</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/e2fd71ed-a26b-48b3-8a12-f8c7df5ac481"><img src="https://github.com/user-attachments/assets/e2fd71ed-a26b-48b3-8a12-f8c7df5ac481" alt="Image00205" style="max-width: 100%;"></a></p></div>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/e2fd71ed-a26b-48b3-8a12-f8c7df5ac481"><img src="https://github.com/user-attachments/assets/e2fd71ed-a26b-48b3-8a12-f8c7df5ac481" alt="Image00205" style="max-width: 100%;"></a></p>
+<p>实际上，NAT协议还是划分为网络层协议，因为他的能力还是服务于网络层。</p></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>

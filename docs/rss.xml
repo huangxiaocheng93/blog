@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Vincent的博客</title><link>https://blog.npex.top</link><description>Vincent的碎片知识集散地，边复习边整理，希望下次能一看就懂。偶尔也记录下其他的收获。</description><copyright>Vincent的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/33109308?s=400&amp;u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&amp;v=4</url><title>avatar</title><link>https://blog.npex.top</link></image><lastBuildDate>Thu, 27 Mar 2025 09:29:46 +0000</lastBuildDate><managingEditor>Vincent的博客</managingEditor><ttl>60</ttl><webMaster>Vincent的博客</webMaster><item><title>ThreadLocal和内存泄漏</title><link>https://blog.npex.top/post/26.html</link><description># 背景
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Vincent的博客</title><link>https://blog.npex.top</link><description>Vincent的碎片知识集散地，边复习边整理，希望下次能一看就懂。偶尔也记录下其他的收获。</description><copyright>Vincent的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/33109308?s=400&amp;u=6656e9b7a16bf82f6900c8647fd74fe50b6eecc7&amp;v=4</url><title>avatar</title><link>https://blog.npex.top</link></image><lastBuildDate>Thu, 27 Mar 2025 09:31:09 +0000</lastBuildDate><managingEditor>Vincent的博客</managingEditor><ttl>60</ttl><webMaster>Vincent的博客</webMaster><item><title>ThreadLocal和内存泄漏</title><link>https://blog.npex.top/post/26.html</link><description># 背景
 
 `ThreadLocal` 是什么，什么场景会出现内存泄露，为什么会导致内存泄漏，我们能应该怎么用。</description><guid isPermaLink="true">https://blog.npex.top/post/26.html</guid><pubDate>Sun, 17 Nov 2024 09:47:23 +0000</pubDate></item><item><title>Intelli IDEA几个配置</title><link>https://blog.npex.top/post/25.html</link><description>记录几个自己习惯的idea配置，方便下次重新设置的时候直接对照&#13;
 # 快捷键配置&#13;
@@ -34,12 +34,12 @@ MySQL使用较多的字符集就是**utf8**和**utf8mb4**，了解一下这两�
 [TCP/IP协议系列之网络层](https://blog.npex.top/post/21.html)&#13;
 &#13;
 # ICMP是什么&#13;
-ICMP全称是**互联网控制报文协议**（Internet Control Message Protocol）ICMP协议工作在网络层，是IP的辅助协议，也是控制协议。</description><guid isPermaLink="true">https://blog.npex.top/post/22.html</guid><pubDate>Wed, 09 Oct 2024 01:51:36 +0000</pubDate></item><item><title>TCP/IP协议系列之网络层</title><link>https://blog.npex.top/post/21.html</link><description># TCP/IP协议系列&#13;
-&#13;
-[TCP/IP协议系列之网络基础](https://huangxiaocheng93.github.io/blog/post/19.html)&#13;
-&#13;
-[TCP/IP协议系列之物理层和数据链路层](https://huangxiaocheng93.github.io/blog/post/20.html)&#13;
-&#13;
+ICMP全称是**互联网控制报文协议**（Internet Control Message Protocol）ICMP协议工作在网络层，是IP的辅助协议，也是控制协议。</description><guid isPermaLink="true">https://blog.npex.top/post/22.html</guid><pubDate>Wed, 09 Oct 2024 01:51:36 +0000</pubDate></item><item><title>TCP/IP协议系列之网络层</title><link>https://blog.npex.top/post/21.html</link><description># TCP/IP协议系列
+
+[TCP/IP协议系列之网络基础](https://huangxiaocheng93.github.io/blog/post/19.html)
+
+[TCP/IP协议系列之物理层和数据链路层](https://huangxiaocheng93.github.io/blog/post/20.html)
+
 在TCP/IP网络模型中，虽然说划分了五层，但是对物理层和数据链路层，TCP/IP并并没有做什么规范和限制，TCP/IP以这两层的功能是透明的为前提。</description><guid isPermaLink="true">https://blog.npex.top/post/21.html</guid><pubDate>Tue, 01 Oct 2024 10:16:12 +0000</pubDate></item><item><title>TCP/IP协议系列之物理层和数据链路层</title><link>https://blog.npex.top/post/20.html</link><description>我们已经知道了TCP/IP协议簇把网络划分成了五层，但是实际上TCP/IP协议并没有定义物理层和数据链路层，TCP/IP把这两层的实现当作透明的。</description><guid isPermaLink="true">https://blog.npex.top/post/20.html</guid><pubDate>Fri, 27 Sep 2024 07:41:53 +0000</pubDate></item><item><title>TCP/IP协议系列之网络基础</title><link>https://blog.npex.top/post/19.html</link><description># 网络是什么？&#13;
 &#13;
 网络应该是现代社会离不开的东西了，每个人都依赖网络做很多事情，例如打电话、发微信、购物等等。</description><guid isPermaLink="true">https://blog.npex.top/post/19.html</guid><pubDate>Thu, 26 Sep 2024 04:24:41 +0000</pubDate></item><item><title>Java的类加载机制</title><link>https://blog.npex.top/post/18.html</link><description># 什么是类加载？&#13;
