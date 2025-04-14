@@ -131,9 +131,9 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 <h1>OSI七层网络模型</h1>
 <p>随着网络的发展，网络中的设备也是越来越多，也越来越复杂，协议也越来越多，所以ISO组织为网络做了分层，也就是<strong>OSI七层网络模型</strong>。分层的目的是为了解耦和职责分离，这和代码编码种的分层道理是一样的。</p>
-<p>上下层之间交互使用<strong>接口</strong>，这样就可以使得各层直接职责分离，不需要关注其他层的具体实现；同一层之间的交互使用的就是<strong>协议</strong>，OSI七层网络模型：</p>
+<p>上下层之间交互使用<strong>接口</strong>，这样就可以使得各层直接职责分离，不需要关注其他层的具体实现；同一层之间的交互使用的就是<strong>协议</strong>，OSI七层网络模型（图片来自于《图解TCP/IP》）：</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/3a038b99-c758-472b-bcb0-a7b6d4bb7568"><img src="https://github.com/user-attachments/assets/3a038b99-c758-472b-bcb0-a7b6d4bb7568" alt="Image00022" style="max-width: 100%;"></a></p>
-<p>那么数据在这七层种是如何流转的呢？借助《图解TCP/IP》书中的一张图：</p>
+<p>那么数据在这七层种是如何流转的呢？（图片来自于《图解TCP/IP》）：</p>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/d2caede2-4235-45da-88fe-0bf60c504ed8"><img src="https://github.com/user-attachments/assets/d2caede2-4235-45da-88fe-0bf60c504ed8" alt="Image00023" style="max-width: 100%;"></a></p>
 <p>可以看出，数据在发送端从应用层开始，一层层往下传递，每一层都按照自己的协议处理数据，最终到达接收端，接收端的处理顺序刚好反过来，从物理层开始，一层一层用对应的协议解析，最终就到应用层就解析出实际的数据了。</p>
 <h1>TCP/IP的网络模型</h1>
