@@ -79,7 +79,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <div id="content">
 <div class="markdown-body" id="postBody"><h1>什么是类加载？</h1>
 <p>我们编写的代码，通过编译器的编译，变成class文件，也就是字节码。在服务启动的过程中JVM就会读取这些class文件，然后通过一系列操作，按照JVM的规范存放到内存中指定的位置，这个过程就是类加载。如下图展示的是类的整个生命周期：</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/0b554d29-46ff-497e-83ff-5c0595b244e6"><img src="https://github.com/user-attachments/assets/0b554d29-46ff-497e-83ff-5c0595b244e6" alt="Image00166" style="max-width: 100%;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/0b554d29-46ff-497e-83ff-5c0595b244e6"><img src="https://github.com/user-attachments/assets/0b554d29-46ff-497e-83ff-5c0595b244e6" alt="Image00166" style="max-width: 100%; height: auto;"></a></p>
 <div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>加载 → 连接 → 初始化都是属于类加载的范围，使用和卸载不属于类加载的步骤。</p>
 </div>
 <h1>什么是类加载器</h1>
@@ -113,7 +113,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <markdown-accessiblity-table><table frame="void" role="table"><tbody><tr><td>
 首先启动类加载器作为顶层的类加载器，其他的类加载器每一个都有一个自己的父类，这样所有的类加载器会组成一个树的结构，启动类加载器就是根节点。
 </td><td>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/4ab985e2-1332-4ac8-afff-c29261355495"><img src="https://github.com/user-attachments/assets/4ab985e2-1332-4ac8-afff-c29261355495" alt="Image00168" style="max-width: 100%;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/4ab985e2-1332-4ac8-afff-c29261355495"><img src="https://github.com/user-attachments/assets/4ab985e2-1332-4ac8-afff-c29261355495" alt="Image00168" style="max-width: 100%; height: auto;"></a></p>
 </td></tr></tbody></table></markdown-accessiblity-table>
 <p>类加载的工作流程定义如下：</p>
 <ul>

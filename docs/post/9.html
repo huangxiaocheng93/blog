@@ -83,23 +83,23 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <markdown-accessiblity-table><table frame="void" role="table"><tbody><tr><td>
 JVM内存模型描述的是程序运行过程中，字节码（类）和运行时数据（类对象等）以及对象的引用所保存的位置，例如：堆是保存对象示例的位置，线程运行中用到的对象引用，局部变量等保存在栈上，字节码数据保存在方法区。
 </td><td>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/d71e8342-d679-43c8-b013-580a61f6f66c"><img src="https://github.com/user-attachments/assets/d71e8342-d679-43c8-b013-580a61f6f66c" alt="Image00014" style="max-width: 100%;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/d71e8342-d679-43c8-b013-580a61f6f66c"><img src="https://github.com/user-attachments/assets/d71e8342-d679-43c8-b013-580a61f6f66c" alt="Image00014" style="max-width: 100%; height: auto;"></a></p>
 </td></tr></tbody></table></markdown-accessiblity-table>
 <markdown-accessiblity-table><table frame="void" role="table"><tbody><tr><td>
 Java内存模型描述的是多线程运行的过程中，线程的工作内存是如何和主内存交互的，定义程序中各种变量的访问规则，即关注在虚拟机中把变量值存储到内存和从内存中取出变量值这样的底层细节。
 </td><td>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/22398f57-1533-498f-a8cc-0dd92b2b1b1e"><img src="https://github.com/user-attachments/assets/22398f57-1533-498f-a8cc-0dd92b2b1b1e" alt="Image00220" style="max-width: 100%;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/22398f57-1533-498f-a8cc-0dd92b2b1b1e"><img src="https://github.com/user-attachments/assets/22398f57-1533-498f-a8cc-0dd92b2b1b1e" alt="Image00220" style="max-width: 100%; height: auto;"></a></p>
 </td></tr></tbody></table></markdown-accessiblity-table>
 <p>为什么要有个Java内存模型呢？Java内存模型主要是为了协调多线程运行的情况下，不同线程应该怎么读取和写入内存中的变量。例如不能的线程在读取和修改同一个变量，要怎么解决读到脏数据或者覆盖其他线程的修改的情况。</p>
 <h1>硬件的效率与一致性</h1>
 <p>Java的内存模型实际上和物理计算机的模型有些相似，现代处理器都是多核处理器，多个处理器核心在同时工作时，很有可能会用到同一块内存区域的数据，同时CPU并不是直接与主内存交互，在CPU和主内存之间还有好几层高速缓存，用来缓冲主内存和CPU之间的速度差异。<br>
-<a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/a622ed43-c6ca-428c-acfb-da71c8b7b021"><img src="https://github.com/user-attachments/assets/a622ed43-c6ca-428c-acfb-da71c8b7b021" alt="Image00219" style="max-width: 100%;"></a></p>
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/a622ed43-c6ca-428c-acfb-da71c8b7b021"><img src="https://github.com/user-attachments/assets/a622ed43-c6ca-428c-acfb-da71c8b7b021" alt="Image00219" style="max-width: 100%; height: auto;"></a></p>
 <p>为了解决这一问题，CPU在读写缓存和把缓存同步会主内存时都会遵守一定的规范，避免并发带来的问题，这个规范叫做<strong>缓存一致性协议</strong>。</p>
 <p>缓存一致性协议有很多种，由于这次并不是主要讨论缓存一致性协议，所以不做展开。</p>
 <p>但是我们可以发现，上面这张图和Java内存模型的图非常相似，场景也非常相识，我们可以把一个处理器核心类比为Java的一条线程，处理器核心的高速缓存类比为线程的工作内存，那么Java定义的Save和Load等操作规范就可以类比为CPU的缓存一致性协议，实际上功能实现的目的也是一致的。</p>
 <h1>Java内存模型</h1>
 <p>Java内存模型的主要目的是定义程序中各种变量的访问规则，即关注在虚拟机中把变量值存储到内存和从内存中取出变量值这样的底层细节。值得注意的时此处的变量（Variables）不包括直接分配在栈上的局部变量等，因为栈上分配的变量是线程私有的，不会被共享，自然就不会存在多线程竞争问题。</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/122cd456-dcf0-4afa-9a6a-e3c172514e7a"><img src="https://github.com/user-attachments/assets/122cd456-dcf0-4afa-9a6a-e3c172514e7a" alt="Image00220" style="max-width: 100%;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/122cd456-dcf0-4afa-9a6a-e3c172514e7a"><img src="https://github.com/user-attachments/assets/122cd456-dcf0-4afa-9a6a-e3c172514e7a" alt="Image00220" style="max-width: 100%; height: auto;"></a></p>
 <p>Java内存模型规定了所有的变量都存储在主内存（Main Memory）中（此处的主内存与介绍物理硬件时提到的主内存名字一样，两者也可以类比，但物理上它仅是虚拟机内存的一部分）。每条线程还有自己的工作内存（Working Memory，可与前面讲的处理器高速缓存类比），线程的工作内存中保存了被该线程使用的变量的主内存副本，线程对变量的所有操作（读取、赋值等）都必须在工作内存中进行，而不能直接读写主内存中的数据。不同的线程之间也无法直接访问对方工作内存中的变量，线程间变量值的传递均需要通过主内存来完成。</p>
 <h2><strong>内存间交互操作</strong></h2>
 <p>关于主内存与工作内存之间具体的交互协议，即一个变量如何从主内存拷贝到工作内存、如何从工作内存同步回主内存这一类的实现细节，Java内存模型中定义了以下8种操作来完成。Java虚拟机实现时必须保证下面提及的每一种操作都是原子的、不可再分的（对于double和long类型的变量来说，load、store、read和write操作在某些平台上允许有例外，但这是另外一件事）</p>

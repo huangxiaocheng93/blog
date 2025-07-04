@@ -112,7 +112,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <h3><strong>Topic分区副本</strong></h3>
 <p>在消息投递到kafka以后，kafka是通过冗余来保证数据可靠性的，写入的消息会保存在一个partition中，partition会保存几个副本来保证数据的可靠性的，所有的副本里面有一个是leader，负责消息的读写，其他副本是follow，负责同步leader的变更，如果leader挂掉，其中一个follow会重新成为新的leader继续提供服务。</p>
 <h2>数据的一致性</h2>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/3c12002c-48b6-4be5-b422-53384fb20c83"><img src="https://github.com/user-attachments/assets/3c12002c-48b6-4be5-b422-53384fb20c83" alt="Image" style="max-width: 100%;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/3c12002c-48b6-4be5-b422-53384fb20c83"><img src="https://github.com/user-attachments/assets/3c12002c-48b6-4be5-b422-53384fb20c83" alt="Image" style="max-width: 100%; height: auto;"></a></p>
 <p>假设分区的副本为3，其中副本0是 Leader，副本1和副本2是 follower，并且在 ISR 列表里面。虽然副本0已经写入了 Message3，但是 Consumer 只能读取到 Message1。因为所有的 ISR 都同步了 Message1，只有 High Water Mark 以上的消息才支持 Consumer 读取，而 High Water Mark 取决于 ISR 列表里面偏移量最小的分区，对应于上图的副本2，这个很类似于木桶原理。</p>
 <p>这样做的原因是还没有被足够多副本复制的消息被认为是“不安全”的，如果 Leader 发生崩溃，另一个副本成为新 Leader，那么这些消息很可能丢失了。如果我们允许消费者读取这些消息，可能就会破坏一致性。</p>
 <h1><strong>Kafka的rebalance机制</strong></h1>

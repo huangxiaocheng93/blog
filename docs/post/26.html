@@ -189,10 +189,10 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     }
 }</pre></div>
 <p>当这段代码执行到<code class="notranslate">System.out.println(Thread.currentThread().getName() + " set value");</code>时，我们来分析下对象的引用关系：</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/d507ac67-e43b-4864-8d4b-028237c92407"><img src="https://github.com/user-attachments/assets/d507ac67-e43b-4864-8d4b-028237c92407" alt="Image" style="max-width: 100%;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/d507ac67-e43b-4864-8d4b-028237c92407"><img src="https://github.com/user-attachments/assets/d507ac67-e43b-4864-8d4b-028237c92407" alt="Image" style="max-width: 100%; height: auto;"></a></p>
 <p>图上使用实线代表强引用，虚线代表弱引用，箭头指向被引用的方向。通过这个图可以看出来：此时threadLocalMap持有了threadLocal对象的弱引用，其他的引用关系都是强引用。</p>
 <p>当代码继续执行，从doWork方法退出，走到<code class="notranslate">Thread.sleep(100); </code>是，可以思考一下引用关系会是什么样子，如下图：</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/45fd8258-5016-4dd7-b7b7-e9046994294d"><img src="https://github.com/user-attachments/assets/45fd8258-5016-4dd7-b7b7-e9046994294d" alt="Image" style="max-width: 100%;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/45fd8258-5016-4dd7-b7b7-e9046994294d"><img src="https://github.com/user-attachments/assets/45fd8258-5016-4dd7-b7b7-e9046994294d" alt="Image" style="max-width: 100%; height: auto;"></a></p>
 <p>此时，线程中的代码已经执行完成了，所以线程栈已经被回收了，container对象也离开了作用域，所以可以正常被GC回收，所以也忽略它。但是Thread对象的引用由于被线程池持有，所以线程对象不会被回收。</p>
 <p>现在我们发现了一个问题，byte[]对象已经没有可能再被使用到了，但是仍然存在一条强引用链导致它无法被回收。</p>
 <p>这就是<code class="notranslate">ThreadLocalMap</code> 将key设计为弱引用的答案：<strong>为了减小内存泄漏带来的影响</strong>。</p>
