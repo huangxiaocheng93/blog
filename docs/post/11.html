@@ -176,7 +176,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </tbody>
 </table></markdown-accessiblity-table>
 <h1>SQL语句优化的目标</h1>
-<p>SQL优化的指标很多，优化手段也是很多， 往往我们迷思在这些指标和优化手段里的时候，就是遗忘了SQL优化最本质的目标。SQL优化的目标就一个：<strong>减少数据库读取磁盘的IO次数</strong>。</p>
+<p>SQL优化的指标很多，优化手段也是很多， 往往我们迷思在这些指标和优化手段里的时候，就是遗忘了SQL优化最本质的目标。SQL优化最重要的目标之一：<strong>减少数据库读取磁盘的IO次数</strong>。</p>
 <h1>场景设定</h1>
 <p>因为后面反复要用到查询来举例，所以这里设定一个场景，方便后面举例：</p>
 <div class="highlight highlight-source-sql"><pre class="notranslate"><span class="pl-k">CREATE</span> <span class="pl-k">TABLE</span> <span class="pl-en">test_table</span> (
