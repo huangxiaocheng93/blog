@@ -142,7 +142,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>Redis 对象头中的 lru 字段，在 LRU 算法下和 LFU 算法下使用方式并不相同。</p>
 <p><strong>在 LRU 算法中</strong>，Redis 对象头的 24 bits 的 lru 字段是用来记录 key 的访问时间戳，因此在 LRU 模式下，Redis可以根据对象头中的 lru 字段记录的值，来比较最后一次 key 的访问时间长，从而淘汰最久未被使用的 key。</p>
 <p><strong>在 LFU 算法中</strong>，Redis对象头的 24 bits 的 lru 字段被分成两段来存储，高 16bit 存储 ldt(Last Decrement Time)，低 8bit 存储 logc(Logistic Counter)。</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/69bab1ca-e86e-40f7-ab21-e8c1e8ef91cd"><img src="https://github.com/user-attachments/assets/69bab1ca-e86e-40f7-ab21-e8c1e8ef91cd" alt="Untitled" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/69bab1ca-e86e-40f7-ab21-e8c1e8ef91cd"><img src="https://github.com/user-attachments/assets/69bab1ca-e86e-40f7-ab21-e8c1e8ef91cd" alt="Untitled" style="max-width: 100%;"></a></p>
 <ul>
 <li>ldt 是用来记录 key 的访问时间戳；</li>
 <li>logc 是用来记录 key 的访问频次，它的值越小表示使用频率越低，越容易淘汰，每个新加入的 key 的logc 初始值为 5。</li>

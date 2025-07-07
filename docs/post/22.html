@@ -92,16 +92,16 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <h1>ICMP是怎么工作的</h1>
 <h2>ICMP的报文格式</h2>
 <p>ICMP的报文格式如下：</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/fb0d56fd-4c07-492e-bc74-da64b23aef26"><img src="https://github.com/user-attachments/assets/fb0d56fd-4c07-492e-bc74-da64b23aef26" alt="image" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/fb0d56fd-4c07-492e-bc74-da64b23aef26"><img src="https://github.com/user-attachments/assets/fb0d56fd-4c07-492e-bc74-da64b23aef26" alt="image" style="max-width: 100%;"></a></p>
 <p>ICMP的报文格式想对IP协议来说简单太多，总共就4个字段：类型、代码、校验和、Data。</p>
 <p>其中最重要的就是<strong>类型</strong>和<strong>代码</strong>，这两个字段确定了ICMP消息的类型。校验和无需多说了。</p>
 <div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>需要注意的是，这里的<strong>Data</strong>和其他协议不一样，ICMP消息的Data携带的是对应<strong>类型</strong>和<strong>代码</strong>的补充数据，而不是上层协议传递过来的数据。</p>
 </div>
 <h2>类型和代码</h2>
 <p>ICMP消息的类型如下：</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/1dfce6c6-2f08-47cf-941f-95611efc2382"><img src="https://github.com/user-attachments/assets/1dfce6c6-2f08-47cf-941f-95611efc2382" alt="Image00192" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/1dfce6c6-2f08-47cf-941f-95611efc2382"><img src="https://github.com/user-attachments/assets/1dfce6c6-2f08-47cf-941f-95611efc2382" alt="Image00192" style="max-width: 100%;"></a></p>
 <p>ICMP消息的<strong>类型</strong>表示的消息的大类，例如<strong>目标不可达</strong>表示IP数据报无法送达目标地址，但是具体什么原因并不在类型字段里面给出，而是在<strong>代码</strong>字段里面做了具体的分类，例如类型<strong>目标不可达</strong>的<strong>代码</strong>如下：</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/85448aa6-ea80-49bf-a9b7-f510d13934c0"><img src="https://github.com/user-attachments/assets/85448aa6-ea80-49bf-a9b7-f510d13934c0" alt="Image00193" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/85448aa6-ea80-49bf-a9b7-f510d13934c0"><img src="https://github.com/user-attachments/assets/85448aa6-ea80-49bf-a9b7-f510d13934c0" alt="Image00193" style="max-width: 100%;"></a></p>
 <p>可以看出来，不可达的原因有可能是网络不可达或者是主机不可达等等。</p>
 <h2>ICMP消息的传输</h2>
 <p>ICMP使用IP协议发送，由于IP协议的设计是“尽力而为”，IP数据报是否有成功送达接收端，发送端是完全不可知的。ICMP协议自己本身也没有可靠传输的设计，所以ICMP消息也同样不保证一定可以送达。</p>
@@ -113,11 +113,11 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 <h2>ping</h2>
 <p>ping命令应该大部分人都知道，我们通常使用它检查到目标地址的网络通不通，ping就是使用ICMP协议实现的：</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/acf32bf3-b944-49c5-b10b-0adc18a1f50f"><img src="https://github.com/user-attachments/assets/acf32bf3-b944-49c5-b10b-0adc18a1f50f" alt="image" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/acf32bf3-b944-49c5-b10b-0adc18a1f50f"><img src="https://github.com/user-attachments/assets/acf32bf3-b944-49c5-b10b-0adc18a1f50f" alt="image" style="max-width: 100%;"></a></p>
 <p>具体说来，ping使用的是0（回送应答）和8（回送请求）两种消息类型。</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/a86f0bf3-0944-4cce-9ab6-778329964164"><img src="https://github.com/user-attachments/assets/a86f0bf3-0944-4cce-9ab6-778329964164" alt="image" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/a86f0bf3-0944-4cce-9ab6-778329964164"><img src="https://github.com/user-attachments/assets/a86f0bf3-0944-4cce-9ab6-778329964164" alt="image" style="max-width: 100%;"></a></p>
 <p>这两种消息类型的报文格式如下：</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/a6bc22ab-3f3f-4226-a95f-5dab4d1c3436"><img src="https://github.com/user-attachments/assets/a6bc22ab-3f3f-4226-a95f-5dab4d1c3436" alt="image" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/a6bc22ab-3f3f-4226-a95f-5dab4d1c3436"><img src="https://github.com/user-attachments/assets/a6bc22ab-3f3f-4226-a95f-5dab4d1c3436" alt="image" style="max-width: 100%;"></a></p>
 <p>当发送端主机发起一个ping请求时，发送端会发送一个ICMP type 8的消息给接收端主机，<br>
 此时，发送端主机会填充一个请求唯一标识，例如进程的PID，用来识别发送这个请求的应用程序；然后填充识别每一次请求的唯一ID，这个序号是一个自增值，用来识别每一次请求。</p>
 <p>当接收端主机收到这个ICMP消息后，会回一个type 0的ICMP消息，携带相同的标识符和唯一ID，如果发送端收到了这个回送应答，那就说明网络是连通的。</p>
@@ -127,7 +127,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>相对ping，traceroute的实现就更加巧妙了。traceroute的作用时列举出IP数据报从发送端到达接收端途经的每一个网络节点。</p>
 <p>traceroute利用的是IP数据报超时以后会回送一个ICMP消息的特性。当IP数据报在网络种转发是，TTL会相应递减，直到变成0，就会被节点丢弃，节点丢弃这个数据报时会给发送端主机回送一个ICMP消息，类型为0，代表网络不可达。<br>
 所以traceroute会发多个IP数据报出去，TTL依次+1，接收中间的路由器回送回来的ICMP消息，直到IP数据报送达到目标主机为止，这样就知道了IP数据报中间会经过多少个路由器了，如下图：</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/27732378-94b3-497e-a1b9-5ad16969e975"><img src="https://github.com/user-attachments/assets/27732378-94b3-497e-a1b9-5ad16969e975" alt="image" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/27732378-94b3-497e-a1b9-5ad16969e975"><img src="https://github.com/user-attachments/assets/27732378-94b3-497e-a1b9-5ad16969e975" alt="image" style="max-width: 100%;"></a></p>
 <div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>MAC和Linux上面是traceroute，Windows上是tracert，原理都是差不多的，都是接收ICMP超时消息。但是traceroute是使用UDP协议发包，tracert是直接使用ICMP。</p>
 </div>
 <div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>还有一个问题，IP数据报如果正常达到目标主机，是不会触发一个ICMP消息的，那么要怎么知道数据报到达目标主机了呢？traceroute的思路是还是要触发一个ICMP消息，因为它是使用UDP发包，所以会指定一个没人使用的端口号，那么数据到达以后没有应用程序接收，会触发类型为3的ICMP消息，这个时候发送端就知道已经到达目标主机了。</p>

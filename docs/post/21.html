@@ -108,7 +108,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>所以在网络层，IP协议设计了新的地址，就是<strong>IP地址</strong>。接下来就看看IP地址是怎么设计的。</p>
 <h3>IP地址的格式</h3>
 <p>IP地址的格式如下：</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/fe01dbf6-4159-4259-9d75-833a8cbcf7a1"><img src="https://github.com/user-attachments/assets/fe01dbf6-4159-4259-9d75-833a8cbcf7a1" alt="image" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/fe01dbf6-4159-4259-9d75-833a8cbcf7a1"><img src="https://github.com/user-attachments/assets/fe01dbf6-4159-4259-9d75-833a8cbcf7a1" alt="image" style="max-width: 100%;"></a></p>
 <p>IP地址使用4字节共32位表示，平时我们看到的IP地址都是使用十进制点符号表示的，例如：<code class="notranslate">192.168.10.12</code> 。</p>
 <p>IP地址由<strong>网络地址</strong>和<strong>主机地址</strong>两部分组成：<strong>网络地址用来唯一定位一个网络，主机地址用来唯一定位该网络能的唯一主机</strong>。</p>
 <p>网络地址和主机地址是一个此消彼长的关系，网络地址的位数越多，我们能划分的网络个数就越多，但是单个网络中能容纳的主机数量就越少（因为网络地址占的位数多，主机地址的位数自然就少了）；网络地址的位数越少，单个网络能容纳的主机数就越多，但是能划分的网络个数就越少。</p>
@@ -122,16 +122,16 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>为了满足上面的需求，我们将网段根据能容纳主机的多少分成几个级别，然后给不同规模的网络分配不同级别的网段，这样就可以保证网络内的每台主机都有IP地址，同时他们也在同一个网段内，并且能尽量减少IP地址的浪费。</p>
 <p>根据上述思路，我们将IP网段划分为了ABCDE五类。</p>
 <h4>A类</h4>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/d79219e3-792d-40ab-8096-b29fe746417a"><img src="https://github.com/user-attachments/assets/d79219e3-792d-40ab-8096-b29fe746417a" alt="image" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/d79219e3-792d-40ab-8096-b29fe746417a"><img src="https://github.com/user-attachments/assets/d79219e3-792d-40ab-8096-b29fe746417a" alt="image" style="max-width: 100%;"></a></p>
 <p>A类地址是0开头，网络位占8位，主机位占24位，网段从0.0.0.0到127.0.0.0，一个网段最多可以容纳16777214台主机。</p>
 <h4>B类</h4>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/f91ff0c7-bcbb-4039-8c4f-975ee62e1450"><img src="https://github.com/user-attachments/assets/f91ff0c7-bcbb-4039-8c4f-975ee62e1450" alt="image" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/f91ff0c7-bcbb-4039-8c4f-975ee62e1450"><img src="https://github.com/user-attachments/assets/f91ff0c7-bcbb-4039-8c4f-975ee62e1450" alt="image" style="max-width: 100%;"></a></p>
 <p>B类地址是10开头，网络位占16位，主机位占16位，网段从128.0.0.0到191.255.0.0，一个网段最多可以容纳65534台主机。</p>
 <h4>C类</h4>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/c5dad08a-12e4-44a8-b5cd-6b2b689cd12c"><img src="https://github.com/user-attachments/assets/c5dad08a-12e4-44a8-b5cd-6b2b689cd12c" alt="image" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/c5dad08a-12e4-44a8-b5cd-6b2b689cd12c"><img src="https://github.com/user-attachments/assets/c5dad08a-12e4-44a8-b5cd-6b2b689cd12c" alt="image" style="max-width: 100%;"></a></p>
 <p>C类地址是110开头，网络位占24位，主机位占8位，网段从192.0.0.0到223.255.255.0，一个网段最多可以容纳254台主机。</p>
 <h4>D类</h4>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/836d04d0-ac05-4e6e-b688-2cdc2eac160f"><img src="https://github.com/user-attachments/assets/836d04d0-ac05-4e6e-b688-2cdc2eac160f" alt="image" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/836d04d0-ac05-4e6e-b688-2cdc2eac160f"><img src="https://github.com/user-attachments/assets/836d04d0-ac05-4e6e-b688-2cdc2eac160f" alt="image" style="max-width: 100%;"></a></p>
 <p>C类地址是1110开头，网络位占32位，没有主机位，网段从224.0.0.0到239. 255. 255. 255，D类地址没有主机位，所以是特殊用途，一般用来做多播之类的功能。</p>
 <h4>E类</h4>
 <p>E类地址实际上是未划分的地址，是1111开头，保留使用。</p>
@@ -165,7 +165,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 <h3>子网掩码</h3>
 <p>IP地址的网络位还有一种表示方法，就是<strong>子网掩码</strong>，如下图：</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/6b9e0eab-ae5f-4105-ac42-2c3506dc91b3"><img src="https://github.com/user-attachments/assets/6b9e0eab-ae5f-4105-ac42-2c3506dc91b3" alt="image" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/6b9e0eab-ae5f-4105-ac42-2c3506dc91b3"><img src="https://github.com/user-attachments/assets/6b9e0eab-ae5f-4105-ac42-2c3506dc91b3" alt="image" style="max-width: 100%;"></a></p>
 <p>子网掩码是IP地址的一个属性，表示的是IP地址的网络位，子网掩码的规则也很简单，网络位都为1，主机位都为0。</p>
 <p>所以CIDR表示法和子网掩码就是IP地址网络位的两种表示方法，仅此而已。相比较CIDR而言，子网掩码更容易参与计算，例如子网掩码和IP地址做与运算就可以得到IP地址的网段。</p>
 <h3>IPv4和IPv6</h3>
@@ -188,7 +188,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <h3>路由器</h3>
 <p>路由器这个设备相信家家户户都有了，有些大户人家甚至有好多个。由于它工作在第三层，所以也叫他三层交换机。前面聊到的物理层和数据链路层都是针对局域网，路由器作为网络层的设备，就是连接局域网和广域网的桥梁。<br>
 路由器通常由两种类型的接口：WAN口和LAN口，如下图：</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/aa146073-fe0d-4df4-8b79-b8a93c0e0695"><img src="https://github.com/user-attachments/assets/aa146073-fe0d-4df4-8b79-b8a93c0e0695" alt="image" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/aa146073-fe0d-4df4-8b79-b8a93c0e0695"><img src="https://github.com/user-attachments/assets/aa146073-fe0d-4df4-8b79-b8a93c0e0695" alt="image" style="max-width: 100%;"></a></p>
 <p>WAN和LAN前台由提到过，WAN就是广域网，LAN就是局域网，所以路由器一个端口接在广域网，一个端口接在局域网，所以说他是连接局域网和广域网的桥梁再形象不过了。因为路由器既在局域网，又在广域网，所以路由器自己就有会两个IP地址：局域网地址，用来和局域网设备通信；广域网地址，用来和广域网通信。</p>
 <div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>如今的路由器，不一定只有一个WAN口，如果有多个WAN口，并且同时连接到了不同的广域网，那么也就会有多个广域网IP。</p>
 </div>
@@ -199,7 +199,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </ol>
 <h3>路由表怎么用</h3>
 <p>所有支持IP协议的网络节点都会维护自己的路由表，先看一下路由表怎么使用，借用一张《图解TCP/IP》书中的一张图：</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/aee8ae80-7117-4e4e-b22b-6dd1ec649f6c"><img src="https://github.com/user-attachments/assets/aee8ae80-7117-4e4e-b22b-6dd1ec649f6c" alt="Image00159" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/aee8ae80-7117-4e4e-b22b-6dd1ec649f6c"><img src="https://github.com/user-attachments/assets/aee8ae80-7117-4e4e-b22b-6dd1ec649f6c" alt="Image00159" style="max-width: 100%;"></a></p>
 <p>这张图展示了路由的过程，路由的过程就是寻找下一个节点的过程，现在了解一下路由过程中的一些概念：</p>
 <ul>
 <li>路由表：路由表的形式就是类似图上的表格，要注意的是，第一列准确的说是网段地址，使用的是CIDR表示法，第二列是网段对应的目标IP地址；</li>
@@ -220,7 +220,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 <h3>数据封装</h3>
 <p>之前我们了解过数据链路层对数据的封装，主要塞进去了源地址和目标地址、校验位等等信息。IP协议也对数据有一层封装，实际上IP层的封装比数据链路层要复杂一些，下面看看IP协议（IPv4）对数据的封装：</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/dd5e4156-144a-4249-a9d6-5ec5aaee828f"><img src="https://github.com/user-attachments/assets/dd5e4156-144a-4249-a9d6-5ec5aaee828f" alt="image" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/dd5e4156-144a-4249-a9d6-5ec5aaee828f"><img src="https://github.com/user-attachments/assets/dd5e4156-144a-4249-a9d6-5ec5aaee828f" alt="image" style="max-width: 100%;"></a></p>
 <p>在数据链路层，封装完成的数据整体我们叫做一个数据帧（Data Frame），在IP协议中，我们称之为IP数据报（IP Datagram）。IP协议的首部总共占20 bytes，虽然和数据链路层在大小上差不了太多，但是携带的信息明显多得多了。</p>
 <ul>
 <li>
@@ -272,15 +272,15 @@ DHCP服务提供了如下几个能力：</p>
 <li>管理IP地址租期，给IP地址续期或回收；</li>
 </ol>
 <h3>DHCP发现</h3>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/109dc27d-0c99-453c-a050-d4bcde788f9a"><img src="https://github.com/user-attachments/assets/109dc27d-0c99-453c-a050-d4bcde788f9a" alt="Image00202" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/109dc27d-0c99-453c-a050-d4bcde788f9a"><img src="https://github.com/user-attachments/assets/109dc27d-0c99-453c-a050-d4bcde788f9a" alt="Image00202" style="max-width: 100%;"></a></p>
 <p>DHCP通过4次请求完成IP地址的分配。</p>
 <h2>NAT</h2>
 <p>NAT的背景上面有聊到过一些，原因还是因为IP地址的不足，导致没办法给每台接入网络的主机都分一个全局地址，但是主机又要接入广域网，那怎么办呢？NAT就应运而生了。</p>
 <p>NAT的思路是在局域网内，主机都分配私有地址，当局域网内的主机作为发送端发送数据到广域网时，在路由器中，对发送端的IP地址做一次转换，转换成公网地址；在局域网主机作为接收端时也是一样的处理方式，路由器接收到数据时，会将全局地址转换为私有地址，然后转发给对应的主机。</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/6aed8c88-cd9c-415d-b466-d7261a5e6eca"><img src="https://github.com/user-attachments/assets/6aed8c88-cd9c-415d-b466-d7261a5e6eca" alt="Image00204" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/6aed8c88-cd9c-415d-b466-d7261a5e6eca"><img src="https://github.com/user-attachments/assets/6aed8c88-cd9c-415d-b466-d7261a5e6eca" alt="Image00204" style="max-width: 100%;"></a></p>
 <p>从上面的描述可以看出来，路由器中肯定维护了一张映射表，来搞定转发的规则。但是如果内网中所有的主机共用同一个全局地址，该怎么映射呢？</p>
 <p>这就是NAT的别扭之处，因为全局地址只有一个，无法同时映射到多个私有地址，所以NAT用到了IP地址+端口号来做映射。我们知道网络层IP地址是唯一地址，但是NAT中无法仅使用IP地址完成功能，提前引入了传输层的端口号，那么NAT到底是网络层协议还是传输层协议呢？</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/e2fd71ed-a26b-48b3-8a12-f8c7df5ac481"><img src="https://github.com/user-attachments/assets/e2fd71ed-a26b-48b3-8a12-f8c7df5ac481" alt="Image00205" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/e2fd71ed-a26b-48b3-8a12-f8c7df5ac481"><img src="https://github.com/user-attachments/assets/e2fd71ed-a26b-48b3-8a12-f8c7df5ac481" alt="Image00205" style="max-width: 100%;"></a></p>
 <p>实际上，NAT协议还是划分为网络层协议，因为他的能力还是服务于网络层。</p></div>
 <div style="font-size:small;margin-top:8px;float:right;">♥转载请注明出处♥</div>
 
